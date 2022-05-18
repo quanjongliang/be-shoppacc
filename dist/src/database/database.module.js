@@ -15,11 +15,14 @@ DatabaseModule = __decorate([
     (0, common_1.Module)({
         imports: [
             typeorm_1.TypeOrmModule.forRoot({
-                type: 'postgres',
-                url: process.env.DATABASE_URL,
-                ssl: { rejectUnauthorized: false },
-                synchronize: !!JSON.parse(process.env['TYPEORM_SYNCHRONIZE'] || 'true'),
-                entities: [__dirname + '/dist/**/*.entity.js'],
+                type: "postgres",
+                host: process.env["POSTGRES_HOST"] || "localhost",
+                port: parseInt(process.env["POSTGRES_PORT"] || "5432", 10),
+                username: process.env["POSTGRES_USER"] || "postgres",
+                password: process.env["POSTGRES_PASSWORD"] || "postgres",
+                database: process.env["POSTGRES_DB"] || "shoppAcc",
+                synchronize: !!JSON.parse(process.env["TYPEORM_SYNCHRONIZE"] || "true"),
+                entities: [__dirname + "/dist/**/*.entity.js"],
                 autoLoadEntities: true,
             }),
         ],
