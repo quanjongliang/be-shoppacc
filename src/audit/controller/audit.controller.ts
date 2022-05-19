@@ -1,6 +1,7 @@
 import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
 import { MOD_ADMIN_ROLE } from "@/core";
 import { User } from "@/entity";
+import { UseInterceptors } from "@nestjs/common";
 import {
   Controller,
   UseGuards,
@@ -13,6 +14,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CreateAuditByAdminDto, CreateAuditDto, QueryAuditDto } from "../dto";
+import { GetAuditInterceptor } from "../interceptor";
 import { AuditService } from "../service";
 
 @Controller("audit")
@@ -49,6 +51,7 @@ export class AuditController {
 
   @Get("all")
   @Roles(...MOD_ADMIN_ROLE)
+  @UseInterceptors(GetAuditInterceptor)
   async getAllAuditHistory(@Query() queryAuditDto: QueryAuditDto) {
     return this.auditService.queryAuditByUser(queryAuditDto);
   }
