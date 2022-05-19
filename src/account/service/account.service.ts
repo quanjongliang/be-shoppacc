@@ -129,18 +129,25 @@ export class AccountService {
   async queryAccount(
     queryAccountDto: QueryAccountDto
   ): Promise<BaseQueryResponse<Account>> {
-    const { offset = 0, limit = POST_CONFIG.LIMIT, weapon } = queryAccountDto;
+    const {
+      offset = 0,
+      limit = POST_CONFIG.LIMIT,
+      weapon = "",
+      server = "",
+      tags = "",
+    } = queryAccountDto;
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
-      .leftJoinAndSelect("account.user", "user");
-    if (weapon) {
-      weapon.split(",").forEach((data) => {
-        findWeaponQuery.andWhere("account.weapon ILIKE :data", {
-          data: `%${data}%`,
-        });
-      });
-    }
+      .leftJoinAndSelect("account.user", "user")
+      .leftJoinAndSelect("account.tags", "tag");
+    // if (weapon) {
+    //   weapon.split(",").forEach((data) => {
+    //     findWeaponQuery.andWhere("account.weapon ILIKE :data", {
+    //       data: `%${data}%`,
+    //     });
+    //   });
+    // }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
       findWeaponQuery.offset(offset).limit(limit).getMany(),

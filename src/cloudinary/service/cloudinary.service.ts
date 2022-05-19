@@ -52,7 +52,6 @@ export class CloundinaryService {
       this.uploadFile(file, true, index + 1)
     );
     await Promise.all([...promiseRemoveOldBanners, ...promiseUploadFile]);
-    return "Hello cc";
   }
 
   async uploadMultiFilesAccount(
@@ -61,7 +60,6 @@ export class CloundinaryService {
     const promiseUploadFile = files.map((file, index) =>
       this.uploadFile(file, true, index + 1)
     );
-    const result = await Promise.all([...promiseUploadFile]);
-    return result;
+    return Promise.all([...promiseUploadFile]);
   }
 }

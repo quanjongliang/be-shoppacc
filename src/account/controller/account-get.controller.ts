@@ -15,7 +15,7 @@ export class AccountGetController {
   }
 
   @Get("tags")
-  queryAccountByTag(@Body() queryAccountTag: QueryAccountByTagDto) {
+  queryAccountByTag(@Query() queryAccountTag: QueryAccountByTagDto) {
     return this.accountService.queryAccountByTag(queryAccountTag);
   }
 }

@@ -6,15 +6,16 @@ export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiProperty()
   weapon?: string;
+  @IsOptional()
+  @ApiProperty()
+  tags?: string;
+  @IsOptional()
+  @ApiProperty()
+  server?: string;
 }
 
 export class QueryAccountByTagDto {
   @IsOptional()
   @ApiProperty()
-  tags: TagDtoQuery[];
-}
-
-export class TagDtoQuery {
-  title: string;
-  type: TAG_TYPE;
+  tags: string;
 }
