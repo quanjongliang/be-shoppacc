@@ -70,7 +70,7 @@ export class AccountService {
         this.tagRepository.findOne({
           where: {
             title: server,
-            type: TAG_TYPE.WEAPON,
+            type: TAG_TYPE.SERVER,
           },
         }),
       ]);
