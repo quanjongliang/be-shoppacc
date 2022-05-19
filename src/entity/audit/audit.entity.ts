@@ -5,25 +5,25 @@ import {
   ManyToOne,
   OneToMany,
   OneToOne,
-} from 'typeorm';
-import { AuditInformation } from '../audit-information';
-import { BaseColumn } from '../base';
-import { User } from '../user';
+} from "typeorm";
+import { AuditInformation } from "../audit-information";
+import { BaseColumn } from "../base";
+import { User } from "../user";
 
-export const AUDIT_TABLE_NAME = 'audit';
+export const AUDIT_TABLE_NAME = "audit";
 
 export enum AUDIT_STATUS {
-  PENDING = 'PENDING',
-  COMPLETED = 'COMPLETED',
+  PENDING = "PENDING",
+  COMPLETED = "COMPLETED",
 }
 export enum AUDIT_TYPE {
-  COIN = 'COIN',
-  STONE = 'STONE',
+  COIN = "COIN",
+  STONE = "STONE",
 }
 
 export const AUDIT_RELATION = {
-  USER: 'user',
-  AUDIT_INFORMATIONS: 'auditInformations',
+  USER: "user",
+  AUDIT_INFORMATIONS: "auditInformations",
 };
 
 @Entity(AUDIT_TABLE_NAME)
@@ -67,7 +67,7 @@ export class Audit extends BaseColumn {
     this.total = [...this.auditInformations].reduce(
       (totalAudit, { quantity, unitPrice }) =>
         quantity * unitPrice + totalAudit,
-      0,
+      0
     );
   }
 }

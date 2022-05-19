@@ -48,6 +48,8 @@ export class AuditService {
           user,
           auditInformations,
           ...newAudit,
+          username,
+          password,
         });
         const savedAudit = await this.auditRepository.save(audit);
         await this.mailerService.sendAuditStoneMail(

@@ -1,9 +1,9 @@
-import { AUDIT_TYPE } from '@/entity';
-import { ApiProperty } from '@nestjs/swagger';
+import { AUDIT_TYPE } from "@/entity";
+import { ApiProperty } from "@nestjs/swagger";
 
 export enum TYPE_TRANSFER {
-  PLUS = 'PLUS',
-  MINUS = 'MINUS',
+  PLUS = "PLUS",
+  MINUS = "MINUS",
 }
 export class CreateAuditDto {
   @ApiProperty()
