@@ -1,9 +1,9 @@
-import { TAG_MESSAGE } from '@/core';
-import { Tag } from '@/entity';
-import { TagRepository } from '@/repository';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UpdateResult } from 'typeorm';
-import { CreateTagDto, QueryTagDto, UpdateTagDto } from './dto';
+import { TAG_MESSAGE } from "@/core";
+import { Tag } from "@/entity";
+import { TagRepository } from "@/repository";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { UpdateResult } from "typeorm";
+import { CreateTagDto, QueryTagDto, UpdateTagDto } from "./dto";
 
 @Injectable()
 export class TagService {
@@ -19,7 +19,7 @@ export class TagService {
 
   async updateTag(
     id: string,
-    updateTagDto: UpdateTagDto,
+    updateTagDto: UpdateTagDto
   ): Promise<UpdateResult> {
     const { title } = updateTagDto;
     if (title) {
