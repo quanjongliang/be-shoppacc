@@ -1,27 +1,28 @@
-import { TAG_TYPE } from '@/entity';
-import { MigrationInterface, QueryRunner } from 'typeorm';
+import { TAG_TYPE } from "@/entity";
+import { changeToSlug } from "@/post";
+import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class createServerTag1652837181649 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     const listServerTag = [
       {
-        title: 'America',
-        description: 'America Server',
+        title: "America",
+        description: "America Server",
         type: TAG_TYPE.SERVER,
       },
       {
-        title: 'Europe',
-        description: 'Europe Server',
+        title: "Europe",
+        description: "Europe Server",
         type: TAG_TYPE.SERVER,
       },
       {
-        title: 'Asia',
-        description: 'Asia Server',
+        title: "Asia",
+        description: "Asia Server",
         type: TAG_TYPE.SERVER,
       },
       {
-        title: 'TW, HK, MO',
-        description: 'TW, HK, MO Server',
+        title: "TW, HK, MO",
+        description: "TW, HK, MO Server",
         type: TAG_TYPE.SERVER,
       },
     ];
@@ -32,13 +33,13 @@ export class createServerTag1652837181649 implements MigrationInterface {
         title,
         type,
         information,
-        slug: title.toLowerCase(),
+        slug: changeToSlug(title),
       };
     });
     await queryRunner.manager
       .createQueryBuilder()
       .insert()
-      .into('tag')
+      .into("tag")
       .values(saveServerList)
       .execute();
   }

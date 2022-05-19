@@ -50,9 +50,9 @@ export class AccountService {
   ): Promise<Account> {
     return this.connection.transaction(async () => {
       const { ar, char, weapon, server } = createAccountDto;
-      const cloundinary = await this.cloundinaryService.uploadMultiFilesAccount(
-        files
-      );
+      const cloundinary = files
+        ? await this.cloundinaryService.uploadMultiFilesAccount(files)
+        : null;
       const [charTag, weaponTag, serverTag] = await Promise.all([
         this.tagRepository.find({
           where: {
@@ -73,9 +73,9 @@ export class AccountService {
           },
         }),
       ]);
-      const imageUrl = JSON.stringify(
-        cloundinary.map((d) => d.url || d.secure_url)
-      );
+      const imageUrl = cloundinary
+        ? JSON.stringify(cloundinary.map((d) => d.url || d.secure_url))
+        : "";
       const newAccount = this.accountRepository.create({
         ar,
         ...createAccountDto,
