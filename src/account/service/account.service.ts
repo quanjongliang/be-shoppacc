@@ -1,4 +1,4 @@
-import { CloundinaryService } from '@/cloudinary';
+import { CloundinaryService } from "@/cloudinary";
 import {
   ACCOUNT_MESSAGE,
   AUDIT_MESSAGE,
@@ -6,25 +6,25 @@ import {
   POST_CONFIG,
   QUILL_LIANG_EMAIL,
   TIM_DANG_EMAIL,
-} from '@/core';
+} from "@/core";
 import {
   Account,
   ACCOUNT_RELATION,
   ACCOUNT_STATUS,
   TAG_TYPE,
   User,
-} from '@/entity';
-import { HistoryService } from '@/history';
-import { MailerService } from '@/mailer';
+} from "@/entity";
+import { HistoryService } from "@/history";
+import { MailerService } from "@/mailer";
 import {
   AccountRepository,
   DriverRepository,
   TagRepository,
   UserRepository,
-} from '@/repository';
-import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
-import { Connection, In } from 'typeorm';
-import { CreateAccountDto, QueryAccountDto, UpdateAccountDto } from '../dto';
+} from "@/repository";
+import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { Connection, In } from "typeorm";
+import { CreateAccountDto, QueryAccountDto, UpdateAccountDto } from "../dto";
 
 @Injectable()
 export class AccountService {
@@ -35,18 +35,18 @@ export class AccountService {
     private historyService: HistoryService,
     private userRepository: UserRepository,
     private mailerService: MailerService,
-    private tagRepository: TagRepository,
+    private tagRepository: TagRepository
   ) {}
 
   async createAccount(
     createAccountDto: CreateAccountDto,
     user: User,
-    files: Array<Express.Multer.File>,
+    files: Array<Express.Multer.File>
   ): Promise<Account> {
     return this.connection.transaction(async () => {
       const { ar, char, weapon } = createAccountDto;
       const cloundinary = await this.cloundinaryService.uploadMultiFilesAccount(
-        files,
+        files
       );
       const [charTag, weaponTag] = await Promise.all([
         this.tagRepository.find({
@@ -63,7 +63,7 @@ export class AccountService {
         }),
       ]);
       const imageUrl = JSON.stringify(
-        cloundinary.map((d) => d.url || d.secure_url),
+        cloundinary.map((d) => d.url || d.secure_url)
       );
       const newAccount = this.accountRepository.create({
         ar,
@@ -116,16 +116,16 @@ export class AccountService {
   // }
 
   async queryAccount(
-    queryAccountDto: QueryAccountDto,
+    queryAccountDto: QueryAccountDto
   ): Promise<BaseQueryResponse<Account>> {
     const { offset = 0, limit = POST_CONFIG.LIMIT, weapon } = queryAccountDto;
     const findWeaponQuery = this.accountRepository
-      .createQueryBuilder('account')
-      .leftJoinAndSelect('account.cloundinary', 'cloundinary')
-      .leftJoinAndSelect('account.user', 'user');
+      .createQueryBuilder("account")
+      .leftJoinAndSelect("account.cloundinary", "cloundinary")
+      .leftJoinAndSelect("account.user", "user");
     if (weapon) {
-      weapon.split(',').forEach((data) => {
-        findWeaponQuery.andWhere('account.weapon ILIKE :data', {
+      weapon.split(",").forEach((data) => {
+        findWeaponQuery.andWhere("account.weapon ILIKE :data", {
           data: `%${data}%`,
         });
       });
@@ -149,10 +149,8 @@ export class AccountService {
     const deleteMultiFile = account.cloundinary.map((cloud) => {
       return this.cloundinaryService.deleteFile(cloud.public_id);
     });
-    return Promise.all([
-      ...deleteMultiFile,
-      this.accountRepository.delete(account),
-    ]);
+    await Promise.all([...deleteMultiFile]);
+    return this.accountRepository.delete(account);
   }
 
   async buyAccountByUser(user: User, id: string) {
@@ -166,27 +164,28 @@ export class AccountService {
       if (user.money < account.newPrice) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,
-          HttpStatus.BAD_GATEWAY,
+          HttpStatus.BAD_GATEWAY
         );
       }
       user.money = user.money - account.newPrice;
       const listImage = account.cloundinary.map(
-        (cl) => cl.secure_url || cl.url,
+        (cl) => cl.secure_url || cl.url
       );
-      return Promise.all([
+      await Promise.all([
         this.userRepository.save(user),
         this.accountRepository.save(account),
         this.mailerService.sendBuyAccountFromUser(
           TIM_DANG_EMAIL,
           account,
           user.username,
-          listImage,
+          listImage
         ),
         this.historyService.createHistoryBuyAccount({
           account,
           username: user.username,
         }),
       ]);
+      return "CC tao";
     });
   }
 }

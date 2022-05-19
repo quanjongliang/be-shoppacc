@@ -1,9 +1,9 @@
-import { CLOUDINARY_CONFIG } from '@/core';
-import { Cloundinary } from '@/entity';
-import { CloundinaryReposiotry } from '@/repository';
-import { Injectable } from '@nestjs/common';
-import { v2 as cloudinary } from 'cloudinary';
-import * as fs from 'fs';
+import { CLOUDINARY_CONFIG } from "@/core";
+import { Cloundinary } from "@/entity";
+import { CloundinaryReposiotry } from "@/repository";
+import { Injectable } from "@nestjs/common";
+import { v2 as cloudinary } from "cloudinary";
+import * as fs from "fs";
 @Injectable()
 export class CloundinaryService {
   constructor(private cloudinaryRepository: CloundinaryReposiotry) {
@@ -18,7 +18,7 @@ export class CloundinaryService {
   async uploadFile(
     file: Express.Multer.File,
     isBanner = false,
-    order = 0,
+    order = 0
   ): Promise<Cloundinary> {
     try {
       const path = `./${file.path}`;
@@ -46,19 +46,20 @@ export class CloundinaryService {
     // get all old banners
     const oldBanners = await this.getIsBannerFiles();
     const promiseRemoveOldBanners = oldBanners.map(({ public_id }) =>
-      this.deleteFile(public_id),
+      this.deleteFile(public_id)
     );
     const promiseUploadFile = files.map((file, index) =>
-      this.uploadFile(file, true, index + 1),
+      this.uploadFile(file, true, index + 1)
     );
-    return Promise.all([...promiseRemoveOldBanners, ...promiseUploadFile]);
+    await Promise.all([...promiseRemoveOldBanners, ...promiseUploadFile]);
+    return "Hello cc";
   }
 
   async uploadMultiFilesAccount(
-    files: Array<Express.Multer.File>,
+    files: Array<Express.Multer.File>
   ): Promise<Cloundinary[]> {
     const promiseUploadFile = files.map((file, index) =>
-      this.uploadFile(file, true, index + 1),
+      this.uploadFile(file, true, index + 1)
     );
     return Promise.all([...promiseUploadFile]);
   }
