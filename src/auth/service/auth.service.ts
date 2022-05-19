@@ -5,7 +5,7 @@ import {
   hashedPassword,
   DEFAULT_CONFIG,
   BaseQueryResponse,
-} from '@/core/';
+} from "@/core/";
 import {
   History,
   HISTORY_TYPE,
@@ -13,29 +13,29 @@ import {
   User,
   UserWithOutPassword,
   USER_ROLE,
-} from '@/entity';
-import { HistoryService } from '@/history';
-import { getExpiredTime, MailerService } from '@/mailer';
-import { UserRepository } from '@/repository';
+} from "@/entity";
+import { HistoryService } from "@/history";
+import { getExpiredTime, MailerService } from "@/mailer";
+import { UserRepository } from "@/repository";
 import {
   ConflictException,
   HttpException,
   HttpStatus,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { JwtService } from '@nestjs/jwt';
-import { default as jwtDecode, default as jwt_decode } from 'jwt-decode';
-import { UpdateResult } from 'typeorm';
+} from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { default as jwtDecode, default as jwt_decode } from "jwt-decode";
+import { UpdateResult } from "typeorm";
 import {
   ChangePasswordDto,
   CreateUserDto,
   ForgetPasswordDto,
   QueryUserDto,
   UpdateUserRoleDto,
-} from '../dto';
-import { SubmitUserPayload, ResetPasswordPayload } from '../interface';
-import { isTokenExpired } from '../util';
+} from "../dto";
+import { SubmitUserPayload, ResetPasswordPayload } from "../interface";
+import { isTokenExpired } from "../util";
 
 @Injectable()
 export class AuthService {
@@ -43,7 +43,7 @@ export class AuthService {
     private userRepository: UserRepository,
     private jwtService: JwtService,
     private mailerService: MailerService,
-    private historyService: HistoryService,
+    private historyService: HistoryService
   ) {}
 
   async validateUser(username: string, password: string): Promise<User | null> {
@@ -91,7 +91,7 @@ export class AuthService {
     if (isTokenExpired(expiredTime)) {
       throw new HttpException(
         AUTH_MESSAGE.TOKEN.EXPIRED,
-        HttpStatus.REQUEST_TIMEOUT,
+        HttpStatus.REQUEST_TIMEOUT
       );
     }
     const checkExistUser = await this.userRepository.findOne({
@@ -109,7 +109,7 @@ export class AuthService {
 
   async changeUserPassword(
     changePasswordDto: ChangePasswordDto,
-    username: string,
+    username: string
   ): Promise<string> {
     const { oldPassword, newPassword, confirmNewPassword } = changePasswordDto;
     if (newPassword !== confirmNewPassword)
@@ -143,7 +143,7 @@ export class AuthService {
     return this.mailerService.sendResetPasswordMail(
       user.email,
       tokenResetPassword,
-      username,
+      username
     );
   }
 
@@ -153,7 +153,7 @@ export class AuthService {
     if (isTokenExpired(expiredTime)) {
       throw new HttpException(
         AUTH_MESSAGE.TOKEN.EXPIRED,
-        HttpStatus.REQUEST_TIMEOUT,
+        HttpStatus.REQUEST_TIMEOUT
       );
     }
     const user = await this.userRepository.findOne({ username });
@@ -178,14 +178,14 @@ export class AuthService {
 
   async updateUserRole(
     user: User,
-    updateUserRoleDto: UpdateUserRoleDto,
+    updateUserRoleDto: UpdateUserRoleDto
   ): Promise<[User, History]> {
     const { username, role } = updateUserRoleDto;
     const checkUser = await this.userRepository.findOne({ username });
     if (!checkUser)
       throw new HttpException(
         AUTH_MESSAGE.USER.NOT_FOUND,
-        HttpStatus.NOT_FOUND,
+        HttpStatus.NOT_FOUND
       );
     return Promise.all([
       this.userRepository.save({ ...checkUser, role }),
@@ -203,20 +203,20 @@ export class AuthService {
   }
 
   async getAllUserList(
-    queryUserDto: QueryUserDto,
+    queryUserDto: QueryUserDto
   ): Promise<BaseQueryResponse<User>> {
     const {
       offset = DEFAULT_CONFIG.OFFSET,
       limit = DEFAULT_CONFIG.OFFSET,
-      role = '',
-      username = '',
+      role = "",
+      username = "",
     } = queryUserDto;
     const where = {};
     if (role) {
-      where['role'] = role;
+      where["role"] = role;
     }
     if (username) {
-      where['username'] = username;
+      where["username"] = username;
     }
     // const total = await this.userRepository.count({ where });
     // const data = await this.userRepository.find({
@@ -234,11 +234,11 @@ export class AuthService {
       this.userRepository.find({
         take: limit,
         skip: offset,
-        select: ['id', 'username', 'email', 'money', 'role'],
+        select: ["id", "username", "email", "money", "role"],
         where,
         order: {
-          role: 'ASC',
-          username: 'ASC',
+          role: "ASC",
+          username: "ASC",
         },
       }),
     ]);

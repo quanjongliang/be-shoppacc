@@ -1,6 +1,6 @@
-import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from '@/auth';
-import { MOD_ADMIN_ROLE } from '@/core';
-import { User } from '@/entity';
+import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
+import { MOD_ADMIN_ROLE } from "@/core";
+import { User } from "@/entity";
 import {
   Controller,
   UseGuards,
@@ -10,13 +10,14 @@ import {
   Query,
   Patch,
   Param,
-} from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { CreateAuditByAdminDto, CreateAuditDto, QueryAuditDto } from '../dto';
-import { AuditService } from '../service';
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { CreateAuditByAdminDto, CreateAuditDto, QueryAuditDto } from "../dto";
+import { AuditService } from "../service";
 
-@Controller('audit')
-@ApiTags('audit')
+@Controller("audit")
+@ApiTags("audit")
+@ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AuditController {
   constructor(private auditService: AuditService) {}
@@ -24,16 +25,16 @@ export class AuditController {
   @Post()
   async createNewAudit(
     @CurrentUser() user: User,
-    @Body() createAuditDto: CreateAuditDto,
+    @Body() createAuditDto: CreateAuditDto
   ) {
     return this.auditService.createNewAudit(user, createAuditDto);
   }
 
-  @Post('create')
+  @Post("create")
   @Roles(...MOD_ADMIN_ROLE)
   async createAuditByAdmin(
     @CurrentUser() user: User,
-    @Body() createAuditByAdmin: CreateAuditByAdminDto,
+    @Body() createAuditByAdmin: CreateAuditByAdminDto
   ) {
     return this.auditService.createAuditByAdmin(user, createAuditByAdmin);
   }
@@ -41,21 +42,21 @@ export class AuditController {
   @Get()
   async getAuditHistory(
     @CurrentUser() user: User,
-    @Query() queryAuditDto: QueryAuditDto,
+    @Query() queryAuditDto: QueryAuditDto
   ) {
     return this.auditService.queryAuditByUser(queryAuditDto, user);
   }
 
-  @Get('all')
+  @Get("all")
   @Roles(...MOD_ADMIN_ROLE)
   async getAllAuditHistory(@Query() queryAuditDto: QueryAuditDto) {
     return this.auditService.queryAuditByUser(queryAuditDto);
   }
 
-  @Patch('update/:id')
+  @Patch("update/:id")
   @UseGuards(RolesGuard)
   @Roles(...MOD_ADMIN_ROLE)
-  async updateStatusAudit(@CurrentUser() user: User, @Param('id') id: string) {
+  async updateStatusAudit(@CurrentUser() user: User, @Param("id") id: string) {
     return this.auditService.updateStatusAudit(user, id);
   }
 }

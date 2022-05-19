@@ -1,4 +1,4 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty } from "@nestjs/swagger";
 export class CreateAccountDto {
   @ApiProperty()
   ar: number;
@@ -6,6 +6,8 @@ export class CreateAccountDto {
   char: string[];
   @ApiProperty()
   weapon: string[];
+  @ApiProperty()
+  server: string[];
   @ApiProperty()
   name: string;
   @ApiProperty()

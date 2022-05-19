@@ -24,7 +24,12 @@ import {
 } from "@/repository";
 import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
 import { Connection, In } from "typeorm";
-import { CreateAccountDto, QueryAccountDto, UpdateAccountDto } from "../dto";
+import {
+  CreateAccountDto,
+  QueryAccountByTagDto,
+  QueryAccountDto,
+  UpdateAccountDto,
+} from "../dto";
 
 @Injectable()
 export class AccountService {
@@ -44,11 +49,11 @@ export class AccountService {
     files: Array<Express.Multer.File>
   ): Promise<Account> {
     return this.connection.transaction(async () => {
-      const { ar, char, weapon } = createAccountDto;
+      const { ar, char, weapon, server } = createAccountDto;
       const cloundinary = await this.cloundinaryService.uploadMultiFilesAccount(
         files
       );
-      const [charTag, weaponTag] = await Promise.all([
+      const [charTag, weaponTag, serverTag] = await Promise.all([
         this.tagRepository.find({
           where: {
             title: In(char),
@@ -58,6 +63,12 @@ export class AccountService {
         this.tagRepository.find({
           where: {
             title: In(weapon),
+            type: TAG_TYPE.WEAPON,
+          },
+        }),
+        this.tagRepository.find({
+          where: {
+            title: In(server),
             type: TAG_TYPE.WEAPON,
           },
         }),
@@ -71,7 +82,7 @@ export class AccountService {
         user,
         cloundinary,
         imageUrl,
-        tags: [...charTag, ...weaponTag],
+        tags: [...charTag, ...weaponTag, ...serverTag],
       });
       return this.accountRepository.save(newAccount);
     });
@@ -140,6 +151,16 @@ export class AccountService {
       total,
       data,
     };
+  }
+
+  async queryAccountByTag(
+    queryAccountTag: QueryAccountByTagDto
+  ): Promise<Account[]> {
+    const { tags } = queryAccountTag;
+    const queryAccount = this.accountRepository
+      .createQueryBuilder("account")
+      .leftJoinAndSelect("account.tags", "tag");
+    return queryAccount.getMany();
   }
 
   async removeAccount(id: string) {

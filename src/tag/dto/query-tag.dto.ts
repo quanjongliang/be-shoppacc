@@ -4,5 +4,5 @@ import { IsOptional } from "class-validator";
 export class QueryTagDto {
   @ApiProperty()
   @IsOptional()
-  type: string;
+  type?: string;
 }
