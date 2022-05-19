@@ -3,6 +3,7 @@ import {
   ACCOUNT_MESSAGE,
   AUDIT_MESSAGE,
   BaseQueryResponse,
+  DEFAULT_CONFIG,
   POST_CONFIG,
   QUILL_LIANG_EMAIL,
   TIM_DANG_EMAIL,
@@ -66,9 +67,9 @@ export class AccountService {
             type: TAG_TYPE.WEAPON,
           },
         }),
-        this.tagRepository.find({
+        this.tagRepository.findOne({
           where: {
-            title: In(server),
+            title: server,
             type: TAG_TYPE.WEAPON,
           },
         }),
@@ -82,7 +83,8 @@ export class AccountService {
         user,
         cloundinary,
         imageUrl,
-        tags: [...charTag, ...weaponTag, ...serverTag],
+        server: serverTag.title,
+        tags: [...charTag, ...weaponTag, serverTag],
       });
       return this.accountRepository.save(newAccount);
     });
@@ -163,11 +165,30 @@ export class AccountService {
   async queryAccountByTag(
     queryAccountTag: QueryAccountByTagDto
   ): Promise<Account[]> {
-    const { tags } = queryAccountTag;
+    const {
+      server = "",
+      char = "",
+      weapon = "",
+      limit = DEFAULT_CONFIG.LIMIT,
+      offset = DEFAULT_CONFIG.OFFSET,
+    } = queryAccountTag;
     const queryAccount = this.accountRepository
       .createQueryBuilder("account")
-      .leftJoinAndSelect("account.tags", "tag");
-    return queryAccount.getMany();
+      .leftJoinAndSelect("account.tags", "tag")
+      .loadRelationCountAndMap(
+        "account.countCharacter",
+        "account.tags",
+        "tag",
+        (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.CHARACTER })
+      )
+      .loadRelationCountAndMap(
+        "account.countWeapon",
+        "account.tags",
+        "tag",
+        (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.WEAPON })
+      );
+
+    return queryAccount.limit(limit).offset(offset).getMany();
   }
 
   async removeAccount(id: string) {

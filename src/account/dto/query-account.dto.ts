@@ -14,8 +14,14 @@ export class QueryAccountDto extends BaseQuery {
   server?: string;
 }
 
-export class QueryAccountByTagDto {
+export class QueryAccountByTagDto extends BaseQuery {
   @IsOptional()
   @ApiProperty()
-  tags: string;
+  char: string;
+  @IsOptional()
+  @ApiProperty()
+  weapon: string;
+  @IsOptional()
+  @ApiProperty()
+  server: string;
 }

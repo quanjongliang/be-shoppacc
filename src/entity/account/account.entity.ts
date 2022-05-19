@@ -55,6 +55,9 @@ export class Account extends BaseColumn {
   @Column({ nullable: true })
   soldAt: Date;
 
+  @Column({ nullable: true })
+  server: string;
+
   @ManyToOne(() => User, (user) => user.accounts)
   user: User;
 

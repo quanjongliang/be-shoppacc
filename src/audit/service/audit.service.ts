@@ -4,23 +4,23 @@ import {
   BaseQueryResponse,
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
-} from '@/core';
-import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from '@/entity';
-import { MailerService } from '@/mailer';
+} from "@/core";
+import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from "@/entity";
+import { MailerService } from "@/mailer";
 import {
   AuditInformationRepository,
   AuditRepository,
   UserRepository,
-} from '@/repository';
-import { HttpStatus, Injectable, HttpException } from '@nestjs/common';
+} from "@/repository";
+import { HttpStatus, Injectable, HttpException } from "@nestjs/common";
 import {
   CreateAuditByAdminDto,
   CreateAuditDto,
   QueryAuditDto,
   TYPE_TRANSFER,
-} from '../dto';
-import { Connection } from 'typeorm';
-import { HistoryService } from '@/history';
+} from "../dto";
+import { Connection } from "typeorm";
+import { HistoryService } from "@/history";
 @Injectable()
 export class AuditService {
   constructor(
@@ -29,12 +29,12 @@ export class AuditService {
     private auditInformationRepository: AuditInformationRepository,
     private mailerService: MailerService,
     private connection: Connection,
-    private historyService: HistoryService,
+    private historyService: HistoryService
   ) {}
 
   async createNewAudit(
     user: User,
-    createAuditDto: CreateAuditDto,
+    createAuditDto: CreateAuditDto
   ): Promise<[Audit, any, History]> {
     return this.connection
       .transaction(async () => {
@@ -42,7 +42,7 @@ export class AuditService {
           createAuditDto;
         const auditInformations =
           await this.auditInformationRepository.createAuditInformations(
-            auditInformation,
+            auditInformation
           );
         const audit = this.auditRepository.create({
           user,
@@ -51,7 +51,7 @@ export class AuditService {
         });
         const savedAudit = await this.auditRepository.save(audit);
         await this.mailerService.sendAuditStoneMail(
-          'lhongquan.1998@gmail.com',
+          "lhongquan.1998@gmail.com",
           user.username,
           username,
           password,
@@ -59,7 +59,7 @@ export class AuditService {
           newAudit.UID,
           auditInformations,
           savedAudit.total,
-          newAudit.note,
+          newAudit.note
         );
         await this.historyService.createHistoryCreateAudit({
           UID: newAudit.UID,
@@ -68,7 +68,7 @@ export class AuditService {
         return Promise.all([
           this.auditRepository.save(audit),
           this.mailerService.sendAuditStoneMail(
-            'lhongquan.1998@gmail.com',
+            "lhongquan.1998@gmail.com",
             user.username,
             username,
             password,
@@ -76,7 +76,7 @@ export class AuditService {
             newAudit.UID,
             auditInformations,
             savedAudit.total,
-            newAudit.note,
+            newAudit.note
           ),
           this.historyService.createHistoryCreateAudit({
             UID: newAudit.UID,
@@ -88,14 +88,14 @@ export class AuditService {
         console.log(err);
         throw new HttpException(
           HISTORY_MESSAGE.NOT_FOUND,
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_REQUEST
         );
       });
   }
 
   async createAuditByAdmin(
     user: User,
-    createAuditByAdminDto: CreateAuditByAdminDto,
+    createAuditByAdminDto: CreateAuditByAdminDto
   ): Promise<[User, Audit, History]> {
     return this.connection
       .transaction(async () => {
@@ -106,7 +106,7 @@ export class AuditService {
         if (!userAudit)
           throw new HttpException(
             AUTH_MESSAGE.USER.NOT_FOUND,
-            HttpStatus.NOT_FOUND,
+            HttpStatus.NOT_FOUND
           );
         const oldMoney = userAudit?.money || 0;
         let newMoney = +oldMoney;
@@ -115,7 +115,7 @@ export class AuditService {
           if (newMoney < 0) {
             throw new HttpException(
               AUDIT_MESSAGE.NOT_ENOUGH,
-              HttpStatus.BAD_REQUEST,
+              HttpStatus.BAD_REQUEST
             );
           }
         }
@@ -138,34 +138,27 @@ export class AuditService {
         console.log(err);
         throw new HttpException(
           HISTORY_MESSAGE.NOT_FOUND,
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_REQUEST
         );
       });
   }
 
   async queryAuditByUser(
     queryAuditDto: QueryAuditDto,
-    user?: User,
+    user?: User
   ): Promise<BaseQueryResponse<Audit>> {
     const {
       limit = DEFAULT_CONFIG.LIMIT,
       offset = DEFAULT_CONFIG.OFFSET,
-      status = '',
+      status = "",
     } = queryAuditDto;
     const where = {};
     if (user) {
-      where['user'] = user;
+      where["user"] = user;
     }
     if (status) {
-      where['status'] = status;
+      where["status"] = status;
     }
-    // const total = await this.auditRepository.count({ where });
-    // const data = await this.auditRepository.find({
-    //   take: limit,
-    //   skip: offset,
-    //   where,
-    //   relations: [AUDIT_RELATION.USER, AUDIT_RELATION.AUDIT_INFORMATIONS],
-    // });
     const [total, data] = await Promise.all([
       this.auditRepository.count({ where }),
       this.auditRepository.find({
@@ -191,7 +184,7 @@ export class AuditService {
         if (!audit)
           throw new HttpException(
             AUDIT_MESSAGE.STATUS_NOT_FOUND,
-            HttpStatus.CONFLICT,
+            HttpStatus.CONFLICT
           );
 
         return Promise.all([
@@ -202,7 +195,7 @@ export class AuditService {
           }),
           this.auditRepository.update(
             { id },
-            { status: AUDIT_STATUS.COMPLETED },
+            { status: AUDIT_STATUS.COMPLETED }
           ),
         ]);
       })
@@ -210,7 +203,7 @@ export class AuditService {
         console.log(err);
         throw new HttpException(
           HISTORY_MESSAGE.NOT_FOUND,
-          HttpStatus.BAD_REQUEST,
+          HttpStatus.BAD_REQUEST
         );
       });
   }

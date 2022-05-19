@@ -7,7 +7,7 @@ export class CreateAccountDto {
   @ApiProperty()
   weapon: string[];
   @ApiProperty()
-  server: string[];
+  server: string;
   @ApiProperty()
   name: string;
   @ApiProperty()
