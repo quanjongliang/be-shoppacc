@@ -61,6 +61,7 @@ export class CloundinaryService {
     const promiseUploadFile = files.map((file, index) =>
       this.uploadFile(file, true, index + 1)
     );
-    return Promise.all([...promiseUploadFile]);
+    const result = await Promise.all([...promiseUploadFile]);
+    return result;
   }
 }
