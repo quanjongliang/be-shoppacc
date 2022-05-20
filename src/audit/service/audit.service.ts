@@ -173,8 +173,11 @@ export class AuditService {
     return this.connection
       .transaction(async () => {
         const audit = await this.auditRepository.findOne({
-          status: AUDIT_STATUS.PENDING,
-          id,
+          where: {
+            status: AUDIT_STATUS.PENDING,
+            id,
+          },
+          relations: [AUDIT_RELATION.USER],
         });
         if (!audit)
           throw new HttpException(
