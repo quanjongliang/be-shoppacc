@@ -1,8 +1,6 @@
-import { BaseQueryResponse, DEFAULT_CONFIG, HISTORY_MESSAGE } from "@/core";
+import { BaseQueryResponse, DEFAULT_CONFIG } from "@/core";
 import { History, HISTORY_TYPE } from "@/entity";
 import { HistoryRepository } from "@/repository";
-import { HttpStatus } from "@nestjs/common";
-import { HttpException } from "@nestjs/common";
 import { Injectable } from "@nestjs/common";
 import {
   CreateAmountTransferredHistoryDto,
@@ -89,9 +87,8 @@ export class HistoryService {
     const findHistoryQuery = this.historyRepository
       .createQueryBuilder("history")
       .offset(offset)
-      .limit(limit);
-    // const total = await this.historyRepository.count();
-    // const data = await findHistoryQuery.getMany();
+      .limit(limit)
+      .orderBy("history.createdAt", "DESC");
     const [total, data] = await Promise.all([
       this.historyRepository.count(),
       findHistoryQuery.getMany(),

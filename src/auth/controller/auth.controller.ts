@@ -1,4 +1,4 @@
-import { User, UserWithOutPassword, USER_ROLE } from '@/entity';
+import { User, UserWithOutPassword, USER_ROLE } from "@/entity";
 import {
   Body,
   Controller,
@@ -7,81 +7,91 @@ import {
   Patch,
   Post,
   UseGuards,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { CurrentUser } from '../decorator';
+import { CurrentUser } from "../decorator";
 import {
   ChangePasswordDto,
   CreateUserDto,
   ForgetPasswordDto,
   LoginUserDto,
   UpdateUserRoleDto,
-} from '../dto';
-import { JwtAuthGuard, LocalAuthGuard, RolesGuard } from '../guard';
-import { AuthService } from '../service';
-import { ApiTags, ApiBearerAuth, ApiParam, ApiBody } from '@nestjs/swagger';
+} from "../dto";
+import { JwtAuthGuard, LocalAuthGuard, RolesGuard } from "../guard";
+import { AuthService } from "../service";
+import { ApiTags, ApiBearerAuth, ApiParam, ApiBody } from "@nestjs/swagger";
+import { ParseIntPipe } from "@nestjs/common";
 
-@Controller('auth')
-@ApiTags('auth')
+@Controller("auth")
+@ApiTags("auth")
 @ApiBearerAuth()
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   @UseGuards(LocalAuthGuard)
-  @Post('login')
+  @Post("login")
   @ApiBody({ type: LoginUserDto })
   async login(@CurrentUser() currentUser: User) {
     return this.authService.login(currentUser);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get('profile')
+  @Get("profile")
   getProfile(@CurrentUser() currentUser: User) {
     const { password, ...userInformation } = currentUser;
     return userInformation;
   }
 
-  @Post('sign-up')
+  @Post("sign-up")
   async signUpUser(@Body() newUserDto: CreateUserDto) {
     return this.authService.createNewUser(newUserDto);
   }
 
-  @Post('sign-up/:token')
+  @Post("sign-up/:token")
   @ApiParam({
-    name: 'token',
+    name: "token",
   })
-  async submitSignUpUser(@Param('token') token: string) {
+  async submitSignUpUser(@Param("token") token: string) {
     return this.authService.submitCreateNewUser(token);
   }
 
   @UseGuards(JwtAuthGuard)
-  @Patch('change-password')
+  @Patch("change-password")
   changePassword(
     @CurrentUser() currentUser: UserWithOutPassword,
-    @Body() changePasswordDto: ChangePasswordDto,
+    @Body() changePasswordDto: ChangePasswordDto
   ) {
     return this.authService.changeUserPassword(
       changePasswordDto,
-      currentUser.username,
+      currentUser.username
     );
   }
 
-  @Post('forget-password')
+  @Post("forget-password")
   forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
     return this.authService.forgetPassword(forgetPasswordDto);
   }
 
-  @Patch('forget-password/:token')
-  resetPassword(@Param('token') token: string) {
+  @Patch("forget-password/:token")
+  resetPassword(@Param("token") token: string) {
     return this.authService.verifyResetPassword(token);
   }
 
-  @Patch('update-role')
+  @Patch("update-role")
   @UseGuards(JwtAuthGuard, RolesGuard)
   updateRoleUser(
     @CurrentUser() user: User,
-    @Body() updateUserRole: UpdateUserRoleDto,
+    @Body() updateUserRole: UpdateUserRoleDto
   ) {
     return this.authService.updateUserRole(user, updateUserRole);
+  }
+
+  @Patch("change-avatar/:avatar")
+  @UseGuards(JwtAuthGuard)
+  updateUserAvatar(
+    @CurrentUser() user: User,
+    @Param("avatar", ParseIntPipe) avatar: number
+  ) {
+    return this.authService.updateAvatarUser(user, avatar);
   }
 }

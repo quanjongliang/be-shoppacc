@@ -218,17 +218,6 @@ export class AuthService {
     if (username) {
       where["username"] = username;
     }
-    // const total = await this.userRepository.count({ where });
-    // const data = await this.userRepository.find({
-    //   take: limit,
-    //   skip: offset,
-    //   select: ['id', 'username', 'email', 'money', 'role'],
-    //   where,
-    //   order: {
-    //     role: 'ASC',
-    //     username: 'ASC',
-    //   },
-    // });
     const [total, data] = await Promise.all([
       this.userRepository.count({ where }),
       this.userRepository.find({
@@ -246,5 +235,10 @@ export class AuthService {
       data,
       total,
     };
+  }
+
+  async updateAvatarUser(user: User, avatar: number): Promise<User> {
+    const checkUser = await this.userRepository.checkExistUser(user.id);
+    return this.userRepository.save({ ...checkUser, avatar });
   }
 }
