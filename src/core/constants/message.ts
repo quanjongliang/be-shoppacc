@@ -1,46 +1,46 @@
 export const DRIVER_MESSAGE = {
   REMOVE: {
-    SUCCESS: 'Remove image successfully',
+    SUCCESS: "Remove image successfully",
   },
 };
 
 export const AUTH_MESSAGE = {
   USER: {
-    NOT_FOUND: 'Tài khoản không tồn tại!',
-    EXIST: 'Tài khoản đã tồn tại!',
-    CONFIRM_PASSWORD: 'Mật khẩu phải trùng nhau!',
-    WRONG_PASSWORD: 'Sai mật khẩu!',
-    SUBMITTED: 'Xác thực tài khoản thành công!',
-    ROLE: 'Người dùng không đủ quyền hạn!',
-    UNAUTHORIZED: 'Bạn cần đăng nhập để sử dụng tính năng này!',
-    WRONG: 'Tài khoản hoặc mật khẩu không chính xác!',
+    NOT_FOUND: "Tài khoản không tồn tại!",
+    EXIST: "Tài khoản đã tồn tại!",
+    CONFIRM_PASSWORD: "Mật khẩu phải trùng nhau!",
+    WRONG_PASSWORD: "Sai mật khẩu!",
+    SUBMITTED: "Xác thực tài khoản thành công!",
+    ROLE: "Người dùng không đủ quyền hạn!",
+    UNAUTHORIZED: "Bạn cần đăng nhập để sử dụng tính năng này!",
+    WRONG: "Tài khoản hoặc mật khẩu không chính xác!",
   },
   TOKEN: {
-    EXPIRED: 'Yêu cầu đã hết hạn!',
+    EXPIRED: "Yêu cầu đã hết hạn!",
   },
 };
 
 export const POST_MESSAGE = {
-  DELETE: 'Xoá bài đăng thành công!',
-  NOT_FOUND: 'Bài đăng không tồn tại!',
+  DELETE: "Xoá bài đăng thành công!",
+  NOT_FOUND: "Bài đăng không tồn tại!",
 };
 
 export const TAG_MESSAGE = {
-  CONFLICT: 'Tag đã tồn tại!',
+  CONFLICT: "Tag đã tồn tại!",
 };
 
 export const ACCOUNT_MESSAGE = {
-  NOT_FOUND: 'Tài khoản không tồn tại!',
-  SOLD: 'Tài khoản đã bán!',
+  NOT_FOUND: "Tài khoản không tồn tại!",
+  SOLD: "Tài khoản đã bán!",
 };
 
 export const AUDIT_MESSAGE = {
-  STATUS_NOT_FOUND: 'Đơn nạp đã được hoàn thành!',
-  NOT_ENOUGH: 'Tài khoản không đủ tiền để thực hiện giao dịch!',
+  STATUS_NOT_FOUND: "Đơn nạp đã được hoàn thành!",
+  NOT_ENOUGH: "Tài khoản không đủ tiền để thực hiện giao dịch!",
 };
 
 export const HISTORY_MESSAGE = {
-  NOT_FOUND: 'Giao dịch chưa được thực hiện, vui lòng thử lại sau.',
+  NOT_FOUND: "Giao dịch chưa được thực hiện, vui lòng thử lại sau.",
 };
 
 export enum EXPIRES_IN_MINUTE {

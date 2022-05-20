@@ -157,7 +157,6 @@ export class AuthService {
       );
     }
     const user = await this.userRepository.findOne({ username });
-    // await this.userRepository.update({ username }, { password });
     const changedPasswordUser = await this.userRepository.save({
       ...user,
       password,

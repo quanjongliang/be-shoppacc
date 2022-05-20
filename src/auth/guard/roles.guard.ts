@@ -1,26 +1,25 @@
-import { AUTH_MESSAGE, ROLE_CONTEXT } from '@/core';
-import { UserWithOutPassword } from '@/entity';
-import { UserRepository } from '@/repository';
-import { HttpStatus } from '@nestjs/common';
+import { AUTH_MESSAGE, ROLE_CONTEXT } from "@/core";
+import { UserRepository } from "@/repository";
 import {
   Injectable,
   CanActivate,
   ExecutionContext,
   HttpException,
-} from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
+  HttpStatus,
+} from "@nestjs/common";
+import { Reflector } from "@nestjs/core";
 
 @Injectable()
 export class RolesGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
-    private userRepository: UserRepository,
+    private userRepository: UserRepository
   ) {}
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const roles = this.reflector.get<string[]>(
       ROLE_CONTEXT,
-      context.getHandler(),
+      context.getHandler()
     );
     if (!roles) {
       return true;

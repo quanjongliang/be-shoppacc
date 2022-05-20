@@ -19,7 +19,7 @@ import {
   QueryAuditDto,
   TYPE_TRANSFER,
 } from "../dto";
-import { Connection, UpdateResult } from "typeorm";
+import { Connection } from "typeorm";
 import { HistoryService } from "@/history";
 @Injectable()
 export class AuditService {
@@ -38,18 +38,20 @@ export class AuditService {
   ): Promise<[User, Audit, any, History]> {
     return this.connection
       .transaction(async () => {
-        const { auditInformation, username, password, ...newAudit } =
+        const { auditInformation, username, password, server, ...newAudit } =
           createAuditDto;
         const auditInformations =
           await this.auditInformationRepository.createAuditInformations(
             auditInformation
           );
+
         const audit = this.auditRepository.create({
           user,
           auditInformations,
           ...newAudit,
           username,
           password,
+          server,
         });
         const total = [...auditInformations].reduce(
           (totalAudit, { quantity, unitPrice }) =>
@@ -70,7 +72,7 @@ export class AuditService {
             user.username,
             username,
             password,
-            newAudit.server,
+            server,
             newAudit.UID,
             auditInformations,
             total,
@@ -161,6 +163,9 @@ export class AuditService {
         skip: offset,
         where,
         relations: [AUDIT_RELATION.USER, AUDIT_RELATION.AUDIT_INFORMATIONS],
+        order: {
+          createdAt: "DESC",
+        },
       }),
     ]);
     return {

@@ -14,6 +14,7 @@ import {
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { CreateAuditByAdminDto, CreateAuditDto, QueryAuditDto } from "../dto";
+import { CreateAuditGuard } from "../guard";
 import { GetAuditInterceptor } from "../interceptor";
 import { AuditService } from "../service";
 
@@ -25,6 +26,7 @@ export class AuditController {
   constructor(private auditService: AuditService) {}
 
   @Post()
+  @UseGuards(CreateAuditGuard)
   async createNewAudit(
     @CurrentUser() user: User,
     @Body() createAuditDto: CreateAuditDto
