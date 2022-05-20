@@ -26,7 +26,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { default as jwtDecode, default as jwt_decode } from "jwt-decode";
-import { UpdateResult } from "typeorm";
+import { Like, UpdateResult } from "typeorm";
 import {
   ChangePasswordDto,
   CreateUserDto,
@@ -215,7 +215,7 @@ export class AuthService {
       where["role"] = role;
     }
     if (username) {
-      where["username"] = username;
+      where["username"] = Like(`%${username}%`);
     }
     const [total, data] = await Promise.all([
       this.userRepository.count({ where }),

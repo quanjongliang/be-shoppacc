@@ -1,10 +1,10 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
-import { CreateUserDto, QueryUserDto } from '../dto';
-import { AuthService } from '../service';
-import { ApiTags } from '@nestjs/swagger';
+import { Controller, Get, Query } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { QueryUserDto } from "../dto";
+import { AuthService } from "../service";
 
-@Controller('hide-auth')
-@ApiTags('hide-auth')
+@Controller("hide-auth")
+@ApiTags("hide-auth")
 export class HideAuthController {
   constructor(private authService: AuthService) {}
 
@@ -18,7 +18,7 @@ export class HideAuthController {
     return this.authService.getAllUser();
   }
 
-  @Get('list-user')
+  @Get("list-user")
   async getAllUserList(@Query() queryUserDto: QueryUserDto) {
     return this.authService.getAllUserList(queryUserDto);
   }

@@ -8,7 +8,8 @@ import {
   Body,
   Get,
   Query,
-  Patch,UseInterceptors
+  Patch,
+  UseInterceptors,
   Param,
 } from "@nestjs/common";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
