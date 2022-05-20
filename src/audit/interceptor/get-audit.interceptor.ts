@@ -30,6 +30,7 @@ export class GetAuditInterceptor implements NestInterceptor {
           });
           return {
             ...result,
+            id,
             auditInformations: formattedAuditInformation,
             user: user.username,
           };

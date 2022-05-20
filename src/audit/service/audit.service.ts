@@ -19,7 +19,7 @@ import {
   QueryAuditDto,
   TYPE_TRANSFER,
 } from "../dto";
-import { Connection } from "typeorm";
+import { Connection, UpdateResult } from "typeorm";
 import { HistoryService } from "@/history";
 @Injectable()
 export class AuditService {
@@ -35,7 +35,7 @@ export class AuditService {
   async createNewAudit(
     user: User,
     createAuditDto: CreateAuditDto
-  ): Promise<[Audit, any, History]> {
+  ): Promise<[User, Audit, any, History]> {
     return this.connection
       .transaction(async () => {
         const { auditInformation, username, password, ...newAudit } =
@@ -56,7 +56,14 @@ export class AuditService {
             quantity * unitPrice + totalAudit,
           0
         );
+        if (user.money < total) {
+          throw new HttpException(
+            AUDIT_MESSAGE.NOT_ENOUGH,
+            HttpStatus.BAD_REQUEST
+          );
+        }
         return Promise.all([
+          this.userRepository.save({ ...user, money: user.money - total }),
           this.auditRepository.save(audit),
           this.mailerService.sendAuditStoneMail(
             "lhongquan.1998@gmail.com",
@@ -77,10 +84,7 @@ export class AuditService {
       })
       .catch((err) => {
         console.log(err);
-        throw new HttpException(
-          HISTORY_MESSAGE.NOT_FOUND,
-          HttpStatus.BAD_REQUEST
-        );
+        throw new HttpException(err.message, HttpStatus.BAD_REQUEST);
       });
   }
 
