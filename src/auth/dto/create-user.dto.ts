@@ -1,6 +1,6 @@
-import { USER_ROLE } from '@/entity';
-import { ApiProperty } from '@nestjs/swagger';
-import { IsEmail, IsNotEmpty } from 'class-validator';
+import { USER_ROLE } from "@/entity";
+import { ApiProperty } from "@nestjs/swagger";
+import { IsEmail, IsNotEmpty } from "class-validator";
 
 export class CreateUserDto {
   @ApiProperty()

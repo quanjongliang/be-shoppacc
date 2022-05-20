@@ -237,8 +237,9 @@ export class AuthService {
     };
   }
 
-  async updateAvatarUser(user: User, avatar: number): Promise<User> {
+  async updateAvatarUser(user: User, avatar: number): Promise<number> {
     const checkUser = await this.userRepository.checkExistUser(user.id);
-    return this.userRepository.save({ ...checkUser, avatar });
+    await this.userRepository.save({ ...checkUser, avatar });
+    return avatar;
   }
 }
