@@ -51,22 +51,11 @@ export class AuditService {
           username,
           password,
         });
-        const savedAudit = await this.auditRepository.save(audit);
-        await this.mailerService.sendAuditStoneMail(
-          "lhongquan.1998@gmail.com",
-          user.username,
-          username,
-          password,
-          newAudit.server,
-          newAudit.UID,
-          auditInformations,
-          savedAudit.total,
-          newAudit.note
+        const total = [...auditInformations].reduce(
+          (totalAudit, { quantity, unitPrice }) =>
+            quantity * unitPrice + totalAudit,
+          0
         );
-        await this.historyService.createHistoryCreateAudit({
-          UID: newAudit.UID,
-          username: user.username,
-        });
         return Promise.all([
           this.auditRepository.save(audit),
           this.mailerService.sendAuditStoneMail(
@@ -77,7 +66,7 @@ export class AuditService {
             newAudit.server,
             newAudit.UID,
             auditInformations,
-            savedAudit.total,
+            total,
             newAudit.note
           ),
           this.historyService.createHistoryCreateAudit({

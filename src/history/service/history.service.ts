@@ -1,9 +1,9 @@
-import { BaseQueryResponse, DEFAULT_CONFIG, HISTORY_MESSAGE } from '@/core';
-import { History, HISTORY_TYPE } from '@/entity';
-import { HistoryRepository } from '@/repository';
-import { HttpStatus } from '@nestjs/common';
-import { HttpException } from '@nestjs/common';
-import { Injectable } from '@nestjs/common';
+import { BaseQueryResponse, DEFAULT_CONFIG, HISTORY_MESSAGE } from "@/core";
+import { History, HISTORY_TYPE } from "@/entity";
+import { HistoryRepository } from "@/repository";
+import { HttpStatus } from "@nestjs/common";
+import { HttpException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import {
   CreateAmountTransferredHistoryDto,
   CreateBuyAccountHistoryDto,
@@ -11,83 +11,83 @@ import {
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   QueryHistoryDto,
-} from '../dto';
+} from "../dto";
 import {
   getHistoryAmountTransferredMessage,
   getHistoryBuyAccountMessage,
   getHistoryChangeRoleMessage,
   getHistoryConfirmMessage,
   getHistoryCreateAuditMessage,
-} from '../util';
+} from "../util";
 
 @Injectable()
 export class HistoryService {
   constructor(private historyRepository: HistoryRepository) {}
 
   async createHistoryAmountTransferred(
-    createHistory: CreateAmountTransferredHistoryDto,
+    createHistory: CreateAmountTransferredHistoryDto
   ): Promise<History> {
     const historyMessage = getHistoryAmountTransferredMessage(createHistory);
     return this.historyRepository.save(
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.AMOUNT_TRANSFERRED,
-      }),
+      })
     );
   }
   async createHistoryChangeStatusAudit(
-    createHistory: CreateConfirmHistoryDto,
+    createHistory: CreateConfirmHistoryDto
   ): Promise<History> {
     const historyMessage = getHistoryConfirmMessage(createHistory);
     return this.historyRepository.save(
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CHANGE_STATUS_AUDIT,
-      }),
+      })
     );
   }
   async createHistoryCreateAudit(
-    createHistory: CreateCreateAuditHistoryDto,
+    createHistory: CreateCreateAuditHistoryDto
   ): Promise<History> {
     const historyMessage = getHistoryCreateAuditMessage(createHistory);
     return this.historyRepository.save(
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CREATE_AUDIT,
-      }),
+      })
     );
   }
   async createHistoryChangeRole(
-    createHistory: CreateChangeRoleHistoryDto,
+    createHistory: CreateChangeRoleHistoryDto
   ): Promise<History> {
     const historyMessage = getHistoryChangeRoleMessage(createHistory);
     return this.historyRepository.save(
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CHANGE_ROLE,
-      }),
+      })
     );
   }
 
   async createHistoryBuyAccount(
-    createHistory: CreateBuyAccountHistoryDto,
+    createHistory: CreateBuyAccountHistoryDto
   ): Promise<History> {
     const historyMessage = getHistoryBuyAccountMessage(createHistory);
     return this.historyRepository.save(
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.BUY_ACCOUNT_BY_USER,
-      }),
+      })
     );
   }
 
   async queryHistory(
-    queryHistory: QueryHistoryDto,
+    queryHistory: QueryHistoryDto
   ): Promise<BaseQueryResponse<History>> {
     const { offset = DEFAULT_CONFIG.OFFSET, limit = DEFAULT_CONFIG.LIMIT } =
       queryHistory;
     const findHistoryQuery = this.historyRepository
-      .createQueryBuilder('history')
+      .createQueryBuilder("history")
       .offset(offset)
       .limit(limit);
     // const total = await this.historyRepository.count();
