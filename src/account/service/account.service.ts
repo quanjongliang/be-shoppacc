@@ -3,34 +3,16 @@ import {
   ACCOUNT_MESSAGE,
   AUDIT_MESSAGE,
   BaseQueryResponse,
-  DEFAULT_CONFIG,
   POST_CONFIG,
-  QUILL_LIANG_EMAIL,
   TIM_DANG_EMAIL,
 } from "@/core";
-import {
-  Account,
-  ACCOUNT_RELATION,
-  ACCOUNT_STATUS,
-  TAG_TYPE,
-  User,
-} from "@/entity";
+import { Account, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService } from "@/mailer";
-import {
-  AccountRepository,
-  DriverRepository,
-  TagRepository,
-  UserRepository,
-} from "@/repository";
-import { Injectable, HttpException, HttpStatus } from "@nestjs/common";
+import { AccountRepository, TagRepository, UserRepository } from "@/repository";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection, In } from "typeorm";
-import {
-  CreateAccountDto,
-  QueryAccountByTagDto,
-  QueryAccountDto,
-  UpdateAccountDto,
-} from "../dto";
+import { CreateAccountDto, QueryAccountDto } from "../dto";
 
 @Injectable()
 export class AccountService {
@@ -83,7 +65,9 @@ export class AccountService {
         user,
         cloundinary,
         imageUrl,
-        server: serverTag.title,
+        server: serverTag.slug,
+        character: charTag.map(({ slug }) => slug).join(","),
+        weapon: weaponTag.map(({ slug }) => slug).join(","),
         tags: [...charTag, ...weaponTag, serverTag],
       });
       return this.accountRepository.save(newAccount);
@@ -136,44 +120,12 @@ export class AccountService {
       limit = POST_CONFIG.LIMIT,
       weapon = "",
       server = "",
-      tags = "",
+      character = "",
     } = queryAccountDto;
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
       .leftJoinAndSelect("account.user", "user")
-      .leftJoinAndSelect("account.tags", "tag");
-    // if (weapon) {
-    //   weapon.split(",").forEach((data) => {
-    //     findWeaponQuery.andWhere("account.weapon ILIKE :data", {
-    //       data: `%${data}%`,
-    //     });
-    //   });
-    // }
-    const [total, data] = await Promise.all([
-      findWeaponQuery.getCount(),
-      findWeaponQuery.offset(offset).limit(limit).getMany(),
-    ]);
-    // const total = await findWeaponQuery.getCount();
-    // const data = await findWeaponQuery.offset(offset).limit(limit).getMany();
-    return {
-      total,
-      data,
-    };
-  }
-
-  async queryAccountByTag(
-    queryAccountTag: QueryAccountByTagDto
-  ): Promise<Account[]> {
-    const {
-      server = "",
-      char = "",
-      weapon = "",
-      limit = DEFAULT_CONFIG.LIMIT,
-      offset = DEFAULT_CONFIG.OFFSET,
-    } = queryAccountTag;
-    const queryAccount = this.accountRepository
-      .createQueryBuilder("account")
       .leftJoinAndSelect("account.tags", "tag")
       .loadRelationCountAndMap(
         "account.countCharacter",
@@ -187,8 +139,34 @@ export class AccountService {
         "tag",
         (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.WEAPON })
       );
+    if (weapon) {
+      weapon.split(",").forEach((data) => {
+        findWeaponQuery.andWhere("account.weapon ILIKE :data", {
+          data: `%${data}%`,
+        });
+      });
+    }
+    if (server) {
+      findWeaponQuery.andWhere("account.server ILIKE :data", {
+        data: `%${server}%`,
+      });
+    }
+    if (character) {
+      character.split(",").forEach((data) => {
+        findWeaponQuery.andWhere("account.character ILIKE :data", {
+          data: `%${data}%`,
+        });
+      });
+    }
+    const [total, data] = await Promise.all([
+      findWeaponQuery.getCount(),
+      findWeaponQuery.offset(offset).limit(limit).getMany(),
+    ]);
 
-    return queryAccount.limit(limit).offset(offset).getMany();
+    return {
+      total,
+      data,
+    };
   }
 
   async removeAccount(id: string) {

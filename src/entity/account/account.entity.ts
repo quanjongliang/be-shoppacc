@@ -69,4 +69,9 @@ export class Account extends BaseColumn {
 
   @ManyToMany(() => Tag, (tag) => tag.accounts)
   tags: Tag[];
+
+  @Column({ type: "text", nullable: true })
+  character: string;
+  @Column({ type: "text", nullable: true })
+  weapon: string;
 }
