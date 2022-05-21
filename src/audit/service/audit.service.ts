@@ -5,6 +5,7 @@ import {
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
   QUILL_LIANG_EMAIL,
+  SHOP_EMAIL,
 } from "@/core";
 import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from "@/entity";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
@@ -69,7 +70,7 @@ export class AuditService {
           this.userRepository.save({ ...user, money: user.money - total }),
           this.auditRepository.save(audit),
           this.mailerService.sendAuditStoneMail({
-            to: QUILL_LIANG_EMAIL,
+            to: SHOP_EMAIL,
             username: user.username,
             gameUsername: username,
             password,
