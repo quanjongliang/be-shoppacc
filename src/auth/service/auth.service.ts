@@ -83,7 +83,7 @@ export class AuthService {
 
     const expiredTime = getExpiredTime(EXPIRES_IN_MINUTE.THIRTY_MINUTE);
     const token = this.jwtService.sign({ rawNewUser, expiredTime });
-    return this.mailerService.sendSubmitMail(email, username, token);
+    return this.mailerService.sendSubmitMail({ to: email, username, token });
   }
 
   async submitCreateNewUser(token: string): Promise<string> {
@@ -103,7 +103,10 @@ export class AuthService {
       ...rawNewUser,
       confirmedEmail: true,
     });
-    await this.mailerService.sendWelcomeMail(newUser.email, newUser.username);
+    await this.mailerService.sendWelcomeMail({
+      to: newUser.email,
+      username: newUser.username,
+    });
     return this.login(newUser);
   }
 
@@ -140,11 +143,11 @@ export class AuthService {
       expiredTime,
     };
     const tokenResetPassword = this.jwtService.sign(payload);
-    return this.mailerService.sendResetPasswordMail(
-      user.email,
-      tokenResetPassword,
-      username
-    );
+    return this.mailerService.sendResetPasswordMail({
+      to: user.email,
+      token: tokenResetPassword,
+      username,
+    });
   }
 
   async verifyResetPassword(tokenResetPassword: string) {

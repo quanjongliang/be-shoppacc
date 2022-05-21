@@ -8,7 +8,7 @@ import {
 } from "@/core";
 import { Account, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
 import { HistoryService } from "@/history";
-import { MailerService } from "@/mailer";
+import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection, In } from "typeorm";
@@ -201,11 +201,20 @@ export class AccountService {
       await Promise.all([
         this.userRepository.save(user),
         this.accountRepository.save(account),
-        this.mailerService.sendBuyAccountFromUser(
-          TIM_DANG_EMAIL,
+        this.mailerService.sendBuyAccountFromUser({
+          to: TIM_DANG_EMAIL,
           account,
-          user.username,
-          listImage
+          username: user.username,
+          listImage,
+        }),
+        this.mailerService.sendBuyAccountFromUser(
+          {
+            to: user.email,
+            account,
+            username: user.username,
+            listImage,
+          },
+          MAILER_TEMPLATE_ENUM.BUY_ACCOUNT_TO_USER
         ),
         this.historyService.createHistoryBuyAccount({
           account,

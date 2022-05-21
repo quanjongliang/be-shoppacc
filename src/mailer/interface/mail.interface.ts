@@ -1,35 +1,44 @@
-import { AuditInformationDto } from '@/audit';
-import { Account, Audit, AuditInformation } from '@/entity';
-import { TemplateOptions } from 'nodemailer-express-handlebars';
+import { Account, AuditInformation } from "@/entity";
+import { TemplateOptions } from "nodemailer-express-handlebars";
 
 export enum MAILER_TEMPLATE_ENUM {
-  WELCOME = 'WELCOME',
-  RESET_PASSWORD = 'RESET_PASSWORD',
-  SUBMIT_USER = 'SUBMIT_USER',
-  AUDIT_STONE = 'AUDIT_STONE',
-  BUY_ACCOUNT_BY_USER = 'BUY_ACCOUNT_BY_USER',
+  WELCOME = "WELCOME",
+  RESET_PASSWORD = "RESET_PASSWORD",
+  SUBMIT_USER = "SUBMIT_USER",
+  AUDIT_STONE = "AUDIT_STONE",
+  AUDIT_STONE_TO_USER = "AUDIT_STONE_TO_USER",
+  BUY_ACCOUNT_BY_USER = "BUY_ACCOUNT_BY_USER",
+  BUY_ACCOUNT_TO_USER = "BUY_ACCOUNT_TO_USER",
 }
 
 export const MAILER_TEMPLATE: MailerTemplateInterface = {
   WELCOME: {
-    TEMPLATE: 'welcome-mail',
-    SUBJECT: 'Welcome!',
+    TEMPLATE: "welcome-mail",
+    SUBJECT: "Welcome!",
   },
   RESET_PASSWORD: {
-    TEMPLATE: 'reset-password-mail',
-    SUBJECT: 'Reset password!',
+    TEMPLATE: "reset-password-mail",
+    SUBJECT: "Reset password!",
   },
   SUBMIT_USER: {
-    TEMPLATE: 'submit-user-mail',
-    SUBJECT: 'Submit user!',
+    TEMPLATE: "submit-user-mail",
+    SUBJECT: "Submit user!",
   },
   AUDIT_STONE: {
-    TEMPLATE: 'request-stone-mail',
-    SUBJECT: 'Request Stone',
+    TEMPLATE: "request-stone-mail",
+    SUBJECT: "Request Stone",
+  },
+  AUDIT_STONE_TO_USER: {
+    TEMPLATE: "request-stone-mail-to-user",
+    SUBJECT: "Request Stone to user",
   },
   BUY_ACCOUNT_BY_USER: {
-    TEMPLATE: 'buy-account-by-user',
-    SUBJECT: 'Buy account',
+    TEMPLATE: "buy-account-by-user",
+    SUBJECT: "Buy account by user",
+  },
+  BUY_ACCOUNT_TO_USER: {
+    TEMPLATE: "buy-account-to-user",
+    SUBJECT: "Buy account to user",
   },
 };
 
@@ -65,7 +74,7 @@ export interface RequestStoneMailContext {
   UID: string;
   note: string;
   total: number;
-  auditInformation: AuditInformation[];
+  auditInformations: AuditInformation[];
 }
 
 export interface ByAccountByUserContext {

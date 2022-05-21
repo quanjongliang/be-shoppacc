@@ -1,11 +1,16 @@
-import { AuditInformationDto } from '@/audit';
-import { MAILER_CONFIG, NAME_APP_COMPANY } from '@/core';
-import { Account, Audit, AuditInformation } from '@/entity';
-import { Injectable } from '@nestjs/common';
-import { createTransport, Transporter } from 'nodemailer';
-import * as hbs from 'nodemailer-express-handlebars';
-import { MAILER_TEMPLATE_ENUM } from '../interface';
-import { getMailOptions } from '../util';
+import { MAILER_CONFIG, NAME_APP_COMPANY } from "@/core";
+import { Account, AuditInformation } from "@/entity";
+import { Injectable } from "@nestjs/common";
+import { createTransport, Transporter } from "nodemailer";
+import * as hbs from "nodemailer-express-handlebars";
+import {
+  MAILER_TEMPLATE_ENUM,
+  SendAuditStoneMailInterface,
+  SendBuyAccountMailInterface,
+  SendTokenMailInterface,
+  SendWelcomeMailInterface,
+} from "../interface";
+import { getMailOptions } from "../util";
 
 export const handlerbarOptions: hbs.NodemailerExpressHandlebarsOptions = {
   viewEngine: {
@@ -28,10 +33,11 @@ export class MailerService {
         pass: MAILER_CONFIG.PASS,
       },
     });
-    this.transporter.use('compile', hbs(handlerbarOptions));
+    this.transporter.use("compile", hbs(handlerbarOptions));
   }
 
-  async sendWelcomeMail(to: string, username: string) {
+  async sendWelcomeMail(information: SendWelcomeMailInterface) {
+    const { to, username } = information;
     const mailOptions = getMailOptions(to, MAILER_TEMPLATE_ENUM.WELCOME, {
       username,
       company: NAME_APP_COMPANY,
@@ -39,16 +45,18 @@ export class MailerService {
     return this.transporter.sendMail(mailOptions);
   }
 
-  async sendResetPasswordMail(to: string, token: string, username: string) {
+  async sendResetPasswordMail(information: SendTokenMailInterface) {
+    const { to, username, token } = information;
     const mailOptions = getMailOptions(
       to,
       MAILER_TEMPLATE_ENUM.RESET_PASSWORD,
-      { username, token, company: NAME_APP_COMPANY },
+      { username, token, company: NAME_APP_COMPANY }
     );
     return this.transporter.sendMail(mailOptions);
   }
 
-  async sendSubmitMail(to: string, username: string, token: string) {
+  async sendSubmitMail(information: SendTokenMailInterface) {
+    const { to, username, token } = information;
     const mailOptions = getMailOptions(to, MAILER_TEMPLATE_ENUM.SUBMIT_USER, {
       username,
       token,
@@ -58,21 +66,25 @@ export class MailerService {
   }
 
   async sendAuditStoneMail(
-    to: string,
-    username: string,
-    gameUsername: string,
-    password: string,
-    server: string,
-    UID: string,
-    auditInformation: AuditInformation[],
-    total: number,
-    note = '',
+    information: SendAuditStoneMailInterface,
+    template = MAILER_TEMPLATE_ENUM.AUDIT_STONE
   ) {
-    const mailOptions = getMailOptions(to, MAILER_TEMPLATE_ENUM.AUDIT_STONE, {
+    const {
+      to,
       username,
       gameUsername,
       password,
-      auditInformation,
+      auditInformations,
+      server,
+      UID,
+      total,
+      note = "",
+    } = information;
+    const mailOptions = getMailOptions(to, template, {
+      username,
+      gameUsername,
+      password,
+      auditInformations,
       server,
       UID,
       note,
@@ -82,20 +94,15 @@ export class MailerService {
   }
 
   async sendBuyAccountFromUser(
-    to: string,
-    account: Account,
-    username: string,
-    listImage: string[],
+    information: SendBuyAccountMailInterface,
+    template = MAILER_TEMPLATE_ENUM.BUY_ACCOUNT_BY_USER
   ) {
-    const mailOptions = getMailOptions(
-      to,
-      MAILER_TEMPLATE_ENUM.BUY_ACCOUNT_BY_USER,
-      {
-        username,
-        account,
-        listImage,
-      },
-    );
+    const { to, username, account, listImage } = information;
+    const mailOptions = getMailOptions(to, template, {
+      username,
+      account,
+      listImage,
+    });
     return this.transporter.sendMail(mailOptions);
   }
 }

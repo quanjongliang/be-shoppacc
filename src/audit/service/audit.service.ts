@@ -4,9 +4,10 @@ import {
   BaseQueryResponse,
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
+  QUILL_LIANG_EMAIL,
 } from "@/core";
 import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from "@/entity";
-import { MailerService } from "@/mailer";
+import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import {
   AuditInformationRepository,
   AuditRepository,
@@ -35,7 +36,7 @@ export class AuditService {
   async createNewAudit(
     user: User,
     createAuditDto: CreateAuditDto
-  ): Promise<[User, Audit, any, History]> {
+  ): Promise<[User, Audit, any, any, History]> {
     return this.connection
       .transaction(async () => {
         const { auditInformation, username, password, server, ...newAudit } =
@@ -67,16 +68,30 @@ export class AuditService {
         return Promise.all([
           this.userRepository.save({ ...user, money: user.money - total }),
           this.auditRepository.save(audit),
-          this.mailerService.sendAuditStoneMail(
-            "lhongquan.1998@gmail.com",
-            user.username,
-            username,
+          this.mailerService.sendAuditStoneMail({
+            to: QUILL_LIANG_EMAIL,
+            username: user.username,
+            gameUsername: username,
             password,
             server,
-            newAudit.UID,
+            UID: newAudit.UID,
             auditInformations,
             total,
-            newAudit.note
+            note: newAudit.note,
+          }),
+          this.mailerService.sendAuditStoneMail(
+            {
+              to: user.email,
+              username: user.username,
+              gameUsername: username,
+              password,
+              server,
+              UID: newAudit.UID,
+              auditInformations,
+              total,
+              note: newAudit.note,
+            },
+            MAILER_TEMPLATE_ENUM.AUDIT_STONE_TO_USER
           ),
           this.historyService.createHistoryCreateAudit({
             UID: newAudit.UID,
