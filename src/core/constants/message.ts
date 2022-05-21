@@ -37,6 +37,7 @@ export const ACCOUNT_MESSAGE = {
 export const AUDIT_MESSAGE = {
   STATUS_NOT_FOUND: "Đơn nạp đã được hoàn thành!",
   NOT_ENOUGH: "Tài khoản không đủ tiền để thực hiện giao dịch!",
+  NOT_EMPTY: "Mục này không được để trống!",
 };
 
 export const HISTORY_MESSAGE = {

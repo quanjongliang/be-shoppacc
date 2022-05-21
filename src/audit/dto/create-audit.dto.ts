@@ -1,5 +1,7 @@
+import { AUDIT_MESSAGE } from "@/core";
 import { AUDIT_TYPE } from "@/entity";
 import { ApiProperty } from "@nestjs/swagger";
+import { IsNotEmpty } from "class-validator";
 
 export enum TYPE_TRANSFER {
   PLUS = "PLUS",
@@ -7,20 +9,28 @@ export enum TYPE_TRANSFER {
 }
 export class CreateAuditDto {
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   UID: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   server: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   username: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   password: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   accountName: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   phone: string;
   @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   note: string;
   @ApiProperty({ type: () => [AuditInformationDto] })
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   auditInformation: AuditInformationDto[];
 }
 
