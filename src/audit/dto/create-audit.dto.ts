@@ -27,7 +27,6 @@ export class CreateAuditDto {
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   phone: string;
   @ApiProperty()
-  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   note: string;
   @ApiProperty({ type: () => [AuditInformationDto] })
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
