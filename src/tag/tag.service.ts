@@ -15,7 +15,7 @@ export class TagService {
     const checkTag = await this.tagRepository.findOne({ title });
     if (checkTag)
       throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
-      const slug = changeToSlug(title)
+    const slug = changeToSlug(title)
     return this.tagRepository.save({ ...createTagDto,slug });
   }
 
