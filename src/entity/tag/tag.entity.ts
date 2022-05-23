@@ -32,9 +32,9 @@ export class Tag extends BaseColumn {
   @JoinTable()
   accounts: Account[];
 
-  @BeforeInsert()
-  @BeforeUpdate()
-  insertSlug(){
-    this.slug = changeToSlug(this.title)
-  }
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // insertSlug(){
+  //   this.slug = changeToSlug(this.title)
+  // }
 }

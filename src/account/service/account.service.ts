@@ -44,13 +44,13 @@ export class AccountService {
       const [charTag, weaponTag, serverTag] = await Promise.all([
         this.tagRepository.find({
           where: {
-            title: In(char),
+            title: In(char.split(',')),
             type: TAG_TYPE.CHARACTER,
           },
         }),
         this.tagRepository.find({
           where: {
-            title: In(weapon),
+            title: In(weapon.split(',')),
             type: TAG_TYPE.WEAPON,
           },
         }),

@@ -16,10 +16,10 @@ export class CreateAccountDto {
   nguyenThach: number;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
-  char: string[];
+  char: string;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
-  weapon: string[];
+  weapon: string;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   server: string;

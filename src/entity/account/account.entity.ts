@@ -88,10 +88,10 @@ export class Account extends BaseColumn {
   @Column({ type: "text", nullable: true })
   weapon: string;
 
-  @BeforeInsert()
-  @BeforeUpdate()
-  updateTagString() {
-      this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
-      this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
-  }
+  // @BeforeInsert()
+  // @BeforeUpdate()
+  // updateTagString() {
+  //     this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
+  //     this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
+  // }
 }
