@@ -1,5 +1,6 @@
 import { TAG_MESSAGE } from "@/core";
 import { Tag } from "@/entity";
+import { changeToSlug } from "@/post";
 import { TagRepository } from "@/repository";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { UpdateResult } from "typeorm";
@@ -14,7 +15,8 @@ export class TagService {
     const checkTag = await this.tagRepository.findOne({ title });
     if (checkTag)
       throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
-    return this.tagRepository.save({ ...createTagDto });
+      const slug = changeToSlug(title)
+    return this.tagRepository.save({ ...createTagDto,slug });
   }
 
   async updateTag(
@@ -27,7 +29,8 @@ export class TagService {
       if (checkTag)
         throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
     }
-    return this.tagRepository.update({ id }, { ...updateTagDto });
+    const slug = changeToSlug(title)
+    return this.tagRepository.update({ id }, { ...updateTagDto,slug });
   }
 
   async getAll(query: QueryTagDto): Promise<Tag[]> {

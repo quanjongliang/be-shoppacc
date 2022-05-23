@@ -5,7 +5,5 @@ export class UpdateTagDto {
   @ApiProperty()
   title?: string;
   @ApiProperty()
-  slug?: string;
-  @ApiProperty()
   type?: TAG_TYPE;
 }
