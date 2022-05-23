@@ -10,8 +10,7 @@ import { Account, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
-import { ConflictException } from "@nestjs/common";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { ConflictException,HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection, In } from "typeorm";
 import { CreateAccountDto, QueryAccountDto } from "../dto";
 
@@ -62,8 +61,7 @@ export class AccountService {
         }),
       ]);
       const imageUrl = cloundinary
-        ? JSON.stringify(cloundinary.map((d) => d.url || d.secure_url))
-        : "";
+        ? JSON.stringify(cloundinary[0]) : ''
       const newAccount = this.accountRepository.create({
         ar,
         ...createAccountDto,

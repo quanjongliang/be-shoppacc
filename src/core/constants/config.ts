@@ -90,6 +90,6 @@ export const QUILL_LIANG_EMAIL = "lhongquan.1998@gmail.com";
 
 export const SHOP_EMAIL = "shoppacc.9999@gmail.com";
 
-export const LIMIT_FILE_BANNER = 5;
+export const LIMIT_FILE_BANNER = 3;
 
-export const LIMIT_FILE_ACCOUNT = 3;
+export const LIMIT_FILE_ACCOUNT = 5;
