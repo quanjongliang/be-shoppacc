@@ -13,6 +13,9 @@ export class CreateAccountDto {
   tinhHuy: number;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
+  moonPack: number;
+  @ApiProperty()
+  @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   nguyenThach: number;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })

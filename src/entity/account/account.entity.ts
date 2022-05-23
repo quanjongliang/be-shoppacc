@@ -43,7 +43,8 @@ export class Account extends BaseColumn {
 
   @Column({ nullable: true })
   nguyenThach: number;
-
+  @Column({ nullable: true })
+  moonPack: number;
   @Column({ default: 0 })
   oldPrice: number;
 
