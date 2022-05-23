@@ -6,13 +6,12 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  UseGuards,Query
 } from "@nestjs/common";
 import { CreateTagDto, QueryTagDto, UpdateTagDto } from "./dto";
 import { TagService } from "./tag.service";
 import { ApiTags, ApiBearerAuth, ApiParam } from "@nestjs/swagger";
 import { MOD_ADMIN_ROLE } from "@/core";
-import { Query } from "@nestjs/common";
 
 @Controller("tag")
 @ApiTags("tag")

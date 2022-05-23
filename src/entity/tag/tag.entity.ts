@@ -1,4 +1,5 @@
-import { Column, Entity, JoinTable, ManyToMany } from 'typeorm';
+import { changeToSlug } from '@/post';
+import { BeforeInsert, BeforeUpdate, Column, Entity, JoinTable, ManyToMany } from 'typeorm';
 import { Account } from '../account';
 import { BaseColumn } from '../base';
 
@@ -30,4 +31,10 @@ export class Tag extends BaseColumn {
   @ManyToMany(() => Account, (account) => account.tags, { cascade: true })
   @JoinTable()
   accounts: Account[];
+
+  @BeforeInsert()
+  @BeforeUpdate()
+  insertSlug(){
+    this.slug = changeToSlug(this.title)
+  }
 }
