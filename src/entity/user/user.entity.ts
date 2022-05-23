@@ -1,14 +1,14 @@
-import { Exclude } from 'class-transformer';
-import { Entity, Column, OneToMany, BeforeInsert } from 'typeorm';
-import { Account } from '../account';
-import { Audit } from '../audit';
-import { BaseColumn } from '../base';
-import { Post } from '../post';
+import { Exclude } from "class-transformer";
+import { Entity, Column, OneToMany, BeforeInsert } from "typeorm";
+import { Account } from "../account";
+import { Audit } from "../audit";
+import { BaseColumn } from "../base";
+import { Post } from "../post";
 
 export enum USER_ROLE {
-  ADMIN = 'ADMIN',
-  MOD = 'MOD',
-  USER = 'USER',
+  ADMIN = "ADMIN",
+  MOD = "MOD",
+  USER = "USER",
 }
 
 export interface PayloadTokenUser {
@@ -21,16 +21,16 @@ export interface PayloadTokenUser {
 }
 
 export enum USER_RELATION {
-  POSTS = 'posts',
-  ACCOUNTS = 'accounts',
-  AUDITS = 'audits',
+  POSTS = "posts",
+  ACCOUNTS = "accounts",
+  AUDITS = "audits",
 }
 
-export type UserWithOutPassword = Omit<User, 'password'>;
+export type UserWithOutPassword = Omit<User, "password">;
 
-export const USER_TABLE_NAME = 'user';
+export const USER_TABLE_NAME = "user";
 
-@Entity('user')
+@Entity("user")
 export class User extends BaseColumn {
   @Column({ unique: true })
   username: string;
@@ -63,7 +63,7 @@ export class User extends BaseColumn {
   @Column({ nullable: true, default: 1 })
   avatar: number;
 
-  @Column({ nullable: true, default: 0, type: 'bigint' })
+  @Column({ nullable: true, default: 0, type: "bigint" })
   money: number;
 
   @Column({ nullable: true })

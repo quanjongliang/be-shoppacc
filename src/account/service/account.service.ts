@@ -10,6 +10,7 @@ import { Account, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
+import { ConflictException } from "@nestjs/common";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection, In } from "typeorm";
 import { CreateAccountDto, QueryAccountDto } from "../dto";
@@ -32,7 +33,11 @@ export class AccountService {
     files: Array<Express.Multer.File>
   ): Promise<Account> {
     return this.connection.transaction(async () => {
-      const { ar, char, weapon, server } = createAccountDto;
+      const { code, ar, char, weapon, server } = createAccountDto;
+      const checkCodeAccount = await this.accountRepository.findOne({ code });
+      if (checkCodeAccount) {
+        throw new ConflictException(ACCOUNT_MESSAGE.CODE);
+      }
       const cloundinary = files
         ? await this.cloundinaryService.uploadMultiFilesAccount(files)
         : null;
@@ -65,6 +70,7 @@ export class AccountService {
         user,
         cloundinary,
         imageUrl,
+        code,
         server: serverTag.slug,
         character: charTag.map(({ slug }) => slug).join(","),
         weapon: weaponTag.map(({ slug }) => slug).join(","),
@@ -188,6 +194,7 @@ export class AccountService {
       }
       account.status = ACCOUNT_STATUS.SOLD;
       account.soldAt = new Date();
+      account.boughtBy = user;
       if (user.money < account.newPrice) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,

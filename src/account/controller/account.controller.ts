@@ -1,5 +1,5 @@
 import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
-import { MOD_ADMIN_ROLE } from "@/core";
+import { LIMIT_FILE_ACCOUNT, MOD_ADMIN_ROLE } from "@/core";
 import { User } from "@/entity";
 import {
   Body,
@@ -29,7 +29,7 @@ export class AccountController {
   @Roles(...MOD_ADMIN_ROLE)
   @Post("create")
   @UseInterceptors(
-    FilesInterceptor("files", 3, {
+    FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
       storage: diskStorage({
         destination: "./uploads",
         filename: (_req, file, cb) => {

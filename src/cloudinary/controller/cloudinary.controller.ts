@@ -12,7 +12,7 @@ import { extname } from "path";
 import { CloundinaryService } from "../service";
 import { v4 as uuid } from "uuid";
 import { JwtAuthGuard, Roles, RolesGuard } from "@/auth";
-import { MOD_ADMIN_ROLE } from "@/core";
+import { LIMIT_FILE_BANNER, MOD_ADMIN_ROLE } from "@/core";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 
 @ApiTags("cloundinary")
@@ -30,7 +30,7 @@ export class CloundinaryController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(...MOD_ADMIN_ROLE)
   @UseInterceptors(
-    FilesInterceptor("files", 3, {
+    FilesInterceptor("files", LIMIT_FILE_BANNER, {
       storage: diskStorage({
         destination: "./uploads",
         filename: (_req, file, cb) => {
