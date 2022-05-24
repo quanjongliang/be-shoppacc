@@ -58,7 +58,7 @@ export class CloundinaryService {
     files: Array<Express.Multer.File>
   ): Promise<Cloundinary[]> {
     const promiseUploadFile = files.map((file, index) =>
-      this.uploadFile(file, true, index + 1)
+      this.uploadFile(file, false, index + 1)
     );
     return Promise.all([...promiseUploadFile]);
   }
