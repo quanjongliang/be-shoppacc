@@ -6,13 +6,28 @@ import {
   POST_CONFIG,
   TIM_DANG_EMAIL,
 } from "@/core";
-import { Account, ACCOUNT_RELATION, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
+import {
+  Account,
+  ACCOUNT_RELATION,
+  ACCOUNT_STATUS,
+  TAG_TYPE,
+  User,
+} from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
-import { ConflictException,HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import {
+  ConflictException,
+  HttpException,
+  HttpStatus,
+  Injectable,
+} from "@nestjs/common";
 import { Connection, In } from "typeorm";
-import { CreateAccountDto, QueryAccountDto, QueryDetailsAccountDto } from "../dto";
+import {
+  CreateAccountDto,
+  QueryAccountDto,
+  QueryDetailsAccountDto,
+} from "../dto";
 
 @Injectable()
 export class AccountService {
@@ -43,13 +58,13 @@ export class AccountService {
       const [charTag, weaponTag, serverTag] = await Promise.all([
         this.tagRepository.find({
           where: {
-            title: In(char.split(',')),
+            title: In(char.split(",")),
             type: TAG_TYPE.CHARACTER,
           },
         }),
         this.tagRepository.find({
           where: {
-            title: In(weapon.split(',')),
+            title: In(weapon.split(",")),
             type: TAG_TYPE.WEAPON,
           },
         }),
@@ -60,8 +75,7 @@ export class AccountService {
           },
         }),
       ]);
-      const imageUrl = cloundinary
-        ? JSON.stringify(cloundinary[0]) : ''
+      const imageUrl = cloundinary ? JSON.stringify(cloundinary[0]) : "";
       const newAccount = this.accountRepository.create({
         ar,
         ...createAccountDto,
@@ -125,13 +139,14 @@ export class AccountService {
       weapon = "",
       server = "",
       character = "",
-      sort
+      sort,
     } = queryAccountDto;
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
       .leftJoinAndSelect("account.user", "user")
       .leftJoinAndSelect("account.tags", "tag")
+      .where("account.isDeleted = false")
       .loadRelationCountAndMap(
         "account.countCharacter",
         "account.tags",
@@ -163,10 +178,10 @@ export class AccountService {
         });
       });
     }
-    if(sort){
-      findWeaponQuery.orderBy('account.newPrice',sort === 0 ? "ASC" : "DESC")
+    if (sort) {
+      findWeaponQuery.orderBy("account.newPrice", sort === 0 ? "ASC" : "DESC");
     } else {
-      findWeaponQuery.orderBy('account.createdAt',"ASC")
+      findWeaponQuery.orderBy("account.createdAt", "ASC");
     }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
@@ -179,15 +194,15 @@ export class AccountService {
     };
   }
 
-  async removeAccount(id: string) {
-    const account = await this.accountRepository.findOne({ id });
-    if (!id)
-      throw new HttpException(ACCOUNT_MESSAGE.NOT_FOUND, HttpStatus.NOT_FOUND);
+  async removeAccount(account: Account) {
     const deleteMultiFile = account.cloundinary.map((cloud) => {
       return this.cloundinaryService.deleteFile(cloud.public_id);
     });
-    await Promise.all([...deleteMultiFile]);
-    return this.accountRepository.delete(account);
+    return Promise.all([
+      ...deleteMultiFile,
+      this.accountRepository.save({ ...account, tags: [], isDeleted: true }),
+      // this.accountRepository.delete(account),
+    ]);
   }
 
   async buyAccountByUser(user: User, id: string) {
@@ -198,7 +213,7 @@ export class AccountService {
       }
       account.status = ACCOUNT_STATUS.SOLD;
       account.soldAt = new Date();
-      account.boughtBy = user;
+      account.boughtBy = user.username;
       if (user.money < account.newPrice) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,
@@ -236,14 +251,18 @@ export class AccountService {
     });
   }
 
-  async queryDetailsAccount(queryDetails : QueryDetailsAccountDto):Promise<Account>{
-    const {id,slug} = queryDetails
+  async queryDetailsAccount(
+    queryDetails: QueryDetailsAccountDto
+  ): Promise<Account> {
+    const { id, slug } = queryDetails;
     return this.accountRepository.findOne({
-      where:[
-        {id},
-        {slug}
+      where: [{ id }, { slug }],
+      relations: [
+        ACCOUNT_RELATION.TAG,
+        ACCOUNT_RELATION.CLOUNDINARY,
+        ACCOUNT_RELATION.TAG,
+        ACCOUNT_RELATION.USER,
       ],
-      relations:[ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.CLOUNDINARY,ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.USER]
-    })
+    });
   }
 }

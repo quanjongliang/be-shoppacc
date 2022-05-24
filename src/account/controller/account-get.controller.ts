@@ -14,9 +14,9 @@ export class AccountGetController {
     return this.accountService.queryAccount(queryAccountDto);
   }
 
-  @Get('details')
+  @Get("details")
   @UseInterceptors(GetAccountInterceptor)
-  getDeltailAccount(@Query() queryDetails: QueryDetailsAccountDto){
-    return this.accountService.queryDetailsAccount(queryDetails)
+  getDeltailAccount(@Query() queryDetails: QueryDetailsAccountDto) {
+    return this.accountService.queryDetailsAccount(queryDetails);
   }
 }
