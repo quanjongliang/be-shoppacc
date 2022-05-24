@@ -6,7 +6,8 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,Query
+  UseGuards,
+  Query,
 } from "@nestjs/common";
 import { CreateTagDto, QueryTagDto, UpdateTagDto } from "./dto";
 import { TagService } from "./tag.service";

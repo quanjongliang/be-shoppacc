@@ -11,12 +11,19 @@ export class TagService {
   constructor(private tagRepository: TagRepository) {}
 
   async createTag(createTagDto: CreateTagDto): Promise<Tag> {
-    const { title } = createTagDto;
+    const { title, content, type } = createTagDto;
     const checkTag = await this.tagRepository.findOne({ title });
     if (checkTag)
       throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
-    const slug = changeToSlug(title)
-    return this.tagRepository.save({ ...createTagDto,slug });
+    const slug = changeToSlug(title);
+    return this.tagRepository.save(
+      this.tagRepository.create({
+        title,
+        type,
+        slug,
+        information: JSON.stringify(content),
+      })
+    );
   }
 
   async updateTag(
@@ -29,8 +36,8 @@ export class TagService {
       if (checkTag)
         throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
     }
-    const slug = changeToSlug(title)
-    return this.tagRepository.update({ id }, { ...updateTagDto,slug });
+    const slug = changeToSlug(title);
+    return this.tagRepository.update({ id }, { ...updateTagDto, slug });
   }
 
   async getAll(query: QueryTagDto): Promise<Tag[]> {
