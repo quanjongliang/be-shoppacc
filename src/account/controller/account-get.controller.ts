@@ -17,7 +17,7 @@ export class AccountGetController {
   constructor(private accountService: AccountService) {}
 
   @Get()
-  // @UseInterceptors(GetAccountInterceptor)
+  @UseInterceptors(GetAccountInterceptor)
   queryAccount(@Query() queryAccountDto: QueryAccountDto) {
     return this.accountService.queryAccount(queryAccountDto);
   }
