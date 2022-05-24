@@ -72,4 +72,9 @@ export class AppController {
   async updateSlugPost() {
     return this.appService.updateSlugPost();
   }
+
+  @Post("json-weapon")
+  async getWeaponFromJson(){
+    return this.appService.getWeaponJsonFile()
+  }
 }

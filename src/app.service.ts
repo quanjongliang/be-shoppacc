@@ -3,6 +3,7 @@ import * as reader from 'xlsx';
 import { USER_ROLE } from './entity';
 import { changeToSlug } from './post';
 import { PostRepository, UserRepository } from './repository';
+import * as fs from  'fs'
 @Injectable()
 export class AppService {
   constructor(
@@ -46,5 +47,17 @@ export class AppService {
       }),
     );
     await Promise.all([...promiseUpdateSlug]);
+  }
+
+  async getWeaponJsonFile(){
+    const jsonsInDir = fs.readdirSync('./db/weapons')
+    const list = []
+    jsonsInDir.forEach(path=>{
+      const data = fs.readFileSync('./db/weapons/' + path)
+      const {name,description,weapontype,rarity,baseatk,substat,subvalue,effectname,effect} = JSON.parse(data.toString())
+      const slug = changeToSlug(name)
+      list.push({slug,name,description,weapontype,rarity,baseatk,substat,subvalue,effectname,effect})
+    })
+    return list
   }
 }

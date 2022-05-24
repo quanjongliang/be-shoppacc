@@ -6,13 +6,13 @@ import {
   POST_CONFIG,
   TIM_DANG_EMAIL,
 } from "@/core";
-import { Account, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
+import { Account, ACCOUNT_RELATION, ACCOUNT_STATUS, TAG_TYPE, User } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
 import { ConflictException,HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection, In } from "typeorm";
-import { CreateAccountDto, QueryAccountDto } from "../dto";
+import { CreateAccountDto, QueryAccountDto, QueryDetailsAccountDto } from "../dto";
 
 @Injectable()
 export class AccountService {
@@ -125,6 +125,7 @@ export class AccountService {
       weapon = "",
       server = "",
       character = "",
+      sort
     } = queryAccountDto;
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
@@ -161,6 +162,11 @@ export class AccountService {
           data: `%${data}%`,
         });
       });
+    }
+    if(sort){
+      findWeaponQuery.orderBy('account.newPrice',sort === 0 ? "ASC" : "DESC")
+    } else {
+      findWeaponQuery.orderBy('account.createdAt',"ASC")
     }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
@@ -228,5 +234,16 @@ export class AccountService {
       ]);
       return "CC tao";
     });
+  }
+
+  async queryDetailsAccount(queryDetails : QueryDetailsAccountDto):Promise<Account>{
+    const {id,slug} = queryDetails
+    return this.accountRepository.findOne({
+      where:[
+        {id},
+        {slug}
+      ],
+      relations:[ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.CLOUNDINARY,ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.USER]
+    })
   }
 }

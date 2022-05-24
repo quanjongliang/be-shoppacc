@@ -43,8 +43,10 @@ export class Account extends BaseColumn {
 
   @Column({ nullable: true })
   nguyenThach: number;
+
   @Column({ nullable: true })
   moonPack: number;
+
   @Column({ default: 0 })
   oldPrice: number;
 
@@ -53,6 +55,9 @@ export class Account extends BaseColumn {
 
   @Column({ type: "text", nullable: true })
   name: string;
+
+  @Column({type:'text',nullable:true})
+  slug:string
 
   @Column({ type: "text" })
   description: string;
@@ -86,6 +91,7 @@ export class Account extends BaseColumn {
 
   @Column({ type: "text", nullable: true })
   character: string;
+
   @Column({ type: "text", nullable: true })
   weapon: string;
 

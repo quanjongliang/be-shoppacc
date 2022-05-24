@@ -11,4 +11,16 @@ export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiProperty()
   server?: string;
+  @IsOptional()
+  @ApiProperty()
+  sort?:number
+}
+
+export class QueryDetailsAccountDto{
+  @IsOptional()
+  @ApiProperty()
+  id?:string
+  @IsOptional()
+  @ApiProperty()
+  slug?:string
 }
