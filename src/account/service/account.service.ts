@@ -118,19 +118,22 @@ export class AccountService {
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
       .leftJoinAndSelect("account.user", "user")
       .leftJoinAndSelect("account.tags", "tag")
-      .where("account.isDeleted = false")
-      .loadRelationCountAndMap(
-        "account.countCharacter",
-        "account.tags",
-        "tag",
-        (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.CHARACTER })
-      )
-      .loadRelationCountAndMap(
-        "account.countWeapon",
-        "account.tags",
-        "tag",
-        (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.WEAPON })
-      );
+      .andWhere("account.isDeleted = false")
+      .take(limit)
+      .skip(offset)
+      .addOrderBy("account.createdAt", "DESC");
+    // .loadRelationCountAndMap(
+    //   "account.countCharacter",
+    //   "account.tags",
+    //   "tag",
+    //   (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.CHARACTER })
+    // )
+    // .loadRelationCountAndMap(
+    //   "account.countWeapon",
+    //   "account.tags",
+    //   "tag",
+    //   (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.WEAPON })
+    // );
     if (weapon) {
       weapon.split(",").forEach((data) => {
         findWeaponQuery.andWhere("account.weapon ILIKE :data", {
@@ -151,13 +154,14 @@ export class AccountService {
       });
     }
     if (sort) {
-      findWeaponQuery.orderBy("account.newPrice", sort === 0 ? "ASC" : "DESC");
-    } else {
-      findWeaponQuery.orderBy("account.createdAt", "DESC");
+      findWeaponQuery.addOrderBy(
+        "account.newPrice",
+        +sort === 0 ? "ASC" : "DESC"
+      );
     }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
-      findWeaponQuery.offset(offset).limit(limit).getMany(),
+      findWeaponQuery.getMany(),
     ]);
 
     return {
