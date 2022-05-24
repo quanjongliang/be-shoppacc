@@ -98,7 +98,11 @@ export class AccountService {
       })
       .catch((err) => {
         console.log(err);
-        throw new BadRequestException(NETWORK_MESSAGE.ERROR);
+        const message =
+          err.message === ACCOUNT_MESSAGE.CODE
+            ? ACCOUNT_MESSAGE.CODE
+            : NETWORK_MESSAGE.ERROR;
+        throw new BadRequestException(message);
       });
   }
 
