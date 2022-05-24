@@ -34,19 +34,19 @@ export class Account extends BaseColumn {
   @Column({ unique: true, nullable: true })
   code: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   tinhHuy: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   nguyenThach: number;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   moonPack: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: "bigint" })
   oldPrice: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, type: "bigint" })
   newPrice: number;
 
   @Column({ type: "text", nullable: true })
@@ -61,7 +61,7 @@ export class Account extends BaseColumn {
   @Column({ enum: ACCOUNT_STATUS, default: ACCOUNT_STATUS.AVAILABLE })
   status: ACCOUNT_STATUS;
 
-  @Column()
+  @Column({ type: "bigint", nullable: true })
   ar: number;
 
   @Column({ nullable: true })
