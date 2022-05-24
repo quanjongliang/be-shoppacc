@@ -255,7 +255,7 @@ export class AccountService {
       .transaction(async () => {
         const { code, char, weapon, server, ...updateAccount } =
           updateAccountDto;
-        if (code) {
+        if (code !== account.code) {
           const checkCodeAccount = await this.accountRepository.findOne({
             code,
           });
