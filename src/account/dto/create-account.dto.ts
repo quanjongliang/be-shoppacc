@@ -39,3 +39,5 @@ export class CreateAccountDto {
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   description: string;
 }
+
+export class UpdateAccountDto extends CreateAccountDto {}

@@ -18,7 +18,7 @@ import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { CurrentAccount } from "../decorator";
-import { CreateAccountDto } from "../dto";
+import { CreateAccountDto, UpdateAccountDto } from "../dto";
 import { AccountActionGuard } from "../guard";
 import { AccountService } from "../service";
 @Controller("account")
@@ -54,32 +54,32 @@ export class AccountController {
     return this.accountService.buyAccountByUser(user, id);
   }
 
-  // @Patch('update/:id')
-  // @UseInterceptors(
-  //   FileInterceptor('file', {
-  //     storage: diskStorage({
-  //       destination: './uploads',
-  //       filename: (_req, file, cb) => {
-  //         const randomName = uuid();
-  //         cb(null, `${randomName}${extname(file.originalname)}`);
-  //       },
-  //     }),
-  //   }),
-  // )
-  // @ApiParam({
-  //   name: 'id',
-  // })
-  // async updateAccount(
-  //   @Param('id') id: string,
-  //   @Body() updateAccountDto: UpdateAccountDto,
-  //   @UploadedFile() file: Express.Multer.File,
-  // ) {
-  //   return this.accountService.updateAccount(updateAccountDto, id, file);
-  // }
   @Delete(":id")
   @UseGuards(AccountActionGuard)
   @Roles(...MOD_ADMIN_ROLE)
   async deleteAccount(@CurrentAccount() account: Account) {
     return this.accountService.removeAccount(account);
+  }
+
+  @Patch(":id")
+  @UseGuards(AccountActionGuard)
+  @Roles(...MOD_ADMIN_ROLE)
+  @UseInterceptors(
+    FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
+      storage: diskStorage({
+        destination: "./uploads",
+        filename: (_req, file, cb) => {
+          const randomName = uuid();
+          cb(null, `${randomName}${extname(file.originalname)}`);
+        },
+      }),
+    })
+  )
+  async updateAccount(
+    @CurrentAccount() account: Account,
+    @Body() updateAccountDto: UpdateAccountDto,
+    @UploadedFiles() files: Array<Express.Multer.File>
+  ) {
+    return this.accountService.updateAccount(account, updateAccountDto, files);
   }
 }

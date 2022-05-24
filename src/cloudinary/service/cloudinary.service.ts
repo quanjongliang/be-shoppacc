@@ -38,6 +38,10 @@ export class CloundinaryService {
     ]);
   }
 
+  async deleteMultiFile(publicIds: string[]) {
+    return Promise.all([...publicIds.map((id) => this.deleteFile(id))]);
+  }
+
   async getIsBannerFiles(): Promise<Cloundinary[]> {
     return this.cloudinaryRepository.find({ isBanner: true });
   }

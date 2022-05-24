@@ -3,6 +3,7 @@ import {
   ACCOUNT_MESSAGE,
   AUDIT_MESSAGE,
   BaseQueryResponse,
+  NETWORK_MESSAGE,
   POST_CONFIG,
   TIM_DANG_EMAIL,
 } from "@/core";
@@ -16,6 +17,7 @@ import {
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
+import { BadRequestException } from "@nestjs/common";
 import {
   ConflictException,
   HttpException,
@@ -27,6 +29,7 @@ import {
   CreateAccountDto,
   QueryAccountDto,
   QueryDetailsAccountDto,
+  UpdateAccountDto,
 } from "../dto";
 
 @Injectable()
@@ -46,89 +49,55 @@ export class AccountService {
     user: User,
     files: Array<Express.Multer.File>
   ): Promise<Account> {
-    return this.connection.transaction(async () => {
-      const { code, ar, char, weapon, server } = createAccountDto;
-      const checkCodeAccount = await this.accountRepository.findOne({ code });
-      if (checkCodeAccount) {
-        throw new ConflictException(ACCOUNT_MESSAGE.CODE);
-      }
-      const cloundinary = files
-        ? await this.cloundinaryService.uploadMultiFilesAccount(files)
-        : null;
-      const [charTag, weaponTag, serverTag] = await Promise.all([
-        this.tagRepository.find({
-          where: {
-            title: In(char.split(",")),
-            type: TAG_TYPE.CHARACTER,
-          },
-        }),
-        this.tagRepository.find({
-          where: {
-            title: In(weapon.split(",")),
-            type: TAG_TYPE.WEAPON,
-          },
-        }),
-        this.tagRepository.findOne({
-          where: {
-            title: server,
-            type: TAG_TYPE.SERVER,
-          },
-        }),
-      ]);
-      const imageUrl = cloundinary ? JSON.stringify(cloundinary[0]) : "";
-      const newAccount = this.accountRepository.create({
-        ar,
-        ...createAccountDto,
-        user,
-        cloundinary,
-        imageUrl,
-        code,
-        server: serverTag.slug,
-        character: charTag.map(({ slug }) => slug).join(","),
-        weapon: weaponTag.map(({ slug }) => slug).join(","),
-        tags: [...charTag, ...weaponTag, serverTag],
+    return this.connection
+      .transaction(async () => {
+        const { code, char, weapon, server } = createAccountDto;
+        const checkCodeAccount = await this.accountRepository.findOne({ code });
+        if (checkCodeAccount) {
+          throw new ConflictException(ACCOUNT_MESSAGE.CODE);
+        }
+        const cloundinary = files
+          ? await this.cloundinaryService.uploadMultiFilesAccount(files)
+          : null;
+        const [charTag, weaponTag, serverTag] = await Promise.all([
+          this.tagRepository.find({
+            where: {
+              title: In(char.split(",")),
+              type: TAG_TYPE.CHARACTER,
+            },
+          }),
+          this.tagRepository.find({
+            where: {
+              title: In(weapon.split(",")),
+              type: TAG_TYPE.WEAPON,
+            },
+          }),
+          this.tagRepository.findOne({
+            where: {
+              title: server,
+              type: TAG_TYPE.SERVER,
+            },
+          }),
+        ]);
+        const imageUrl = cloundinary ? JSON.stringify(cloundinary[0]) : "";
+        const newAccount = this.accountRepository.create({
+          ...createAccountDto,
+          user,
+          cloundinary,
+          imageUrl,
+          code,
+          server: serverTag.slug,
+          character: charTag.map(({ slug }) => slug).join(","),
+          weapon: weaponTag.map(({ slug }) => slug).join(","),
+          tags: [...charTag, ...weaponTag, serverTag],
+        });
+        return this.accountRepository.save(newAccount);
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new BadRequestException(NETWORK_MESSAGE.ERROR);
       });
-      return this.accountRepository.save(newAccount);
-    });
   }
-
-  // async updateAccount(
-  //   updateAccountDto: UpdateAccountDto,
-  //   id: string,
-  //   file?: Express.Multer.File,
-  // ): Promise<Account> {
-  //   const account = await this.accountRepository.findOne({
-  //     relations: [ACCOUNT_RELATION.CLOUNDINARY],
-  //     where: {
-  //       id,
-  //     },
-  //   });
-  //   if (!account)
-  //     throw new HttpException(ACCOUNT_MESSAGE.NOT_FOUND, HttpStatus.NOT_FOUND);
-  //   for (const property in updateAccountDto) {
-  //     const value = updateAccountDto[property];
-  //     if (value) {
-  //       if (typeof value === 'number') {
-  //         account[property] = value;
-  //       } else {
-  //         account[property] = JSON.stringify(value);
-  //         account[`${property}Count`] = value.Length;
-  //       }
-  //     }
-  //   }
-  //   if (file) {
-  //     const oldCloundinary = account.cloundinary.public_id;
-  //     const cloundinary = await this.cloundinaryService.uploadFile(file);
-  //     account.cloundinary = cloundinary;
-  //     account.imageUrl = cloundinary.url || cloundinary.secure_url;
-  //     await Promise.all([
-  //       this.accountRepository.save(account),
-  //       this.cloundinaryService.deleteFile(oldCloundinary),
-  //     ]);
-  //     return this.accountRepository.findOne({ id });
-  //   }
-  //   return this.accountRepository.save(account);
-  // }
 
   async queryAccount(
     queryAccountDto: QueryAccountDto
@@ -181,7 +150,7 @@ export class AccountService {
     if (sort) {
       findWeaponQuery.orderBy("account.newPrice", sort === 0 ? "ASC" : "DESC");
     } else {
-      findWeaponQuery.orderBy("account.createdAt", "ASC");
+      findWeaponQuery.orderBy("account.createdAt", "DESC");
     }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
@@ -195,14 +164,25 @@ export class AccountService {
   }
 
   async removeAccount(account: Account) {
-    const deleteMultiFile = account.cloundinary.map((cloud) => {
-      return this.cloundinaryService.deleteFile(cloud.public_id);
-    });
-    return Promise.all([
-      ...deleteMultiFile,
-      this.accountRepository.save({ ...account, tags: [], isDeleted: true }),
-      // this.accountRepository.delete(account),
-    ]);
+    return this.connection
+      .transaction(async () => {
+        const deleteMultiFile = account.cloundinary.map((cloud) => {
+          return this.cloundinaryService.deleteFile(cloud.public_id);
+        });
+        return Promise.all([
+          ...deleteMultiFile,
+          this.accountRepository.save({
+            ...account,
+            tags: [],
+            isDeleted: true,
+          }),
+          // this.accountRepository.delete(account),
+        ]);
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new BadRequestException(NETWORK_MESSAGE.ERROR);
+      });
   }
 
   async buyAccountByUser(user: User, id: string) {
@@ -260,9 +240,77 @@ export class AccountService {
       relations: [
         ACCOUNT_RELATION.TAG,
         ACCOUNT_RELATION.CLOUNDINARY,
-        ACCOUNT_RELATION.TAG,
         ACCOUNT_RELATION.USER,
       ],
     });
+  }
+
+  async updateAccount(
+    account: Account,
+    updateAccountDto: UpdateAccountDto,
+    files?: Array<Express.Multer.File>
+  ) {
+    return this.connection
+      .transaction(async () => {
+        const { code, char, weapon, server, ...updateAccount } =
+          updateAccountDto;
+        if (code) {
+          const checkCodeAccount = await this.accountRepository.findOne({
+            code,
+          });
+          if (checkCodeAccount) {
+            throw new ConflictException(ACCOUNT_MESSAGE.CODE);
+          }
+          account.code = code;
+        }
+        const tags = [];
+        if (char) {
+          const charTag = await this.tagRepository.find({
+            where: {
+              title: In(char.split(",")),
+              type: TAG_TYPE.CHARACTER,
+            },
+          });
+          tags.push(...charTag);
+          account.character = charTag.map(({ slug }) => slug).join(",");
+        }
+        if (server) {
+          const serverTag = await this.tagRepository.findOne({
+            where: {
+              title: server,
+              type: TAG_TYPE.SERVER,
+            },
+          });
+          tags.push(serverTag);
+          account.server = serverTag.slug;
+        }
+        if (weapon) {
+          const weaponTag = await this.tagRepository.find({
+            where: {
+              title: In(weapon.split(",")),
+              type: TAG_TYPE.WEAPON,
+            },
+          });
+          tags.push(...weaponTag);
+          account.character = weaponTag.map(({ slug }) => slug).join(",");
+        }
+        if (tags.length > 0) {
+          account.tags = tags;
+        }
+        if (files) {
+          const [_res, cloudinary] = await Promise.all([
+            this.cloundinaryService.deleteMultiFile(
+              account.cloundinary.map((cl) => cl.public_id)
+            ),
+            this.cloundinaryService.uploadMultiFilesAccount(files),
+          ]);
+          account.cloundinary = cloudinary;
+        }
+        return this.accountRepository.save({ ...account, ...updateAccount });
+      })
+      .catch((err) => {
+        console.log(err);
+        throw new BadRequestException(NETWORK_MESSAGE.ERROR);
+      });
   }
 }

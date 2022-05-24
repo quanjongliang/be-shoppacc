@@ -3,6 +3,7 @@ import { QueryAccountDto, QueryDetailsAccountDto } from "../dto";
 import { AccountService } from "../service";
 import { ApiTags } from "@nestjs/swagger";
 import { GetAccountInterceptor } from "../interceptor";
+
 @Controller("account-get")
 @ApiTags("account-get")
 export class AccountGetController {
