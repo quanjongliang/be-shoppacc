@@ -298,7 +298,7 @@ export class AccountService {
         if (tags.length > 0) {
           account.tags = tags;
         }
-        if (files) {
+        if (files && files.length > 0) {
           const [_res, cloudinary] = await Promise.all([
             this.cloundinaryService.deleteMultiFile(
               account.cloundinary.map((cl) => cl.public_id)
