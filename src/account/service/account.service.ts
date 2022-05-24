@@ -156,7 +156,7 @@ export class AccountService {
       findWeaponQuery.orderBy("account.createdAt", "DESC");
     }
     const [total, data] = await Promise.all([
-      findWeaponQuery.getCount(),
+      findWeaponQuery.offset(offset).limit(limit).getCount(),
       findWeaponQuery.offset(offset).limit(limit).getMany(),
     ]);
 
