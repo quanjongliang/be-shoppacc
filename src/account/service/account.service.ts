@@ -16,6 +16,7 @@ import {
 } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
+import { changeToSlug } from "@/post";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
 import {
   ConflictException,
@@ -91,6 +92,7 @@ export class AccountService {
           character: charTag.map(({ slug }) => slug).join(","),
           weapon: weaponTag.map(({ slug }) => slug).join(","),
           tags: [...charTag, ...weaponTag, serverTag],
+          slug: changeToSlug(createAccountDto.name, new Date()),
         });
         return this.accountRepository.save(newAccount);
       })
@@ -307,7 +309,11 @@ export class AccountService {
           ]);
           account.cloundinary = cloudinary;
         }
-        return this.accountRepository.save({ ...account, ...updateAccount });
+        return this.accountRepository.save({
+          ...account,
+          ...updateAccount,
+          slug: changeToSlug(updateAccount.name, new Date()),
+        });
       })
       .catch((err) => {
         console.log(err);
