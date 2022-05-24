@@ -17,18 +17,19 @@ import {
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { AccountRepository, TagRepository, UserRepository } from "@/repository";
-import { BadRequestException } from "@nestjs/common";
 import {
   ConflictException,
   HttpException,
   HttpStatus,
+  BadRequestException,
   Injectable,
 } from "@nestjs/common";
-import { Connection, In } from "typeorm";
+import { Connection, In, IsNull } from "typeorm";
 import {
   CreateAccountDto,
   QueryAccountDto,
   QueryDetailsAccountDto,
+  QueryWishListAccountDto,
   UpdateAccountDto,
 } from "../dto";
 
@@ -312,5 +313,18 @@ export class AccountService {
         console.log(err);
         throw new BadRequestException(NETWORK_MESSAGE.ERROR);
       });
+  }
+
+  async queryWishListAccount(
+    queryWishList: QueryWishListAccountDto
+  ): Promise<Account[]> {
+    const { ids } = queryWishList;
+    return this.accountRepository.find({
+      where: {
+        id: In(ids.split(",")),
+        isDeleted: false,
+        soldAt: IsNull(),
+      },
+    });
   }
 }

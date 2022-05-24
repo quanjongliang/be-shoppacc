@@ -13,14 +13,20 @@ export class QueryAccountDto extends BaseQuery {
   server?: string;
   @IsOptional()
   @ApiProperty()
-  sort?:number
+  sort?: number;
 }
 
-export class QueryDetailsAccountDto{
+export class QueryDetailsAccountDto {
   @IsOptional()
   @ApiProperty()
-  id?:string
+  id?: string;
   @IsOptional()
   @ApiProperty()
-  slug?:string
+  slug?: string;
+}
+
+export class QueryWishListAccountDto {
+  @IsOptional()
+  @ApiProperty()
+  ids: string;
 }
