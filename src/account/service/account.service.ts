@@ -182,6 +182,7 @@ export class AccountService {
             ...account,
             tags: [],
             isDeleted: true,
+            code: `${account.code}${new Date().getTime()}`,
           }),
           // this.accountRepository.delete(account),
         ]);
