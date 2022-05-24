@@ -2,7 +2,10 @@ import { Query, Controller, Get, UseInterceptors } from "@nestjs/common";
 import { QueryAccountDto, QueryDetailsAccountDto } from "../dto";
 import { AccountService } from "../service";
 import { ApiTags } from "@nestjs/swagger";
-import { GetAccountInterceptor } from "../interceptor";
+import {
+  GetAccountInterceptor,
+  GetDetailsAccountInterceptor,
+} from "../interceptor";
 
 @Controller("account-get")
 @ApiTags("account-get")
@@ -16,7 +19,7 @@ export class AccountGetController {
   }
 
   @Get("details")
-  @UseInterceptors(GetAccountInterceptor)
+  @UseInterceptors(GetDetailsAccountInterceptor)
   getDeltailAccount(@Query() queryDetails: QueryDetailsAccountDto) {
     return this.accountService.queryDetailsAccount(queryDetails);
   }

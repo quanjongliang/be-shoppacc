@@ -1,7 +1,7 @@
 import { Tag, TAG_TYPE } from "../tag";
 
-export const convertToStringTagSlug = (tags: Tag[], type: TAG_TYPE) :string=>{
-    return [...tags]
+export const convertToStringTagSlug = (tags: Tag[], type: TAG_TYPE): string => {
+  return [...tags]
     .reduce((characterString, tag) => {
       if (tag.type === type) {
         characterString += tag.slug + ",";
@@ -9,4 +9,4 @@ export const convertToStringTagSlug = (tags: Tag[], type: TAG_TYPE) :string=>{
       return characterString;
     }, "")
     .slice(0, -1);
-}
+};

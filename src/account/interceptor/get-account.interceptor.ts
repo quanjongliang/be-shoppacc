@@ -1,5 +1,6 @@
 import { BaseQueryResponse } from "@/core";
 import { Account, TAG_TYPE } from "@/entity";
+import { convertToStringTagSlug } from "@/entity/util";
 import {
   Injectable,
   NestInterceptor,
@@ -15,31 +16,19 @@ export class GetAccountInterceptor implements NestInterceptor {
     console.log("Before...");
     return next.handle().pipe(
       map((data: BaseQueryResponse<Account>) => {
-        const formattedData = data.data.map((d) => ({
-          ...d,
-          cloundinary:
-            d.cloundinary.length > 0
-              ? d.cloundinary
-                  .slice(1, d.cloundinary.length)
-                  .map((cl) => cl.url || cl.secure_url)
-              : [],
-          user: d.user.username,
-          imageUrl: d.imageUrl
-            ? JSON.parse(d.imageUrl)?.url || JSON.parse(d.imageUrl)?.secure_url
-            : d.cloundinary[0]?.url || d.cloundinary[0]?.secure_url || "",
-          character: d.character
-            ? d.character
-            : d.tags
-                .filter(({ type }) => type === TAG_TYPE.CHARACTER)
-                .map(({ slug }) => slug)
-                .join(","),
-          weapon: d.weapon
-            ? d.weapon
-            : d.tags
-                .filter(({ type }) => type === TAG_TYPE.WEAPON)
-                .map(({ slug }) => slug)
-                .join(","),
-        }));
+        const formattedData = data.data.map((d) => {
+          const [fistCloudinary, ...lastCloundinary] = d.cloundinary;
+          const character = convertToStringTagSlug(d.tags, TAG_TYPE.CHARACTER);
+          const weapon = convertToStringTagSlug(d.tags, TAG_TYPE.WEAPON);
+          return {
+            ...d,
+            cloundinary: lastCloundinary.map((cl) => cl.url || cl.secure_url),
+            user: d.user.username,
+            imageUrl: fistCloudinary?.url || fistCloudinary?.secure_url || "",
+            character: character,
+            weapon: weapon,
+          };
+        });
         return {
           ...data,
           data: formattedData,
