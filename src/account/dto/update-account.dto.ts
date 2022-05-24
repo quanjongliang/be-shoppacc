@@ -1,10 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { CreateAccountDto } from "./create-account.dto";
 
-export class UpdateAccountDto {
-  @ApiProperty()
-  ar?: number;
-  @ApiProperty()
-  char?: string[];
-  @ApiProperty()
-  weapon?: string[];
-}
+export class UpdateAccountDto extends CreateAccountDto {}
