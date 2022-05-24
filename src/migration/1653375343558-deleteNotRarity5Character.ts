@@ -5,7 +5,7 @@ export class deleteNotRarity5Character1653375343558
 {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.query(`
-        from tag   where "type" ='CHARACTER' and tag.information not like '%"rarity":"5"%'
+        delete from tag   where "type" ='CHARACTER' and tag.information not like '%"rarity":"5"%'
         `);
   }
 
