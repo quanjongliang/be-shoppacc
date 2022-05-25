@@ -117,6 +117,7 @@ export class AccountService {
       character = "",
       sort,
     } = queryAccountDto;
+    const sortValue = JSON.parse(sort.toString());
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
@@ -146,8 +147,14 @@ export class AccountService {
       });
     }
     if (server) {
-      findWeaponQuery.andWhere("account.server ILIKE :data", {
-        data: `%${server}%`,
+      server.split(",").forEach((data, index) => {
+        index === 0
+          ? findWeaponQuery.andWhere("account.server ILIKE :data", {
+              data: `%${data}%`,
+            })
+          : findWeaponQuery.orWhere("account.server ILIKE :data", {
+              data: `%${data}%`,
+            });
       });
     }
     if (character) {
@@ -157,10 +164,10 @@ export class AccountService {
         });
       });
     }
-    if (sort) {
+    if (sortValue) {
       findWeaponQuery.addOrderBy(
         "account.newPrice",
-        +sort === 0 ? "ASC" : "DESC"
+        sortValue === 0 ? "ASC" : "DESC"
       );
     }
     const [total, data] = await Promise.all([
