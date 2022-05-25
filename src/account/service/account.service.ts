@@ -118,6 +118,8 @@ export class AccountService {
       sort,
     } = queryAccountDto;
     const sortValue = JSON.parse(sort.toString());
+    const characterList = character.split(",") || [];
+    const weaponList = weapon.split(",") || [];
     const findWeaponQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
@@ -125,51 +127,20 @@ export class AccountService {
       .leftJoinAndSelect("account.tags", "tag")
       .andWhere("account.isDeleted = false")
       .take(limit)
-      .skip(offset)
-      .addOrderBy("account.createdAt", "DESC");
-    // .loadRelationCountAndMap(
-    //   "account.countCharacter",
-    //   "account.tags",
-    //   "tag",
-    //   (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.CHARACTER })
-    // )
-    // .loadRelationCountAndMap(
-    //   "account.countWeapon",
-    //   "account.tags",
-    //   "tag",
-    //   (qb) => qb.where("tag.type = :type", { type: TAG_TYPE.WEAPON })
-    // );
-    if (weapon) {
-      weapon.split(",").forEach((data) => {
-        findWeaponQuery.andWhere("account.weapon ILIKE :data", {
-          data: `%${data}%`,
-        });
-      });
-    }
-    if (server) {
-      server.split(",").forEach((data, index) => {
-        index === 0
-          ? findWeaponQuery.andWhere("account.server ILIKE :data", {
-              data: `%${data}%`,
-            })
-          : findWeaponQuery.orWhere("account.server ILIKE :data", {
-              data: `%${data}%`,
-            });
-      });
-    }
-    if (character) {
-      character.split(",").forEach((data) => {
-        findWeaponQuery.andWhere("account.character ILIKE :data", {
-          data: `%${data}%`,
-        });
-      });
-    }
-    if (sortValue) {
-      findWeaponQuery.addOrderBy(
-        "account.newPrice",
-        sortValue === 0 ? "ASC" : "DESC"
-      );
-    }
+      .skip(offset);
+    weaponList.forEach((w) => {
+      findWeaponQuery.andWhere(`account.weapon ILIKE '%${w}%'`);
+    });
+    characterList.forEach((c) => {
+      findWeaponQuery.andWhere(`account.character  ILIKE '%${c}%'`);
+    });
+    findWeaponQuery.andWhere(`account.server ILIKE '%${server}%'`);
+    sortValue
+      ? findWeaponQuery.addOrderBy(
+          "account.newPrice",
+          sortValue === 0 ? "ASC" : "DESC"
+        )
+      : findWeaponQuery.addOrderBy("account.createdAt", "DESC");
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
       findWeaponQuery.getMany(),
