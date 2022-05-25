@@ -81,7 +81,7 @@ export class AccountService {
             },
           }),
         ]);
-        const imageUrl = cloundinary ? JSON.stringify(cloundinary[0]) : "";
+        const imageUrl = cloundinary ? JSON.stringify(cloundinary.find(cl=>cl.isAvatar)) : "";
         const newAccount = this.accountRepository.create({
           ...createAccountDto,
           user,
@@ -295,6 +295,7 @@ export class AccountService {
             this.cloundinaryService.uploadMultiFilesAccount(files),
           ]);
           account.cloundinary = cloudinary;
+          account.imageUrl =  JSON.stringify(cloudinary.find(cl=>cl.isAvatar)) 
         }
         return this.accountRepository.save({
           ...account,

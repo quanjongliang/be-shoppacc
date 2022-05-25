@@ -17,14 +17,14 @@ export class GetAccountInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data: BaseQueryResponse<Account>) => {
         const formattedData = data.data.map((d) => {
-          const [fistCloudinary, ...lastCloundinary] = d.cloundinary;
+          const isAvatarCloudinary = d.cloundinary.find(cl=>cl.isAvatar) || d.cloundinary[0];
           const character = convertToStringTagSlug(d.tags, TAG_TYPE.CHARACTER);
           const weapon = convertToStringTagSlug(d.tags, TAG_TYPE.WEAPON);
           return {
             ...d,
-            cloundinary: lastCloundinary.map((cl) => cl.url || cl.secure_url),
+            cloundinary: d.cloundinary.map((cl) => cl.url || cl.secure_url),
             user: d.user.username,
-            imageUrl: fistCloudinary?.url || fistCloudinary?.secure_url || "",
+            imageUrl: isAvatarCloudinary?.url || isAvatarCloudinary?.secure_url || "",
             character: character,
             weapon: weapon,
           };

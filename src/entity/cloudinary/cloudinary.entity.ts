@@ -44,6 +44,10 @@ export class Cloundinary {
   api_key: string;
   @Column({ default: false, nullable: true })
   isBanner: boolean;
+
+  @Column({default:false,nullable:true})
+  isAvatar:boolean
+  
   @Column({ default: 0, nullable: true })
   order: number;
 

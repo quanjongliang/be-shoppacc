@@ -92,4 +92,4 @@ export const SHOP_EMAIL = "shoppacc.9999@gmail.com";
 
 export const LIMIT_FILE_BANNER = 3;
 
-export const LIMIT_FILE_ACCOUNT = 5;
+export const LIMIT_FILE_ACCOUNT = 10;

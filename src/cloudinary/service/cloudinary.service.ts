@@ -18,13 +18,14 @@ export class CloundinaryService {
   async uploadFile(
     file: Express.Multer.File,
     isBanner = false,
-    order = 0
+    order = 0,
+    isAvatar=false
   ): Promise<Cloundinary> {
     try {
       const path = `./${file.path}`;
       const result = await cloudinary.uploader.upload(path);
       fs.unlinkSync(`./${path}`);
-      return this.cloudinaryRepository.save({ ...result, isBanner, order });
+      return this.cloudinaryRepository.save({ ...result, isBanner, order,isAvatar });
     } catch (error) {
       console.log(error);
       throw error;
@@ -62,7 +63,7 @@ export class CloundinaryService {
     files: Array<Express.Multer.File>
   ): Promise<Cloundinary[]> {
     const promiseUploadFile = files.map((file, index) =>
-      this.uploadFile(file, false, index + 1)
+      this.uploadFile(file, false, index + 1, index === 0 )
     );
     return Promise.all([...promiseUploadFile]);
   }
