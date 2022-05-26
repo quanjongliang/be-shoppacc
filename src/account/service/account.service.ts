@@ -17,7 +17,12 @@ import {
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { changeToSlug } from "@/post";
-import { AccountRepository, TagRepository, UserRepository } from "@/repository";
+import {
+  AccountRepository,
+  AuditRepository,
+  TagRepository,
+  UserRepository,
+} from "@/repository";
 import {
   ConflictException,
   HttpException,
@@ -40,9 +45,6 @@ export class AccountService {
     private accountRepository: AccountRepository,
     private cloundinaryService: CloundinaryService,
     private connection: Connection,
-    private historyService: HistoryService,
-    private userRepository: UserRepository,
-    private mailerService: MailerService,
     private tagRepository: TagRepository
   ) {}
 
@@ -81,7 +83,9 @@ export class AccountService {
             },
           }),
         ]);
-        const imageUrl = cloundinary ? JSON.stringify(cloundinary.find(cl=>cl.isAvatar)) : "";
+        const imageUrl = cloundinary
+          ? JSON.stringify(cloundinary.find((cl) => cl.isAvatar))
+          : "";
         const newAccount = this.accountRepository.create({
           ...createAccountDto,
           user,
@@ -175,52 +179,6 @@ export class AccountService {
       });
   }
 
-  async buyAccountByUser(user: User, id: string) {
-    return this.connection.transaction(async () => {
-      const account = await this.accountRepository.checkExistAccount(id);
-      if (account.status === ACCOUNT_STATUS.SOLD || account.soldAt) {
-        throw new HttpException(ACCOUNT_MESSAGE.SOLD, HttpStatus.BAD_GATEWAY);
-      }
-      account.status = ACCOUNT_STATUS.SOLD;
-      account.soldAt = new Date();
-      account.boughtBy = user.username;
-      if (user.money < account.newPrice) {
-        throw new HttpException(
-          AUDIT_MESSAGE.NOT_ENOUGH,
-          HttpStatus.BAD_GATEWAY
-        );
-      }
-      user.money = user.money - account.newPrice;
-      const listImage = account.cloundinary.map(
-        (cl) => cl.secure_url || cl.url
-      );
-      await Promise.all([
-        this.userRepository.save(user),
-        this.accountRepository.save(account),
-        this.mailerService.sendBuyAccountFromUser({
-          to: TIM_DANG_EMAIL,
-          account,
-          username: user.username,
-          listImage,
-        }),
-        this.mailerService.sendBuyAccountFromUser(
-          {
-            to: user.email,
-            account,
-            username: user.username,
-            listImage,
-          },
-          MAILER_TEMPLATE_ENUM.BUY_ACCOUNT_TO_USER
-        ),
-        this.historyService.createHistoryBuyAccount({
-          account,
-          username: user.username,
-        }),
-      ]);
-      return "CC tao";
-    });
-  }
-
   async queryDetailsAccount(
     queryDetails: QueryDetailsAccountDto
   ): Promise<Account> {
@@ -295,7 +253,9 @@ export class AccountService {
             this.cloundinaryService.uploadMultiFilesAccount(files),
           ]);
           account.cloundinary = cloudinary;
-          account.imageUrl =  JSON.stringify(cloudinary.find(cl=>cl.isAvatar)) 
+          account.imageUrl = JSON.stringify(
+            cloudinary.find((cl) => cl.isAvatar)
+          );
         }
         return this.accountRepository.save({
           ...account,
@@ -319,7 +279,11 @@ export class AccountService {
         isDeleted: false,
         soldAt: IsNull(),
       },
-      relations:[ACCOUNT_RELATION.CLOUNDINARY,ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.USER]
+      relations: [
+        ACCOUNT_RELATION.CLOUNDINARY,
+        ACCOUNT_RELATION.TAG,
+        ACCOUNT_RELATION.USER,
+      ],
     });
   }
 }

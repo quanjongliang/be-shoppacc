@@ -1,10 +1,11 @@
+import { ObjectTypeInterface } from "@/tag";
 import {
   BeforeInsert,
   Column,
   Entity,
   ManyToOne,
+  ObjectType,
   OneToMany,
-  OneToOne,
 } from "typeorm";
 import { AuditInformation } from "../audit-information";
 import { BaseColumn } from "../base";
@@ -19,6 +20,7 @@ export enum AUDIT_STATUS {
 export enum AUDIT_TYPE {
   COIN = "COIN",
   STONE = "STONE",
+  ACCOUNT = "ACCOUNT",
 }
 
 export const AUDIT_RELATION = {
@@ -56,6 +58,9 @@ export class Audit extends BaseColumn {
 
   @Column({ enum: AUDIT_TYPE, default: AUDIT_TYPE.STONE })
   type: AUDIT_TYPE;
+
+  @Column({ type: "json", nullable: true })
+  information: Record<any, any>;
 
   @OneToMany(() => AuditInformation, (aInf) => aInf.audit, {
     nullable: true,

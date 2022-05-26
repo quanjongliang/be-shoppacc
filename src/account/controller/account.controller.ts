@@ -18,15 +18,18 @@ import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { CurrentAccount } from "../decorator";
-import { CreateAccountDto, UpdateAccountDto } from "../dto";
+import { BuyAccountDto, CreateAccountDto, UpdateAccountDto } from "../dto";
 import { AccountActionGuard } from "../guard";
-import { AccountService } from "../service";
+import { AccountAuditService, AccountService } from "../service";
 @Controller("account")
 @ApiTags("account")
 @ApiBearerAuth()
 @UseGuards(JwtAuthGuard, RolesGuard)
 export class AccountController {
-  constructor(private accountService: AccountService) {}
+  constructor(
+    private accountService: AccountService,
+    private accountAuditService: AccountAuditService
+  ) {}
 
   @Roles(...MOD_ADMIN_ROLE)
   @Post("create")
@@ -50,8 +53,12 @@ export class AccountController {
   }
 
   @Patch("buy/:id")
-  async buyAccount(@CurrentUser() user: User, @Param("id") id: string) {
-    return this.accountService.buyAccountByUser(user, id);
+  async buyAccount(
+    @CurrentUser() user: User,
+    @Param("id") id: string,
+    @Body() buyAccountDto: BuyAccountDto
+  ) {
+    return this.accountAuditService.buyAccountByUser(user, id, buyAccountDto);
   }
 
   @Delete(":id")

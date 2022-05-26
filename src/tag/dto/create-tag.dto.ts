@@ -9,12 +9,12 @@ export class CreateTagDto {
   title: string;
   @ApiProperty()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
-  content: ObjectType;
+  content: ObjectTypeInterface;
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   @ApiProperty({ enum: TAG_TYPE })
   type: TAG_TYPE;
 }
 
-export interface ObjectType {
+export interface ObjectTypeInterface {
   [key: string]: string;
 }

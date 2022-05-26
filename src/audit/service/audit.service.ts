@@ -4,7 +4,6 @@ import {
   BaseQueryResponse,
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
-  QUILL_LIANG_EMAIL,
   SHOP_EMAIL,
 } from "@/core";
 import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from "@/entity";
@@ -68,7 +67,7 @@ export class AuditService {
         }
         return Promise.all([
           this.userRepository.save({ ...user, money: user.money - total }),
-          this.auditRepository.save(audit),
+          this.auditRepository.save({ ...audit, information: createAuditDto }),
           this.mailerService.sendAuditStoneMail({
             to: SHOP_EMAIL,
             username: user.username,
@@ -138,7 +137,11 @@ export class AuditService {
         userAudit.money = newMoney;
         return Promise.all([
           this.userRepository.save(userAudit),
-          this.auditRepository.save({ user: userAudit, ...createAudit }),
+          this.auditRepository.save({
+            user: userAudit,
+            ...createAudit,
+            information: createAuditByAdminDto,
+          }),
           this.historyService.createHistoryAmountTransferred({
             admin: user.username,
             oldMoney,
