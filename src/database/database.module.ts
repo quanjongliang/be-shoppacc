@@ -5,11 +5,11 @@ import { TypeOrmModule } from "@nestjs/typeorm";
   imports: [
     TypeOrmModule.forRoot({
       type: "postgres",
-      // host: process.env["POSTGRES_HOST"] || "localhost",
-      // port: parseInt(process.env["POSTGRES_PORT"] || "5432", 10),
-      // username: process.env["POSTGRES_USER"] || "postgres",
-      // password: process.env["POSTGRES_PASSWORD"] || "postgres",
-      // database: process.env["POSTGRES_DB"] || "acc",
+      host: process.env["POSTGRES_HOST"] || "localhost",
+      port: parseInt(process.env["POSTGRES_PORT"] || "5432", 10),
+      username: process.env["POSTGRES_USER"] || "postgres",
+      password: process.env["POSTGRES_PASSWORD"] || "postgres",
+      database: process.env["POSTGRES_DB"] || "acc",
       // host:
       //   process.env["POSTGRES_HOST"] ||
       //   "ec2-54-165-184-219.compute-1.amazonaws.com",
@@ -19,8 +19,8 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       //   process.env["POSTGRES_PASSWORD"] ||
       //   "de1d86527e41e11ed786a5caf0d28276f56e645e720b80c1070f3489b6919ed0",
       // database: process.env["POSTGRES_DB"] || "d3j28h2fcilrgt",
-      url: process.env.DATABASE_URL,
-      ssl: { rejectUnauthorized: false },
+      // url: process.env.DATABASE_URL,
+      // ssl: { rejectUnauthorized: false },
       synchronize: !!JSON.parse(process.env["TYPEORM_SYNCHRONIZE"] || "true"),
       entities: [__dirname + "/dist/**/*.entity.js"],
       autoLoadEntities: true,

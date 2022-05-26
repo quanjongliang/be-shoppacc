@@ -16,6 +16,7 @@ export class GetDetailsAccountInterceptor implements NestInterceptor {
     console.log("Before...");
     return next.handle().pipe(
       map((data: Account) => {
+        data.cloundinary.sort((a,b)=> a.order - b.order)
         const isAvatarCloudinary = data.cloundinary.find(cl=>cl.isAvatar) || data.cloundinary[0];
         const character = convertToStringTagSlug(data.tags, TAG_TYPE.CHARACTER);
         const weapon = convertToStringTagSlug(data.tags, TAG_TYPE.WEAPON);
