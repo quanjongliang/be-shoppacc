@@ -319,6 +319,7 @@ export class AccountService {
         isDeleted: false,
         soldAt: IsNull(),
       },
+      relations:[ACCOUNT_RELATION.CLOUNDINARY,ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.USER]
     });
   }
 }
