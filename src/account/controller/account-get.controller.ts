@@ -9,6 +9,7 @@ import { ApiTags } from "@nestjs/swagger";
 import {
   GetAccountInterceptor,
   GetDetailsAccountInterceptor,
+  WishListAccountInterceptor,
 } from "../interceptor";
 
 @Controller("account-get")
@@ -29,6 +30,7 @@ export class AccountGetController {
   }
 
   @Get("wish-list")
+  @UseInterceptors(WishListAccountInterceptor)
   getWishListAccount(@Query() queryWishList: QueryWishListAccountDto) {
     return this.accountService.queryWishListAccount(queryWishList);
   }
