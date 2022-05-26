@@ -41,7 +41,7 @@ export class AccountAuditService {
       const listImage = account.cloundinary.map(
         (cl) => cl.secure_url || cl.url
       );
-      await Promise.all([
+      return Promise.all([
         this.auditRepository.save({
           type: AUDIT_TYPE.ACCOUNT,
           information: { ...buyAccountDto, id },
@@ -69,7 +69,6 @@ export class AccountAuditService {
           username: user.username,
         }),
       ]);
-      return "CC tao";
     });
   }
 }

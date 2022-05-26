@@ -20,7 +20,7 @@ import { AuditService } from "../service";
 @Controller("audit")
 @ApiTags("audit")
 @ApiBearerAuth()
-// @UseGuards(JwtAuthGuard, RolesGuard)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class AuditController {
   constructor(private auditService: AuditService) {}
 
