@@ -2,6 +2,7 @@ import {
   AUDIT_MESSAGE,
   AUTH_MESSAGE,
   BaseQueryResponse,
+  calculateTotalAudit,
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
   SHOP_EMAIL,
@@ -54,11 +55,7 @@ export class AuditService {
           password,
           server,
         });
-        const total = [...auditInformations].reduce(
-          (totalAudit, { quantity, unitPrice }) =>
-            quantity * unitPrice + totalAudit,
-          0
-        );
+        const total = calculateTotalAudit(auditInformations)
         if (user.money < total) {
           throw new HttpException(
             AUDIT_MESSAGE.NOT_ENOUGH,

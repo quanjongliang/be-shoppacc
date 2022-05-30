@@ -1,3 +1,4 @@
+import { calculateTotalAudit } from "@/core";
 import { ObjectTypeInterface } from "@/tag";
 import {
   BeforeInsert,
@@ -69,10 +70,6 @@ export class Audit extends BaseColumn {
   auditInformations: AuditInformation[];
   @BeforeInsert()
   calculateTotal() {
-    this.total = [...this.auditInformations].reduce(
-      (totalAudit, { quantity, unitPrice }) =>
-        quantity * unitPrice + totalAudit,
-      0
-    );
+    this.total = calculateTotalAudit(this.auditInformations)
   }
 }

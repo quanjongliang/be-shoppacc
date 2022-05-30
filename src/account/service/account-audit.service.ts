@@ -1,4 +1,4 @@
-import { ACCOUNT_MESSAGE, AUDIT_MESSAGE, TIM_DANG_EMAIL } from "@/core";
+import { ACCOUNT_MESSAGE, AUDIT_MESSAGE, calculateTotalAccount, TIM_DANG_EMAIL } from "@/core";
 import { User, ACCOUNT_STATUS, AUDIT_TYPE, Account } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
@@ -82,10 +82,7 @@ export class AccountAuditService {
       console.log(user);
       console.log(accounts);
       console.log(buyMutiAccountDto);
-      const cost = accounts.reduce(
-        (total, account) => total + account.newPrice,
-        0
-      );
+      const cost = calculateTotalAccount(accounts)
 
       const newMoney = +user.money - cost;
       return Promise.all([

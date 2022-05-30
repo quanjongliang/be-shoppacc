@@ -1,4 +1,4 @@
-import { BaseQueryResponse } from "@/core";
+import { BaseQueryResponse, calculateTotalAudit } from "@/core";
 import { Audit } from "@/entity";
 import {
   Injectable,
@@ -28,9 +28,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             const { id, isDeleted, createdAt, updatedAt, ...result } = aI;
             return result;
           });
-          const total = result.total  || auditInformations.reduce((cost, auditInformation)=>
-            cost + auditInformation.quantity * auditInformation.unitPrice
-          ,0)
+          const total = result.total  || calculateTotalAudit(auditInformations)
           return {
             ...result,
             id,

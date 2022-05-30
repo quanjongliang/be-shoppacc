@@ -1,4 +1,4 @@
-import { ACCOUNT_MESSAGE, AUDIT_MESSAGE } from "@/core";
+import { ACCOUNT_MESSAGE, AUDIT_MESSAGE, calculateTotalAccount } from "@/core";
 import { Account, ACCOUNT_RELATION, ACCOUNT_STATUS } from "@/entity";
 import {
   BadRequestException,
@@ -63,7 +63,7 @@ export class AccountRepository extends Repository<Account> {
     if (accounts.some((account) => account.soldAt)) {
       throw new BadRequestException(ACCOUNT_MESSAGE.CAN_NOT_BEHAVIOR);
     }
-    const total = accounts.reduce((sum, account) => sum + account.newPrice, 0);
+    const total = calculateTotalAccount(accounts)
     if (isBuy && total > money) {
       throw new BadRequestException(AUDIT_MESSAGE.NOT_ENOUGH);
     }
