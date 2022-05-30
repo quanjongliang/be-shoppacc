@@ -17,9 +17,15 @@ import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
-import { CurrentAccount } from "../decorator";
-import { BuyAccountDto, CreateAccountDto, UpdateAccountDto } from "../dto";
-import { AccountActionGuard } from "../guard";
+import { CurrentAccount, CurrentAccounts } from "../decorator";
+import {
+  BuyAccountDto,
+  BuyMultiAccountDto,
+  CreateAccountDto,
+  UpdateAccountDto,
+} from "../dto";
+import { AccountActionGuard, AccountBuyGuard } from "../guard";
+import { AccountBuyMultiGuard } from "../guard/account-buy-multi.guard";
 import { AccountAuditService, AccountService } from "../service";
 @Controller("account")
 @ApiTags("account")
@@ -53,12 +59,31 @@ export class AccountController {
   }
 
   @Patch("buy/:id")
+  @UseGuards(AccountBuyGuard)
   async buyAccount(
     @CurrentUser() user: User,
-    @Param("id") id: string,
+    @CurrentAccount() account: Account,
     @Body() buyAccountDto: BuyAccountDto
   ) {
-    return this.accountAuditService.buyAccountByUser(user, id, buyAccountDto);
+    return this.accountAuditService.buyAccountByUser(
+      user,
+      account,
+      buyAccountDto
+    );
+  }
+
+  @Patch("buy-multi")
+  @UseGuards(AccountBuyMultiGuard)
+  async buyMultiAccount(
+    @CurrentUser() user: User,
+    @CurrentAccounts() accounts: Account[],
+    @Body() buyMutiAccountDto: BuyMultiAccountDto
+  ) {
+    return this.accountAuditService.buyMultiAccountByUser(
+      user,
+      accounts,
+      buyMutiAccountDto
+    );
   }
 
   @Delete(":id")

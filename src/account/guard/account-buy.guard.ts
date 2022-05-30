@@ -1,18 +1,15 @@
-import { ACCOUNT_MESSAGE, HISTORY_MESSAGE } from "@/core";
-import { ACCOUNT_RELATION } from "@/entity";
+import { HISTORY_MESSAGE } from "@/core";
 import { AccountRepository } from "@/repository";
 import {
   BadRequestException,
   CanActivate,
   ExecutionContext,
-  HttpException,
-  HttpStatus,
   Injectable,
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
 @Injectable()
-export class AccountActionGuard implements CanActivate {
+export class AccountBuyGuard implements CanActivate {
   constructor(
     private reflector: Reflector,
     private accountRepository: AccountRepository
@@ -21,8 +18,13 @@ export class AccountActionGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { id } = request.params;
+    const { user } = request;
     if (id) {
-      const account = await this.accountRepository.checkExistAccount(id);
+      const account = await this.accountRepository.checkCanActionAccount(
+        id,
+        true,
+        user.money
+      );
       request.account = account;
       return true;
     }

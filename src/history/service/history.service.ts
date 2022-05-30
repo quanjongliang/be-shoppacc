@@ -5,6 +5,7 @@ import { Injectable } from "@nestjs/common";
 import {
   CreateAmountTransferredHistoryDto,
   CreateBuyAccountHistoryDto,
+  CreateBuyMultiAccountHistoryDto,
   CreateChangeRoleHistoryDto,
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
@@ -13,6 +14,7 @@ import {
 import {
   getHistoryAmountTransferredMessage,
   getHistoryBuyAccountMessage,
+  getHistoryBuyMultiAccountMessage,
   getHistoryChangeRoleMessage,
   getHistoryConfirmMessage,
   getHistoryCreateAuditMessage,
@@ -30,6 +32,7 @@ export class HistoryService {
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.AMOUNT_TRANSFERRED,
+        information: JSON.stringify(createHistory),
       })
     );
   }
@@ -41,6 +44,7 @@ export class HistoryService {
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CHANGE_STATUS_AUDIT,
+        information: JSON.stringify(createHistory),
       })
     );
   }
@@ -52,6 +56,7 @@ export class HistoryService {
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CREATE_AUDIT,
+        information: JSON.stringify(createHistory),
       })
     );
   }
@@ -63,6 +68,7 @@ export class HistoryService {
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.CHANGE_ROLE,
+        information: JSON.stringify(createHistory),
       })
     );
   }
@@ -75,6 +81,20 @@ export class HistoryService {
       this.historyRepository.create({
         historyMessage,
         type: HISTORY_TYPE.BUY_ACCOUNT_BY_USER,
+        information: JSON.stringify(createHistory),
+      })
+    );
+  }
+
+  async createHistoryBuyMultiAccount(
+    createHistory: CreateBuyMultiAccountHistoryDto
+  ): Promise<History> {
+    const historyMessage = getHistoryBuyMultiAccountMessage(createHistory);
+    return this.historyRepository.save(
+      this.historyRepository.create({
+        historyMessage,
+        type: HISTORY_TYPE.BUY_ACCOUNT_BY_USER,
+        information: JSON.stringify(createHistory),
       })
     );
   }

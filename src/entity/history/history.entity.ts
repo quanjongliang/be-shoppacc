@@ -17,4 +17,7 @@ export class History extends BaseColumn {
 
   @Column({ default: true, type: "text" })
   historyMessage: string;
+
+  @Column({ type: "text", nullable: true })
+  information: string;
 }

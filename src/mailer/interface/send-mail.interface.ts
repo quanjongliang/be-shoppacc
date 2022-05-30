@@ -24,3 +24,9 @@ export interface SendBuyAccountMailInterface extends SendWelcomeMailInterface {
   account: Account;
   listImage: string[];
 }
+
+export interface SendBuyAccountsMailInterface extends SendWelcomeMailInterface {
+  cost: number;
+  accounts: Account[];
+  username: string;
+}

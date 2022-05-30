@@ -7,6 +7,7 @@ import {
   MAILER_TEMPLATE_ENUM,
   SendAuditStoneMailInterface,
   SendBuyAccountMailInterface,
+  SendBuyAccountsMailInterface,
   SendTokenMailInterface,
   SendWelcomeMailInterface,
 } from "../interface";
@@ -102,6 +103,19 @@ export class MailerService {
       username,
       account,
       listImage,
+    });
+    return this.transporter.sendMail(mailOptions);
+  }
+
+  async sendBuyAccounts(
+    information: SendBuyAccountsMailInterface,
+    template = MAILER_TEMPLATE_ENUM.BUY_ACCOUNTS_BY_USER
+  ) {
+    const { to, username, accounts, cost } = information;
+    const mailOptions = getMailOptions(to, template, {
+      username,
+      accounts,
+      cost,
     });
     return this.transporter.sendMail(mailOptions);
   }

@@ -1,5 +1,5 @@
 import { ACCOUNT_MESSAGE, AUDIT_MESSAGE, TIM_DANG_EMAIL } from "@/core";
-import { User, ACCOUNT_STATUS, AUDIT_TYPE } from "@/entity";
+import { User, ACCOUNT_STATUS, AUDIT_TYPE, Account } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import {
@@ -9,7 +9,7 @@ import {
 } from "@/repository";
 import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
 import { Connection } from "typeorm";
-import { BuyAccountDto } from "../dto";
+import { BuyAccountDto, BuyMultiAccountDto } from "../dto";
 
 @Injectable()
 export class AccountAuditService {
@@ -22,12 +22,12 @@ export class AccountAuditService {
     private mailerService: MailerService
   ) {}
 
-  async buyAccountByUser(user: User, id: string, buyAccountDto: BuyAccountDto) {
+  async buyAccountByUser(
+    user: User,
+    account: Account,
+    buyAccountDto: BuyAccountDto
+  ) {
     return this.connection.transaction(async () => {
-      const account = await this.accountRepository.checkExistAccount(id);
-      if (account.status === ACCOUNT_STATUS.SOLD || account.soldAt) {
-        throw new HttpException(ACCOUNT_MESSAGE.SOLD, HttpStatus.BAD_GATEWAY);
-      }
       account.status = ACCOUNT_STATUS.SOLD;
       account.soldAt = new Date();
       account.boughtBy = user.username;
@@ -44,7 +44,7 @@ export class AccountAuditService {
       return Promise.all([
         this.auditRepository.save({
           type: AUDIT_TYPE.ACCOUNT,
-          information: { ...buyAccountDto, id },
+          information: { ...buyAccountDto, id: account.id },
           user,
         }),
         this.userRepository.save(user),
@@ -67,6 +67,43 @@ export class AccountAuditService {
         this.historyService.createHistoryBuyAccount({
           account,
           username: user.username,
+        }),
+      ]);
+    });
+  }
+
+  async buyMultiAccountByUser(
+    user: User,
+    accounts: Account[],
+    buyMutiAccountDto: BuyMultiAccountDto
+  ) {
+    return this.connection.transaction(async () => {
+      const { ids, ...buyAccountDto } = buyMutiAccountDto;
+      console.log(user);
+      console.log(accounts);
+      console.log(buyMutiAccountDto);
+      const cost = accounts.reduce(
+        (total, account) => total + account.newPrice,
+        0
+      );
+
+      const newMoney = +user.money - cost;
+      return Promise.all([
+        this.accountRepository.update(ids, {
+          boughtBy: user.username,
+          soldAt: new Date(),
+          status: ACCOUNT_STATUS.SOLD,
+        }),
+        this.userRepository.save({ ...user, money: newMoney }),
+        this.auditRepository.save({
+          type: AUDIT_TYPE.ACCOUNT,
+          information: { ...buyAccountDto, accounts },
+          user,
+        }),
+        this.historyService.createHistoryBuyMultiAccount({
+          accounts,
+          username: user.username,
+          cost,
         }),
       ]);
     });

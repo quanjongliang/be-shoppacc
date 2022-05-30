@@ -17,3 +17,7 @@ export class BuyAccountDto {
   @IsOptional()
   others?: string;
 }
+
+export class BuyMultiAccountDto extends BuyAccountDto {
+  ids: string[];
+}

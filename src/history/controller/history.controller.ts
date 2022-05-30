@@ -1,12 +1,10 @@
-import { Get } from '@nestjs/common';
-import { Query } from '@nestjs/common';
-import { Controller } from '@nestjs/common';
-import { ApiTags } from '@nestjs/swagger';
-import { QueryHistoryDto } from '../dto';
-import { HistoryService } from '../service';
+import { Query, Controller, Get } from "@nestjs/common";
+import { ApiTags } from "@nestjs/swagger";
+import { QueryHistoryDto } from "../dto";
+import { HistoryService } from "../service";
 
-@Controller('history')
-@ApiTags('history')
+@Controller("history")
+@ApiTags("history")
 export class HistoryController {
   constructor(private historyService: HistoryService) {}
 

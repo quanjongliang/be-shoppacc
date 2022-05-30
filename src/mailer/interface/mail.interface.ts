@@ -9,6 +9,8 @@ export enum MAILER_TEMPLATE_ENUM {
   AUDIT_STONE_TO_USER = "AUDIT_STONE_TO_USER",
   BUY_ACCOUNT_BY_USER = "BUY_ACCOUNT_BY_USER",
   BUY_ACCOUNT_TO_USER = "BUY_ACCOUNT_TO_USER",
+  BUY_ACCOUNTS_TO_USER = "BUY_ACCOUNTS_TO_USER",
+  BUY_ACCOUNTS_BY_USER = "BUY_ACCOUNTS_BY_USER",
 }
 
 export const MAILER_TEMPLATE: MailerTemplateInterface = {
@@ -39,6 +41,14 @@ export const MAILER_TEMPLATE: MailerTemplateInterface = {
   BUY_ACCOUNT_TO_USER: {
     TEMPLATE: "buy-account-to-user",
     SUBJECT: "Buy account to user",
+  },
+  BUY_ACCOUNTS_TO_USER: {
+    TEMPLATE: "buy-accounts-to-user",
+    SUBJECT: "Buy accounts to user",
+  },
+  BUY_ACCOUNTS_BY_USER: {
+    TEMPLATE: "buy-accounts-by-user",
+    SUBJECT: "Buy accounts by user",
   },
 };
 
@@ -77,10 +87,15 @@ export interface RequestStoneMailContext {
   auditInformations: AuditInformation[];
 }
 
-export interface ByAccountByUserContext {
+export interface BuyAccountByUserContext {
   username: string;
   account: Account;
   listImage: string[];
+}
+export interface BuyAccountsContext {
+  username: string;
+  accounts: Account[];
+  cost: number;
 }
 
 export type MailContext =
@@ -88,7 +103,8 @@ export type MailContext =
   | ResetPasswordMailContext
   | SubmitUserMailContext
   | RequestStoneMailContext
-  | ByAccountByUserContext;
+  | BuyAccountByUserContext
+  | BuyAccountsContext;
 
 export interface MailerOptions extends TemplateOptions {
   from: string;
