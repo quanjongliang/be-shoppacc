@@ -138,7 +138,7 @@ export class AuditService {
             user: userAudit,
             ...createAudit,
             information: createAuditByAdminDto,
-            typeAudit: createAudit?.typeAudit || AUDIT_TYPE.COIN
+            type: createAudit?.typeAudit || AUDIT_TYPE.COIN
           }),
           this.historyService.createHistoryAmountTransferred({
             admin: user.username,
