@@ -39,4 +39,9 @@ export class TagController {
   async getAllTag(@Query() queryTag: QueryTagDto) {
     return this.tagService.getAll(queryTag);
   }
+
+  @Get(':id')
+  async getTagById(@Param('id')id : string){
+    return this.tagService.getTagById(id)
+  }
 }

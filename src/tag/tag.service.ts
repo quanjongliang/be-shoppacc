@@ -47,4 +47,8 @@ export class TagService {
       where,
     });
   }
+
+  async getTagById(id:string):Promise<Tag>{
+    return this.tagRepository.findOne({id})
+  }
 }
