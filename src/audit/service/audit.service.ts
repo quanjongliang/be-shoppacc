@@ -7,7 +7,7 @@ import {
   HISTORY_MESSAGE,
   SHOP_EMAIL,
 } from "@/core";
-import { Audit, AUDIT_RELATION, AUDIT_STATUS, History, User } from "@/entity";
+import { Audit, AUDIT_RELATION, AUDIT_STATUS, AUDIT_TYPE, History, User } from "@/entity";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import {
   AuditInformationRepository,
@@ -165,7 +165,7 @@ export class AuditService {
       offset = DEFAULT_CONFIG.OFFSET,
       status = "",
     } = queryAuditDto;
-    const where = {};
+    const where = {type:AUDIT_TYPE.STONE};
     if (user) {
       where["user"] = user;
     }

@@ -1,12 +1,9 @@
 import { calculateTotalAudit } from "@/core";
-import { ObjectTypeInterface } from "@/tag";
 import {
   BeforeInsert,
   Column,
   Entity,
-  ManyToOne,
-  ObjectType,
-  OneToMany,
+  ManyToOne, OneToMany
 } from "typeorm";
 import { AuditInformation } from "../audit-information";
 import { BaseColumn } from "../base";
