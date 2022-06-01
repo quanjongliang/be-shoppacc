@@ -1,6 +1,8 @@
 import { BaseQuery } from "@/core";
 import { ApiProperty } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
+
+
 export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiProperty()
@@ -14,6 +16,7 @@ export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiProperty()
   sort?: number;
+ 
 }
 
 export class QueryDetailsAccountDto {

@@ -1,34 +1,20 @@
 import { CloundinaryService } from "@/cloudinary";
 import {
-  ACCOUNT_MESSAGE,
-  AUDIT_MESSAGE,
-  BaseQueryResponse,
+  ACCOUNT_MESSAGE, BaseQueryResponse,
   NETWORK_MESSAGE,
-  POST_CONFIG,
-  TIM_DANG_EMAIL,
+  POST_CONFIG
 } from "@/core";
 import {
   Account,
-  ACCOUNT_RELATION,
-  ACCOUNT_STATUS,
-  TAG_TYPE,
-  User,
+  ACCOUNT_RELATION, TAG_TYPE,
+  User
 } from "@/entity";
-import { HistoryService } from "@/history";
-import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import { changeToSlug } from "@/post";
 import {
-  AccountRepository,
-  AuditRepository,
-  TagRepository,
-  UserRepository,
+  AccountRepository, TagRepository
 } from "@/repository";
 import {
-  ConflictException,
-  HttpException,
-  HttpStatus,
-  BadRequestException,
-  Injectable,
+  BadRequestException, ConflictException, Injectable
 } from "@nestjs/common";
 import { Connection, In, IsNull } from "typeorm";
 import {
@@ -36,7 +22,7 @@ import {
   QueryAccountDto,
   QueryDetailsAccountDto,
   QueryWishListAccountDto,
-  UpdateAccountDto,
+  UpdateAccountDto
 } from "../dto";
 
 @Injectable()
@@ -139,12 +125,20 @@ export class AccountService {
       findWeaponQuery.andWhere(`account.character  ILIKE '%${c}%'`);
     });
     findWeaponQuery.andWhere(`account.server ILIKE '%${server}%'`);
-    sortValue
-      ? findWeaponQuery.addOrderBy(
+    if(sortValue){
+      if(sortValue ===3){
+        findWeaponQuery.addOrderBy(
+          "account.isSale",
+          "ASC" )
+      } else {
+        findWeaponQuery.addOrderBy(
           "account.newPrice",
           sortValue === 0 ? "ASC" : "DESC"
         )
-      : findWeaponQuery.addOrderBy("account.createdAt", "DESC");
+      }
+    }else{
+      findWeaponQuery.addOrderBy("account.createdAt", "DESC");
+    }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
       findWeaponQuery.getMany(),

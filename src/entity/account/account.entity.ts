@@ -1,4 +1,6 @@
 import {
+  BeforeInsert,
+  BeforeUpdate,
   Column,
   Entity,
   Generated,
@@ -9,8 +11,9 @@ import {
 } from "typeorm";
 import { BaseColumn } from "../base";
 import { Cloundinary } from "../cloudinary";
-import { Tag } from "../tag";
+import { Tag, TAG_TYPE } from "../tag";
 import { User } from "../user";
+import { convertToStringTagSlug } from "../util";
 
 export const ACCOUNT_TABLE_NAME = "account";
 
@@ -48,6 +51,9 @@ export class Account extends BaseColumn {
 
   @Column({ default: 0, type: "bigint" })
   newPrice: number;
+
+  @Column({nullable:true})
+  isSale:boolean
 
   @Column({ type: "text", nullable: true })
   name: string;
@@ -91,10 +97,11 @@ export class Account extends BaseColumn {
   @Column({ type: "text", nullable: true })
   weapon: string;
 
-  // @BeforeInsert()
-  // @BeforeUpdate()
-  // updateTagString() {
-  //     this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
-  //     this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
-  // }
+  @BeforeInsert()
+  @BeforeUpdate()
+  updateTagString() {
+      this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
+      this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
+      this.isSale = this.oldPrice < this.newPrice
+  }
 }
