@@ -1,6 +1,6 @@
 import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
-import { LIMIT_FILE_ACCOUNT, MOD_ADMIN_ROLE } from "@/core";
-import { Account, User } from "@/entity";
+import { LIMIT_FILE_ACCOUNT } from "@/core";
+import { Account, User, USER_ROLE } from "@/entity";
 import {
   Body,
   Controller,
@@ -37,7 +37,7 @@ export class AccountController {
     private accountAuditService: AccountAuditService
   ) {}
 
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @Post("create")
   @UseInterceptors(
     FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
@@ -88,14 +88,14 @@ export class AccountController {
 
   @Delete(":id")
   @UseGuards(AccountActionGuard)
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   async deleteAccount(@CurrentAccount() account: Account) {
     return this.accountService.removeAccount(account);
   }
 
   @Patch(":id")
   @UseGuards(AccountActionGuard)
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @UseInterceptors(
     FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
       storage: diskStorage({

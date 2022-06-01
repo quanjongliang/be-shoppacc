@@ -1,6 +1,5 @@
 import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
-import { MOD_ADMIN_ROLE } from "@/core";
-import { User } from "@/entity";
+import { User, USER_ROLE } from "@/entity";
 import {
   Controller,
   UseGuards,
@@ -33,7 +32,7 @@ export class AuditController {
   }
 
   @Post("create")
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   async createAuditByAdmin(
     @CurrentUser() user: User,
     @Body() createAuditByAdmin: CreateAuditByAdminDto
@@ -51,7 +50,7 @@ export class AuditController {
   }
 
   @Get("all")
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @UseInterceptors(GetAuditInterceptor)
   async getAllAuditHistory(@Query() queryAuditDto: QueryAuditDto) {
     return this.auditService.queryAuditByUser(queryAuditDto);
@@ -59,7 +58,7 @@ export class AuditController {
 
   @Patch("update/:id")
   @UseGuards(RolesGuard)
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   async updateStatusAudit(@CurrentUser() user: User, @Param("id") id: string) {
     return this.auditService.updateStatusAudit(user, id);
   }

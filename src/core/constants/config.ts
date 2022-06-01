@@ -68,7 +68,7 @@ export const POST_CONFIG = {
   LENGTH: { MIN: 8 },
   LIMIT: 10,
 };
-export const MOD_ADMIN_ROLE = [USER_ROLE.ADMIN, USER_ROLE.MOD];
+// export const USER_ROLE.ADMIN,USER_ROLE.MOD = [USER_ROLE.ADMIN, USER_ROLE.MOD];
 
 
 export const CLOUDINARY_CONFIG = {

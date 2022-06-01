@@ -12,8 +12,9 @@ import { extname } from "path";
 import { CloundinaryService } from "../service";
 import { v4 as uuid } from "uuid";
 import { JwtAuthGuard, Roles, RolesGuard } from "@/auth";
-import { LIMIT_FILE_BANNER, MOD_ADMIN_ROLE } from "@/core";
+import { LIMIT_FILE_BANNER,} from "@/core";
 import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { USER_ROLE } from "@/entity";
 
 @ApiTags("cloundinary")
 @ApiBearerAuth()
@@ -28,7 +29,7 @@ export class CloundinaryController {
 
   @Post()
   @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @UseInterceptors(
     FilesInterceptor("files", LIMIT_FILE_BANNER, {
       storage: diskStorage({

@@ -18,7 +18,6 @@ import { v4 as uuid } from 'uuid';
 import { CreatePostDto, UpdatePostDto } from '../dto';
 import { PostService } from '../service';
 import { ApiTags, ApiBearerAuth, ApiParam } from '@nestjs/swagger';
-import { MOD_ADMIN_ROLE } from '@/core';
 
 @Controller('post')
 @ApiTags('post')
@@ -28,7 +27,7 @@ export class PostController {
   constructor(private postService: PostService) {}
 
   @Post('create')
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
@@ -49,7 +48,7 @@ export class PostController {
   }
 
   @Patch('update/:id')
-  @Roles(...MOD_ADMIN_ROLE)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
