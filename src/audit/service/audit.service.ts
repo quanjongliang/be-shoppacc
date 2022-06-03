@@ -165,8 +165,9 @@ export class AuditService {
       limit = DEFAULT_CONFIG.LIMIT,
       offset = DEFAULT_CONFIG.OFFSET,
       status = "",
+      type=AUDIT_TYPE.STONE
     } = queryAuditDto;
-    const where = {type:AUDIT_TYPE.STONE};
+    const where = {type};
     if (user) {
       where["user"] = user;
     }
@@ -226,5 +227,9 @@ export class AuditService {
           HttpStatus.BAD_REQUEST
         );
       });
+  }
+
+  async getAuditById(id:string):Promise<Audit | undefined>{
+    return this.auditRepository.findOne({id})
   }
 }

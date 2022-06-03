@@ -11,7 +11,7 @@ import {
   UseInterceptors,
   Param,
 } from "@nestjs/common";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { CreateAuditByAdminDto, CreateAuditDto, QueryAuditDto } from "../dto";
 import { GetAuditInterceptor } from "../interceptor";
 import { AuditService } from "../service";
@@ -47,6 +47,14 @@ export class AuditController {
     @Query() queryAuditDto: QueryAuditDto
   ) {
     return this.auditService.queryAuditByUser(queryAuditDto, user);
+  }
+
+  @Get(":id")
+  @ApiParam({
+    name:"id"
+  })
+  async getAuditHistoryById(@Param('id') id : string){
+    return this.auditService.getAuditById(id)
   }
 
   @Get("all")
