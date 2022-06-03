@@ -230,6 +230,6 @@ export class AuditService {
   }
 
   async getAuditById(id:string):Promise<Audit | undefined>{
-    return this.auditRepository.findOne({id})
+    return this.auditRepository.findOne({where:{id},relations:[AUDIT_RELATION.AUDIT_INFORMATIONS,AUDIT_RELATION.USER]})
   }
 }
