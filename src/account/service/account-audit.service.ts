@@ -46,6 +46,7 @@ export class AccountAuditService {
           type: AUDIT_TYPE.ACCOUNT,
           information: { ...buyAccountDto, id: account.id },
           user,
+          total:account.newPrice
         }),
         this.userRepository.save(user),
         this.accountRepository.save(account),
@@ -96,6 +97,7 @@ export class AccountAuditService {
           type: AUDIT_TYPE.ACCOUNT,
           information: { ...buyAccountDto, accounts },
           user,
+          total:cost
         }),
         this.historyService.createHistoryBuyMultiAccount({
           accounts,
