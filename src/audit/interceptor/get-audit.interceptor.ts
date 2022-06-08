@@ -36,6 +36,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             id,
             auditInformations: formattedAuditInformation,
             user: user.username,
+            information,
             total:calculatorTotal
           };
         });
