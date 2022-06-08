@@ -102,6 +102,6 @@ export class Account extends BaseColumn {
   updateTagString() {
       this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
       this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
-      this.isSale = this.oldPrice < this.newPrice
+      this.isSale = this.oldPrice > this.newPrice 
   }
 }
