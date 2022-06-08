@@ -1,20 +1,17 @@
 import { CloundinaryService } from "@/cloudinary";
 import {
-  ACCOUNT_MESSAGE, BaseQueryResponse,
+  ACCOUNT_MESSAGE,
+  BaseQueryResponse,
   NETWORK_MESSAGE,
-  POST_CONFIG
+  POST_CONFIG,
 } from "@/core";
-import {
-  Account,
-  ACCOUNT_RELATION, TAG_TYPE,
-  User
-} from "@/entity";
+import { Account, ACCOUNT_RELATION, TAG_TYPE, User } from "@/entity";
 import { changeToSlug } from "@/post";
+import { AccountRepository, TagRepository } from "@/repository";
 import {
-  AccountRepository, TagRepository
-} from "@/repository";
-import {
-  BadRequestException, ConflictException, Injectable
+  BadRequestException,
+  ConflictException,
+  Injectable,
 } from "@nestjs/common";
 import { Connection, In, IsNull } from "typeorm";
 import {
@@ -22,7 +19,7 @@ import {
   QueryAccountDto,
   QueryDetailsAccountDto,
   QueryWishListAccountDto,
-  UpdateAccountDto
+  UpdateAccountDto,
 } from "../dto";
 
 @Injectable()
@@ -125,19 +122,20 @@ export class AccountService {
       findWeaponQuery.andWhere(`account.character  ILIKE '%${c}%'`);
     });
     findWeaponQuery.andWhere(`account.server ILIKE '%${server}%'`);
-    if(sortValue){
-      if(sortValue ===3){
-        findWeaponQuery.addOrderBy(
-          "account.isSale",
-          "ASC" )
-      } else {
-        findWeaponQuery.addOrderBy(
-          "account.newPrice",
-          sortValue === 0 ? "ASC" : "DESC"
-        )
-      }
-    }else{
-      findWeaponQuery.addOrderBy("account.createdAt", "DESC");
+
+    switch (sortValue) {
+      case 0:
+        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        break;
+      case 1:
+        findWeaponQuery.addOrderBy("account.newPrice", "DESC");
+        break;
+      case 2:
+        findWeaponQuery.addOrderBy("account.isSale", "DESC");
+        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        break;
+      default:
+        findWeaponQuery.addOrderBy("account.createdAt", "DESC");
     }
     const [total, data] = await Promise.all([
       findWeaponQuery.getCount(),
