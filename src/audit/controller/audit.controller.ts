@@ -41,7 +41,7 @@ export class AuditController {
   }
 
   @Get()
-  // @UseInterceptors(GetAuditInterceptor)
+  @UseInterceptors(GetAuditInterceptor)
   async getAuditHistory(
     @CurrentUser() user: User,
     @Query() queryAuditDto: QueryAuditDto
