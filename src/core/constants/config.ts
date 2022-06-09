@@ -3,6 +3,9 @@ import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
 
+export const SHOP_EMAIL = "customer.center@tempest.vn";
+// export const SHOP_EMAIL = "shoppacc.9999@gmail.com";
+
 export const NAME_APP_COMPANY = "Tempest Genshin";
 
 export const MAILER_CONFIG = {
@@ -10,12 +13,12 @@ export const MAILER_CONFIG = {
   HOST:"smtp.zoho.com",
   // PORT: 587,
   PORT:465,
-  SECURE: false,
+  SECURE: true,
   // USER: "shoppacc.9999@gmail.com",
   USER:"customer.center@tempest.vn",
   PASS: "Gunny2.0",
   TEMPLATE_DIR: "./templates/",
-  FROM: `"Tempest Genshin" <shoppacc.9999@gmail.com>`,
+  FROM: `"Tempest Genshin" <${SHOP_EMAIL}>`,
 };
 
 export const DRIVE_CONFIG = {
@@ -91,7 +94,7 @@ export const TIM_DANG_EMAIL = "dft1711198@gmail.com";
 
 export const QUILL_LIANG_EMAIL = "lhongquan.1998@gmail.com";
 
-export const SHOP_EMAIL = "shoppacc.9999@gmail.com";
+
 
 export const LIMIT_FILE_BANNER = 3;
 
