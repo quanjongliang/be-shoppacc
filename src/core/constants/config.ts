@@ -6,10 +6,13 @@ import { v4 as uuid } from "uuid";
 export const NAME_APP_COMPANY = "Tempest Genshin";
 
 export const MAILER_CONFIG = {
-  HOST: "smtp.gmail.com",
-  PORT: 587,
+  // HOST: "smtp.gmail.com",
+  HOST:"smtp.zoho.com",
+  // PORT: 587,
+  PORT:465,
   SECURE: false,
-  USER: "shoppacc.9999@gmail.com",
+  // USER: "shoppacc.9999@gmail.com",
+  USER:"customer.center@tempest.vn",
   PASS: "Gunny2.0",
   TEMPLATE_DIR: "./templates/",
   FROM: `"Tempest Genshin" <shoppacc.9999@gmail.com>`,
