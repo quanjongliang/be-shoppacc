@@ -30,7 +30,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             const { id, isDeleted, createdAt, updatedAt, ...result } = aI;
             return result;
           });
-          const calculatorTotal = total  || calculateTotalAudit(auditInformations) || calculateTotalAccount(information.accounts)
+          const calculatorTotal = total  || calculateTotalAudit(auditInformations) || calculateTotalAccount(information?.accounts) 
           return {
             ...result,
             id,
