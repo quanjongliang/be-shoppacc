@@ -232,7 +232,7 @@ export class AccountService {
             },
           });
           tags.push(...weaponTag);
-          account.character = weaponTag.map(({ slug }) => slug).join(",");
+          account.weapon = weaponTag.map(({ slug }) => slug).join(",");
         }
         if (tags.length > 0) {
           account.tags = tags;
