@@ -6,10 +6,10 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,
+  UseGuards,ParseIntPipe
 } from "@nestjs/common";
 
-import { CurrentUser } from "../decorator";
+import { CurrentUser, Roles } from "../decorator";
 import {
   ChangePasswordDto,
   CreateUserDto,
@@ -20,7 +20,6 @@ import {
 import { JwtAuthGuard, LocalAuthGuard, RolesGuard } from "../guard";
 import { AuthService } from "../service";
 import { ApiTags, ApiBearerAuth, ApiParam, ApiBody } from "@nestjs/swagger";
-import { ParseIntPipe } from "@nestjs/common";
 
 @Controller("auth")
 @ApiTags("auth")
@@ -79,6 +78,7 @@ export class AuthController {
 
   @Patch("update-role")
   @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLE.ADMIN)
   updateRoleUser(
     @CurrentUser() user: User,
     @Body() updateUserRole: UpdateUserRoleDto

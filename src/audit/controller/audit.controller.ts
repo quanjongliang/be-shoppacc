@@ -32,7 +32,7 @@ export class AuditController {
   }
 
   @Post("create")
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN)
   async createAuditByAdmin(
     @CurrentUser() user: User,
     @Body() createAuditByAdmin: CreateAuditByAdminDto
