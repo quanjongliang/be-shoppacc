@@ -122,7 +122,6 @@ export class AccountService {
       findWeaponQuery.andWhere(`account.character  ILIKE '%${c}%'`);
     });
     findWeaponQuery.andWhere(`account.server ILIKE '%${server}%'`);
-
     switch (sortValue) {
       case 0:
         findWeaponQuery.addOrderBy("account.newPrice", "ASC");
@@ -133,6 +132,10 @@ export class AccountService {
       case 2:
         findWeaponQuery.addOrderBy("account.isSale", "DESC");
         findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        break;
+      case 3:
+        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        findWeaponQuery.andWhere("account.isSale = true");
         break;
       default:
         findWeaponQuery.addOrderBy("account.createdAt", "DESC");
