@@ -10,12 +10,12 @@ export const NAME_APP_COMPANY = "Tempest Genshin";
 
 export const MAILER_CONFIG = {
   // HOST: "smtp.gmail.com",
-  HOST:"smtp.zoho.com",
+  HOST: "smtp.zoho.com",
   // PORT: 587,
-  PORT:465,
+  PORT: 465,
   SECURE: true,
   // USER: "shoppacc.9999@gmail.com",
-  USER:"customer.center@tempest.vn",
+  USER: "customer.center@tempest.vn",
   PASS: "Gunny2.0",
   TEMPLATE_DIR: "./templates/",
   FROM: `"Tempest Genshin" <${SHOP_EMAIL}>`,
@@ -59,7 +59,7 @@ export const MULTER_CONFIG = {
 
 export const JWT_CONFIG = {
   SECRET: "secretKey",
-  EXPIRES_IN: "30d",
+  EXPIRES_IN: "1d",
 };
 
 export const JWT_EMAIL_CONFIG = {
@@ -75,7 +75,6 @@ export const POST_CONFIG = {
   LIMIT: 10,
 };
 // export const USER_ROLE.ADMIN,USER_ROLE.MOD = [USER_ROLE.ADMIN, USER_ROLE.MOD];
-
 
 export const CLOUDINARY_CONFIG = {
   NAME: "shoppacc",
@@ -93,8 +92,6 @@ export const DEFAULT_CONFIG = {
 export const TIM_DANG_EMAIL = "dft1711198@gmail.com";
 
 export const QUILL_LIANG_EMAIL = "lhongquan.1998@gmail.com";
-
-
 
 export const LIMIT_FILE_BANNER = 3;
 
