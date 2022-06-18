@@ -1,4 +1,10 @@
-import { ACCOUNT_MESSAGE, AUDIT_MESSAGE, calculateTotalAccount, TIM_DANG_EMAIL } from "@/core";
+import {
+  ACCOUNT_MESSAGE,
+  AUDIT_MESSAGE,
+  calculateTotalAccount,
+  QUILL_LIANG_EMAIL,
+  TIM_DANG_EMAIL,
+} from "@/core";
 import { User, ACCOUNT_STATUS, AUDIT_TYPE, Account } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
@@ -46,7 +52,7 @@ export class AccountAuditService {
           type: AUDIT_TYPE.ACCOUNT,
           information: { ...buyAccountDto, id: account.id },
           user,
-          total:account.newPrice
+          total: account.newPrice,
         }),
         this.userRepository.save(user),
         this.accountRepository.save(account),
@@ -83,7 +89,7 @@ export class AccountAuditService {
       console.log(user);
       console.log(accounts);
       console.log(buyMutiAccountDto);
-      const cost = calculateTotalAccount(accounts)
+      const cost = calculateTotalAccount(accounts);
 
       const newMoney = +user.money - cost;
       return Promise.all([
@@ -97,13 +103,28 @@ export class AccountAuditService {
           type: AUDIT_TYPE.ACCOUNT,
           information: { ...buyAccountDto, accounts },
           user,
-          total:cost
+          total: cost,
         }),
         this.historyService.createHistoryBuyMultiAccount({
           accounts,
           username: user.username,
           cost,
         }),
+        this.mailerService.sendBuyAccounts({
+          cost,
+          accounts,
+          username: user.username,
+          to: user.email,
+        }),
+        this.mailerService.sendBuyAccounts(
+          {
+            cost,
+            accounts,
+            username: user.username,
+            to: QUILL_LIANG_EMAIL,
+          },
+          MAILER_TEMPLATE_ENUM.BUY_ACCOUNTS_TO_USER
+        ),
       ]);
     });
   }

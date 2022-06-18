@@ -96,3 +96,6 @@ export const QUILL_LIANG_EMAIL = "lhongquan.1998@gmail.com";
 export const LIMIT_FILE_BANNER = 3;
 
 export const LIMIT_FILE_ACCOUNT = 10;
+
+export const DEFAULT_ACCOUNT_IMAGE =
+  "https://static.wikia.nocookie.net/gensin-impact/images/7/76/Enemy_Eye_of_the_Storm.png/revision/latest?cb=20201018111829";

@@ -52,6 +52,14 @@ export const MAILER_TEMPLATE: MailerTemplateInterface = {
   },
 };
 
+export interface MultiAccountForMail {
+  name: string;
+  ar: number;
+  server: string;
+  image: string;
+  price: string;
+}
+
 export interface MailerTemplateInterface {
   [key: string]: {
     TEMPLATE: string;
@@ -94,7 +102,7 @@ export interface BuyAccountByUserContext {
 }
 export interface BuyAccountsContext {
   username: string;
-  accounts: Account[];
+  accounts: MultiAccountForMail[];
   cost: number;
 }
 

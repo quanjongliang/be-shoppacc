@@ -7,7 +7,6 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
-  OneToOne,
 } from "typeorm";
 import { BaseColumn } from "../base";
 import { Cloundinary } from "../cloudinary";
@@ -52,8 +51,8 @@ export class Account extends BaseColumn {
   @Column({ default: 0, type: "bigint" })
   newPrice: number;
 
-  @Column({nullable:true})
-  isSale:boolean
+  @Column({ nullable: true })
+  isSale: boolean;
 
   @Column({ type: "text", nullable: true })
   name: string;
@@ -100,8 +99,8 @@ export class Account extends BaseColumn {
   @BeforeInsert()
   @BeforeUpdate()
   updateTagString() {
-      this.character = convertToStringTagSlug(this.tags,TAG_TYPE.CHARACTER)
-      this.weapon = convertToStringTagSlug(this.tags,TAG_TYPE.WEAPON)
-      this.isSale = this.oldPrice > this.newPrice 
+    this.character = convertToStringTagSlug(this.tags, TAG_TYPE.CHARACTER);
+    this.weapon = convertToStringTagSlug(this.tags, TAG_TYPE.WEAPON);
+    this.isSale = this.oldPrice > this.newPrice;
   }
 }

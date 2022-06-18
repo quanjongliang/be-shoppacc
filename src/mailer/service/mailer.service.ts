@@ -1,5 +1,10 @@
-import { MAILER_CONFIG, NAME_APP_COMPANY } from "@/core";
-import { Account, AuditInformation } from "@/entity";
+import {
+  DEFAULT_ACCOUNT_IMAGE,
+  formatCurrencyVietNam,
+  MAILER_CONFIG,
+  NAME_APP_COMPANY,
+} from "@/core";
+import { Account, AuditInformation, TAG_TYPE } from "@/entity";
 import { Injectable } from "@nestjs/common";
 import { createTransport, Transporter } from "nodemailer";
 import * as hbs from "nodemailer-express-handlebars";
@@ -112,9 +117,24 @@ export class MailerService {
     template = MAILER_TEMPLATE_ENUM.BUY_ACCOUNTS_BY_USER
   ) {
     const { to, username, accounts, cost } = information;
+    const formattedAccountForMail = [...accounts].map((account) => {
+      const server = account.tags.find(
+        (tag) => tag.type === TAG_TYPE.SERVER
+      ).title;
+      const image =
+        [...account.cloundinary].sort((a, b) => a.order - b.order)[0]?.url ||
+        DEFAULT_ACCOUNT_IMAGE;
+      return {
+        name: account.name,
+        ar: account.ar,
+        server,
+        image,
+        price: formatCurrencyVietNam(+account.newPrice),
+      };
+    });
     const mailOptions = getMailOptions(to, template, {
       username,
-      accounts,
+      accounts: formattedAccountForMail,
       cost,
     });
     return this.transporter.sendMail(mailOptions);
