@@ -121,7 +121,7 @@ export class AccountAuditService {
             cost,
             accounts,
             username: user.username,
-            to: QUILL_LIANG_EMAIL,
+            to: TIM_DANG_EMAIL,
           },
           MAILER_TEMPLATE_ENUM.BUY_ACCOUNTS_TO_USER
         ),
