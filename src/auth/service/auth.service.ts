@@ -1,14 +1,13 @@
 import {
   AUTH_MESSAGE,
+  BaseQueryResponse,
   checkIsMatchPassword,
+  DEFAULT_CONFIG,
   EXPIRES_IN_MINUTE,
   hashedPassword,
-  DEFAULT_CONFIG,
-  BaseQueryResponse,
 } from "@/core/";
 import {
   History,
-  HISTORY_TYPE,
   PayloadTokenUser,
   User,
   UserWithOutPassword,
@@ -18,6 +17,7 @@ import { HistoryService } from "@/history";
 import { getExpiredTime, MailerService } from "@/mailer";
 import { UserRepository } from "@/repository";
 import {
+  BadRequestException,
   ConflictException,
   HttpException,
   HttpStatus,
@@ -26,7 +26,7 @@ import {
 } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { default as jwtDecode, default as jwt_decode } from "jwt-decode";
-import { Like, UpdateResult } from "typeorm";
+import { Like } from "typeorm";
 import {
   ChangePasswordDto,
   CreateUserDto,
@@ -34,7 +34,7 @@ import {
   QueryUserDto,
   UpdateUserRoleDto,
 } from "../dto";
-import { SubmitUserPayload, ResetPasswordPayload } from "../interface";
+import { ResetPasswordPayload, SubmitUserPayload } from "../interface";
 import { isTokenExpired } from "../util";
 
 @Injectable()
@@ -68,22 +68,27 @@ export class AuthService {
   }
 
   async createNewUser(createUserDto: CreateUserDto): Promise<void> {
-    const { username, email, password: rawPassword } = createUserDto;
-    const queryEmail = email ? { email } : {};
-    const checkUserInfor = await this.userRepository.findOne({
-      where: [{ username }, queryEmail],
-    });
-    if (checkUserInfor) throw new ConflictException(AUTH_MESSAGE.USER.EXIST);
-    const password = await hashedPassword(rawPassword);
+    try {
+      const { username, email, password: rawPassword } = createUserDto;
+      const queryEmail = email ? { email } : {};
+      const checkUserInfor = await this.userRepository.findOne({
+        where: [{ username }, queryEmail],
+      });
+      if (checkUserInfor) throw new ConflictException(AUTH_MESSAGE.USER.EXIST);
+      const password = await hashedPassword(rawPassword);
 
-    const rawNewUser = {
-      ...createUserDto,
-      password,
-    };
+      const rawNewUser = {
+        ...createUserDto,
+        password,
+      };
 
-    const expiredTime = getExpiredTime(EXPIRES_IN_MINUTE.THIRTY_MINUTE);
-    const token = this.jwtService.sign({ rawNewUser, expiredTime });
-    return this.mailerService.sendSubmitMail({ to: email, username, token });
+      const expiredTime = getExpiredTime(EXPIRES_IN_MINUTE.THIRTY_MINUTE);
+      const token = this.jwtService.sign({ rawNewUser, expiredTime });
+      return this.mailerService.sendSubmitMail({ to: email, username, token });
+    } catch (error) {
+      console.log(error);
+      throw new BadRequestException(error.message);
+    }
   }
 
   async submitCreateNewUser(token: string): Promise<string> {
