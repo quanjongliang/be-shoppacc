@@ -180,8 +180,8 @@ export class AuditService {
       .createQueryBuilder("audit")
       .leftJoinAndSelect("audit.user", "user")
       .leftJoinAndSelect("audit.auditInformations", "auditInformation")
-      .take(limit)
-      .skip(offset)
+      .limit(limit)
+      .offset(offset)
       .where("audit.type = :type", { type })
       .orderBy("audit.createdAt", "DESC");
 
