@@ -1,15 +1,15 @@
 import { BaseQuery } from "@/core";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
 export class QueryPostDto extends BaseQuery {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   slug?: string;
 }
 
 export class QueryPostTagDto extends QueryPostDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   tag?: string;
 }

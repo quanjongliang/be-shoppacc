@@ -1,9 +1,9 @@
 import { TAG_TYPE } from "@/entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 
 export class UpdateTagDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   title?: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   type?: TAG_TYPE;
 }

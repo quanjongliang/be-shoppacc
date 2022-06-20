@@ -1,6 +1,6 @@
 import { AUDIT_MESSAGE } from "@/core";
 import { AUDIT_TYPE } from "@/entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 
 export enum TYPE_TRANSFER {
@@ -8,47 +8,47 @@ export enum TYPE_TRANSFER {
   MINUS = "MINUS",
 }
 export class CreateAuditDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   UID: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   server: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   username: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   password: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   accountName: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   phone: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   note: string;
-  @ApiProperty({ type: () => [AuditInformationDto] })
+  @ApiPropertyOptional({ type: () => [AuditInformationDto] })
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   auditInformation: AuditInformationDto[];
 }
 
 export class CreateAuditByAdminDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   username: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   typeAudit: AUDIT_TYPE;
-  @ApiProperty()
+  @ApiPropertyOptional()
   amountTransferred: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   typeTransfer: TYPE_TRANSFER;
 }
 
 export class AuditInformationDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   name: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   quantity: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   unitPrice: number;
 }

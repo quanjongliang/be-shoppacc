@@ -1,35 +1,33 @@
 import { BaseQuery } from "@/core";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
-
 
 export class QueryAccountDto extends BaseQuery {
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   weapon?: string;
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   character?: string;
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   server?: string;
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   sort?: number;
- 
 }
 
 export class QueryDetailsAccountDto {
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   id?: string;
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   slug?: string;
 }
 
 export class QueryWishListAccountDto {
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   ids: string;
 }

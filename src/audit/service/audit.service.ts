@@ -7,7 +7,14 @@ import {
   HISTORY_MESSAGE,
   SHOP_EMAIL,
 } from "@/core";
-import { Audit, AUDIT_RELATION, AUDIT_STATUS, AUDIT_TYPE, History, User } from "@/entity";
+import {
+  Audit,
+  AUDIT_RELATION,
+  AUDIT_STATUS,
+  AUDIT_TYPE,
+  History,
+  User,
+} from "@/entity";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import {
   AuditInformationRepository,
@@ -55,7 +62,7 @@ export class AuditService {
           password,
           server,
         });
-        const total = calculateTotalAudit(auditInformations)
+        const total = calculateTotalAudit(auditInformations);
         if (user.money < total) {
           throw new HttpException(
             AUDIT_MESSAGE.NOT_ENOUGH,
@@ -138,7 +145,7 @@ export class AuditService {
             user: userAudit,
             ...createAudit,
             information: createAuditByAdminDto,
-            type: createAudit?.typeAudit || AUDIT_TYPE.COIN
+            type: createAudit?.typeAudit || AUDIT_TYPE.COIN,
           }),
           this.historyService.createHistoryAmountTransferred({
             admin: user.username,
@@ -165,27 +172,28 @@ export class AuditService {
       limit = DEFAULT_CONFIG.LIMIT,
       offset = DEFAULT_CONFIG.OFFSET,
       status = "",
-      type=AUDIT_TYPE.STONE
+      type = AUDIT_TYPE.STONE,
+      queryString = "",
     } = queryAuditDto;
-    const where = {type};
-    if (user) {
-      where["user"] = user;
-    }
+
+    const queryAudit = this.auditRepository
+      .createQueryBuilder("audit")
+      .leftJoinAndSelect("audit.user", "user")
+      .leftJoinAndSelect("audit.auditInformations", "auditInformation")
+      .take(limit)
+      .skip(offset)
+      .where("audit.type = :type", { type });
+
     if (status) {
-      where["status"] = status;
+      queryAudit.andWhere("audit.status = :status", { status });
     }
-    const [total, data] = await Promise.all([
-      this.auditRepository.count({ where }),
-      this.auditRepository.find({
-        take: limit,
-        skip: offset,
-        where,
-        relations: [AUDIT_RELATION.USER, AUDIT_RELATION.AUDIT_INFORMATIONS],
-        order: {
-          createdAt: "DESC",
-        },
-      }),
-    ]);
+    if (user) {
+      queryAudit.andWhere("user.id = :userId", { userId: user.id });
+    }
+    if (queryString) {
+      queryAudit.andWhere(`user.username ILIKE '%${queryString}%'`);
+    }
+    const [data, total] = await queryAudit.getManyAndCount();
     return {
       total,
       data,
@@ -229,7 +237,10 @@ export class AuditService {
       });
   }
 
-  async getAuditById(id:string):Promise<Audit | undefined>{
-    return this.auditRepository.findOne({where:{id},relations:[AUDIT_RELATION.AUDIT_INFORMATIONS,AUDIT_RELATION.USER]})
+  async getAuditById(id: string): Promise<Audit | undefined> {
+    return this.auditRepository.findOne({
+      where: { id },
+      relations: [AUDIT_RELATION.AUDIT_INFORMATIONS, AUDIT_RELATION.USER],
+    });
   }
 }

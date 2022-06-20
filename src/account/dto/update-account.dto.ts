@@ -1,19 +1,19 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 import { CreateAccountDto } from "./create-account.dto";
 
 export class UpdateAccountDto extends CreateAccountDto {}
 
 export class BuyAccountDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   phone: string;
-  @ApiProperty({ nullable: true })
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   gmail?: string;
-  @ApiProperty({ nullable: true })
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   social?: string;
-  @ApiProperty({ nullable: true })
+  @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   others?: string;
 }

@@ -1,13 +1,13 @@
 import { Account, User } from "@/entity";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
 export class BaseQuery {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   limit?: number;
   @IsOptional()
-  @ApiProperty()
+  @ApiPropertyOptional()
   offset?: number;
 }
 

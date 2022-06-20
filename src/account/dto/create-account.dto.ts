@@ -1,41 +1,41 @@
 import { AUDIT_MESSAGE } from "@/core";
-import { ApiProperty } from "@nestjs/swagger";
+import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsNotEmpty } from "class-validator";
 export class CreateAccountDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   ar: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   code: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   tinhHuy: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   moonPack: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   nguyenThach: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   char: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   weapon: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   server: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   name: string;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   oldPrice: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   newPrice: number;
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   description: string;
 }

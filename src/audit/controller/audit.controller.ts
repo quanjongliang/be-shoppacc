@@ -50,7 +50,7 @@ export class AuditController {
   }
 
   @Get("all")
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   @UseInterceptors(GetAuditInterceptor)
   async getAllAuditHistory(@Query() queryAuditDto: QueryAuditDto) {
     return this.auditService.queryAuditByUser(queryAuditDto);
@@ -58,17 +58,15 @@ export class AuditController {
 
   @Get(":id")
   @ApiParam({
-    name:"id"
+    name: "id",
   })
-  async getAuditHistoryById(@Param('id') id : string){
-    return this.auditService.getAuditById(id)
+  async getAuditHistoryById(@Param("id") id: string) {
+    return this.auditService.getAuditById(id);
   }
-
- 
 
   @Patch("update/:id")
   @UseGuards(RolesGuard)
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   async updateStatusAudit(@CurrentUser() user: User, @Param("id") id: string) {
     return this.auditService.updateStatusAudit(user, id);
   }
