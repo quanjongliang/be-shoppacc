@@ -1,4 +1,10 @@
-import { BaseQueryResponse, calculateTotalAccount, calculateTotalAudit, returnCalculatedTotal } from "@/core";
+import {
+  BaseQueryResponse,
+  calculateTotalAccount,
+  calculateTotalAudit,
+  formatCurrencyVietNam,
+  returnCalculatedTotal,
+} from "@/core";
 import { Audit } from "@/entity";
 import {
   Injectable,
@@ -30,7 +36,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             const { id, isDeleted, createdAt, updatedAt, ...result } = aI;
             return result;
           });
-          const calculatorTotal =returnCalculatedTotal(d)
+          const calculatorTotal = returnCalculatedTotal(d);
           return {
             ...result,
             id,
@@ -38,7 +44,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             user: user.username,
             information,
             type,
-            total:calculatorTotal
+            total: formatCurrencyVietNam(calculatorTotal),
           };
         });
         return {
@@ -49,4 +55,3 @@ export class GetAuditInterceptor implements NestInterceptor {
     );
   }
 }
-

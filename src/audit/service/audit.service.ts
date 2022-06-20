@@ -182,7 +182,8 @@ export class AuditService {
       .leftJoinAndSelect("audit.auditInformations", "auditInformation")
       .take(limit)
       .skip(offset)
-      .where("audit.type = :type", { type });
+      .where("audit.type = :type", { type })
+      .orderBy("audit.createdAt", "DESC");
 
     if (status) {
       queryAudit.andWhere("audit.status = :status", { status });
