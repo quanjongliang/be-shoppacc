@@ -1,3 +1,4 @@
+import { formatCurrencyVietNam } from "@/core";
 import {
   CreateAmountTransferredHistoryDto,
   CreateBuyAccountHistoryDto,
@@ -39,7 +40,11 @@ export const getHistoryBuyAccountMessage = (
   historyBuyAccount: CreateBuyAccountHistoryDto
 ): string => {
   const { account, username } = historyBuyAccount;
-  return `Tài khoản tên ${account.name} có id ${account.id} và mã ${account.code} đã được mua bởi người dùng ${username} với giá ${account.newPrice}`;
+  return `Tài khoản tên ${account.name} có id ${account.id} và mã ${
+    account.code
+  } đã được mua bởi người dùng ${username} với giá ${formatCurrencyVietNam(
+    account.newPrice
+  )}`;
 };
 
 export const getHistoryBuyMultiAccountMessage = (
@@ -47,5 +52,7 @@ export const getHistoryBuyMultiAccountMessage = (
 ): string => {
   const { accounts, username, cost } = historyBuyAccount;
   const listCode = accounts.map(({ code }) => code).join(",");
-  return `Tài khoản code ${listCode} đã được mua bởi người dùng ${username} với giá ${cost}`;
+  return `Tài khoản code ${listCode} đã được mua bởi người dùng ${username} với giá ${formatCurrencyVietNam(
+    cost
+  )}`;
 };
