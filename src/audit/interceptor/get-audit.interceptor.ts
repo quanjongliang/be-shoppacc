@@ -45,6 +45,7 @@ export class GetAuditInterceptor implements NestInterceptor {
             information,
             type,
             total: formatCurrencyVietNam(calculatorTotal),
+            createdAt,
           };
         });
         return {

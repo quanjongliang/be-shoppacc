@@ -103,48 +103,51 @@ export class AccountService {
       server = "",
       character = "",
       sort,
+      queryString = "",
     } = queryAccountDto;
     const sortValue = JSON.parse(sort.toString());
     const characterList = character.split(",") || [];
     const weaponList = weapon.split(",") || [];
-    const findWeaponQuery = this.accountRepository
+    const findAccountQuery = this.accountRepository
       .createQueryBuilder("account")
       .leftJoinAndSelect("account.cloundinary", "cloundinary")
       .leftJoinAndSelect("account.user", "user")
       .leftJoinAndSelect("account.tags", "tag")
       .andWhere("account.isDeleted = false")
       .take(limit)
-      .skip(offset);
+      .skip(offset)
+      .andWhere(`account.code ILIKE '%${queryString}%'`);
     weaponList.forEach((w) => {
-      findWeaponQuery.andWhere(`account.weapon ILIKE '%${w}%'`);
+      findAccountQuery.andWhere(`account.weapon ILIKE '%${w}%'`);
     });
     characterList.forEach((c) => {
-      findWeaponQuery.andWhere(`account.character  ILIKE '%${c}%'`);
+      findAccountQuery.andWhere(`account.character  ILIKE '%${c}%'`);
     });
-    findWeaponQuery.andWhere(`account.server ILIKE '%${server}%'`);
+    findAccountQuery.andWhere(`account.server ILIKE '%${server}%'`);
     switch (sortValue) {
       case 0:
-        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        findAccountQuery.addOrderBy("account.newPrice", "ASC");
         break;
       case 1:
-        findWeaponQuery.addOrderBy("account.newPrice", "DESC");
+        findAccountQuery.addOrderBy("account.newPrice", "DESC");
         break;
       case 2:
-        findWeaponQuery.addOrderBy("account.isSale", "DESC");
-        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
+        findAccountQuery.addOrderBy("account.isSale", "DESC");
+        findAccountQuery.addOrderBy("account.newPrice", "ASC");
         break;
       case 3:
-        findWeaponQuery.addOrderBy("account.newPrice", "ASC");
-        findWeaponQuery.andWhere("account.isSale = true");
+        findAccountQuery.addOrderBy("account.newPrice", "ASC");
+        findAccountQuery.andWhere("account.isSale = true");
         break;
       default:
-        findWeaponQuery.addOrderBy("account.createdAt", "DESC");
+        findAccountQuery.addOrderBy("account.createdAt", "DESC");
     }
-    const [total, data] = await Promise.all([
-      findWeaponQuery.getCount(),
-      findWeaponQuery.getMany(),
-    ]);
 
+    // const [total, data] = await Promise.all([
+    //   findAccountQuery.getCount(),
+    //   findAccountQuery.getMany(),
+    // ]);
+    const [data, total] = await findAccountQuery.getManyAndCount();
     return {
       total,
       data,

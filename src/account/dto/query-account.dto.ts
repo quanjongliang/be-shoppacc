@@ -15,6 +15,9 @@ export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiPropertyOptional()
   sort?: number;
+  @IsOptional()
+  @ApiPropertyOptional()
+  queryString?: string;
 }
 
 export class QueryDetailsAccountDto {
