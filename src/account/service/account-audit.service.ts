@@ -37,7 +37,7 @@ export class AccountAuditService {
       account.status = ACCOUNT_STATUS.SOLD;
       account.soldAt = new Date();
       account.boughtBy = user.username;
-      if (user.money < account.newPrice) {
+      if (user.money <= account.newPrice) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,
           HttpStatus.BAD_GATEWAY
@@ -90,8 +90,13 @@ export class AccountAuditService {
       console.log(accounts);
       console.log(buyMutiAccountDto);
       const cost = calculateTotalAccount(accounts);
-
       const newMoney = +user.money - cost;
+      if(newMoney<=0){
+        throw new HttpException(
+          AUDIT_MESSAGE.NOT_ENOUGH,
+          HttpStatus.BAD_GATEWAY
+        );
+      }
       return Promise.all([
         this.accountRepository.update(ids, {
           boughtBy: user.username,
