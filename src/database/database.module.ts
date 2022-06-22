@@ -15,7 +15,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       username: process.env["POSTGRES_USER"] || "doadmin",
       password: process.env["POSTGRES_PASSWORD"] || "AVNS_iJkMaPG3cQTcceBSgsI",
       database: process.env["POSTGRES_DB"] || "defaultdb",
-      ssl:{require},
+      ssl:{require:true},
       // url: process.env.DATABASE_URL,
       // ssl: { rejectUnauthorized: false },
       synchronize: !!JSON.parse(process.env["TYPEORM_SYNCHRONIZE"] || "true"),
