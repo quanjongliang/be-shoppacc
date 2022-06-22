@@ -10,7 +10,9 @@ export class updateUser1652323823166 implements MigrationInterface {
     const sheets = file.SheetNames;
     let data = [];
     for (let i = 0; i < sheets.length; i++) {
-      const temp = reader.utils.sheet_to_json(file.Sheets[file.SheetNames[i]]);
+      const temp: any = reader.utils.sheet_to_json(
+        file.Sheets[file.SheetNames[i]]
+      );
       temp.forEach(({ username, email, phone, role, password }) => {
         const truePhone = phone ? +`0${phone}` : "";
         const trueRole = role === "1" ? USER_ROLE.ADMIN : USER_ROLE.USER;
