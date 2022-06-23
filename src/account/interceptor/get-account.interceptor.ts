@@ -20,8 +20,10 @@ export class GetAccountInterceptor implements NestInterceptor {
           d.cloundinary.sort((a, b) => a.order - b.order);
           const isAvatarCloudinary =
             d.cloundinary.find((cl) => cl.isAvatar) || d.cloundinary[0];
-          const character = convertToStringTagSlug(d.tags, TAG_TYPE.CHARACTER);
-          const weapon = convertToStringTagSlug(d.tags, TAG_TYPE.WEAPON);
+          const character =
+            d.character || convertToStringTagSlug(d.tags, TAG_TYPE.CHARACTER);
+          const weapon =
+            d.weapon || convertToStringTagSlug(d.tags, TAG_TYPE.WEAPON);
           return {
             ...d,
             cloundinary: d.cloundinary.map((cl) => cl.url || cl.secure_url),

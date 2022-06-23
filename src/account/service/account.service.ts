@@ -102,7 +102,7 @@ export class AccountService {
       weapon = "",
       server = "",
       character = "",
-      sort,
+      sort = "null",
       queryString = "",
     } = queryAccountDto;
     const sortValue = JSON.parse(sort.toString());
