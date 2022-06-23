@@ -21,6 +21,13 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       synchronize: !!JSON.parse(process.env["TYPEORM_SYNCHRONIZE"] || "true"),
       entities: [__dirname + "/dist/**/*.entity.js"],
       autoLoadEntities: true,
+      migrations: [__dirname + "/dist/migration/**/*.js"],
+      subscribers: [__dirname + "dist/subscriber/**/*.js"],
+      cli: {
+        entitiesDir: "src/**/*.entity{.ts,.js}",
+        migrationsDir: "src/migration",
+        subscribersDir: "src/subscriber",
+      },
     }),
   ],
 })
