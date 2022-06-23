@@ -138,7 +138,7 @@ export class AccountAuditService {
   async refundAccount(account:Account,user:User){
     return this.connection.transaction(async()=>{
       const buyer = await this.userRepository.findOne({username: account.boughtBy})
-      if(buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER)
+      if(!buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER)
       buyer.money = +buyer.money + +account.newPrice
       account.boughtBy = null
       account.soldAt = null
