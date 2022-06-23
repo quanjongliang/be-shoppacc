@@ -34,6 +34,8 @@ export const ACCOUNT_MESSAGE = {
   SOLD: "Tài khoản đã bán!",
   CODE: "Mã tài khoản đã tồn tại!",
   CAN_NOT_BEHAVIOR: "Tài khoản đã bán, không thể sửa hoặc xoá!",
+  AVAILABLE : "Tài khoản đang còn, không thể xử lý",
+  NOT_FOUND_BUYER:"Người mua không tìm thấy"
 };
 
 export const AUDIT_MESSAGE = {

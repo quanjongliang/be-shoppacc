@@ -6,6 +6,7 @@ import {
   CreateChangeRoleHistoryDto,
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
+  CreateRefundAccountHistoryDto,
 } from "../dto";
 
 export const getHistoryChangeRoleMessage = (
@@ -56,3 +57,9 @@ export const getHistoryBuyMultiAccountMessage = (
     cost
   )}`;
 };
+
+export const getHistoryRefundAccountMessage= (historyRefundAccount: CreateRefundAccountHistoryDto) : string=>{
+  const {account,user,boughtBy} = historyRefundAccount
+  const now = new Date()
+  return `User ${user.username} đã đặt lại trạng thái của tài khoản ${account.name} thành còn hàng và hoàn lại ${formatCurrencyVietNam(account.newPrice)} cho User ${boughtBy} vào lúc ${now.toLocaleDateString("vi-VN")} ${now.toLocaleTimeString()}`
+}

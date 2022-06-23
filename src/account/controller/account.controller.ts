@@ -4,16 +4,14 @@ import { Account, User, USER_ROLE } from "@/entity";
 import {
   Body,
   Controller,
-  Delete,
-  Param,
-  Patch,
+  Delete, Patch,
   Post,
   UploadedFiles,
   UseGuards,
-  UseInterceptors,
+  UseInterceptors
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
-import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
+import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
 import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
@@ -22,9 +20,13 @@ import {
   BuyAccountDto,
   BuyMultiAccountDto,
   CreateAccountDto,
-  UpdateAccountDto,
+  UpdateAccountDto
 } from "../dto";
-import { AccountActionGuard, AccountBuyGuard } from "../guard";
+import {
+  AccountActionGuard,
+  AccountBuyGuard,
+  AccountRefundGuard
+} from "../guard";
 import { AccountBuyMultiGuard } from "../guard/account-buy-multi.guard";
 import { AccountAuditService, AccountService } from "../service";
 @Controller("account")
@@ -37,7 +39,7 @@ export class AccountController {
     private accountAuditService: AccountAuditService
   ) {}
 
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   @Post("create")
   @UseInterceptors(
     FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
@@ -59,6 +61,7 @@ export class AccountController {
   }
 
   @Patch("buy/:id")
+  @ApiParam({ name: "id" })
   @UseGuards(AccountBuyGuard)
   async buyAccount(
     @CurrentUser() user: User,
@@ -87,15 +90,17 @@ export class AccountController {
   }
 
   @Delete(":id")
+  @ApiParam({ name: "id" })
   @UseGuards(AccountActionGuard)
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   async deleteAccount(@CurrentAccount() account: Account) {
     return this.accountService.removeAccount(account);
   }
 
   @Patch(":id")
+  @ApiParam({ name: "id" })
   @UseGuards(AccountActionGuard)
-  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   @UseInterceptors(
     FilesInterceptor("files", LIMIT_FILE_ACCOUNT, {
       storage: diskStorage({
@@ -113,5 +118,16 @@ export class AccountController {
     @UploadedFiles() files: Array<Express.Multer.File>
   ) {
     return this.accountService.updateAccount(account, updateAccountDto, files);
+  }
+
+  @Patch("refund/:id")
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
+  @ApiParam({ name: "id" })
+  @UseGuards(AccountRefundGuard)
+  async refundAccount(
+    @CurrentAccount() account: Account,
+    @CurrentUser() user: User
+  ) {
+    return this.accountAuditService.refundAccount(account, user);
   }
 }

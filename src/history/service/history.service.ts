@@ -9,6 +9,7 @@ import {
   CreateChangeRoleHistoryDto,
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
+  CreateRefundAccountHistoryDto,
   QueryHistoryDto,
 } from "../dto";
 import {
@@ -18,6 +19,7 @@ import {
   getHistoryChangeRoleMessage,
   getHistoryConfirmMessage,
   getHistoryCreateAuditMessage,
+  getHistoryRefundAccountMessage,
 } from "../util";
 
 @Injectable()
@@ -97,6 +99,12 @@ export class HistoryService {
         information: JSON.stringify(createHistory),
       })
     );
+  }
+
+  async createHistoryRefundAccount(createHistory: CreateRefundAccountHistoryDto){
+    const historyMessage = getHistoryRefundAccountMessage(createHistory)
+    const information = JSON.stringify(createHistory)
+    return this.historyRepository.saveNewHistory(historyMessage,HISTORY_TYPE.REFUND_ACCOUNT,information)
   }
 
   async queryHistory(

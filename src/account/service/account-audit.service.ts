@@ -1,6 +1,7 @@
 import {
   ACCOUNT_MESSAGE,
   AUDIT_MESSAGE,
+  AUTH_MESSAGE,
   calculateTotalAccount,
   QUILL_LIANG_EMAIL,
   TIM_DANG_EMAIL,
@@ -13,7 +14,7 @@ import {
   AuditRepository,
   UserRepository,
 } from "@/repository";
-import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { Connection } from "typeorm";
 import { BuyAccountDto, BuyMultiAccountDto } from "../dto";
 
@@ -132,5 +133,21 @@ export class AccountAuditService {
         ),
       ]);
     });
+  }
+
+  async refundAccount(account:Account,user:User){
+    return this.connection.transaction(async()=>{
+      const buyer = await this.userRepository.findOne({username: account.boughtBy})
+      if(buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER)
+      buyer.money = +buyer.money + +account.newPrice
+      account.boughtBy = null
+      account.soldAt = null
+      return Promise.all([
+        this.accountRepository.save(account),
+        this.userRepository.save(buyer),
+        this.historyService.createHistoryRefundAccount({account,boughtBy:account.boughtBy,user})
+      ])
+      
+    })
   }
 }
