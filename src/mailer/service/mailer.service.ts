@@ -130,6 +130,7 @@ export class MailerService {
         server,
         image,
         price: formatCurrencyVietNam(+account.newPrice),
+        code: account.code
       };
     });
     const mailOptions = getMailOptions(to, template, {
