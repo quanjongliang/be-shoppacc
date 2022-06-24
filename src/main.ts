@@ -34,7 +34,7 @@ async function bootstrap() {
         callback(new Error('Not allowed by CORS'))
       }
     },
-    allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+    allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe,Authorization',
     methods: "GET,PUT,POST,PATCH,DELETE,UPDATE,OPTIONS",
     credentials: true,
     });
