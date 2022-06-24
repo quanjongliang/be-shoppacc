@@ -13,7 +13,7 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const whitelist = ['www.tempest.vn', 'tempest.vn'];
+  const whitelist = ['https://www.tempest.vn', 'https://tempest.vn'];
   app.useGlobalPipes(new ValidationPipe());
   const limiter = rateLimit({
     // 15 minutes
