@@ -5,7 +5,7 @@ import { SwaggerModule, DocumentBuilder } from "@nestjs/swagger";
 import { logger, stream } from "./util";
 import morgan = require('morgan')
 import helmet from "helmet";
-
+import { rateLimit } from "express-rate-limit";
 import { NestExpressApplication } from "@nestjs/platform-express";
 
 
@@ -15,7 +15,13 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
   const whitelist = ['www.tempest.vn', 'tempest.vn'];
   app.useGlobalPipes(new ValidationPipe());
-  
+  const limiter = rateLimit({
+    // 15 minutes
+      windowMs: 15 * 60 * 1000,
+    // limit each IP to 100 requests per windowMs
+      max: 100
+    });
+    app.use(limiter);
   app.use(morgan('combined', { stream }))
   app.enableCors({
     origin: function (origin, callback) {
