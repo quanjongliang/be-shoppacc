@@ -13,31 +13,32 @@ import { NestExpressApplication } from "@nestjs/platform-express";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
-  const whitelist = ['https://www.tempest.vn', 'https://tempest.vn'];
   app.useGlobalPipes(new ValidationPipe());
-  const limiter = rateLimit({
-    // 15 minutes
-      windowMs: 15 * 60 * 1000,
-    // limit each IP to 100 requests per windowMs
-      max: 100
-    });
-    app.use(limiter);
-  app.use(morgan('combined', { stream }))
-  app.enableCors({
-    origin: function (origin, callback) {
-      if ( !origin || whitelist.indexOf(origin) !== -1 || origin.includes("localhost")  ) {
-        console.log("allowed cors for:", origin)
-        callback(null, true)
-      } else {
-        console.log("blocked cors for:", origin)
-        callback(new Error('Not allowed by CORS'))
-      }
-    },
-    allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
-    methods: "GET,PUT,POST,PATCH,DELETE,UPDATE,OPTIONS",
-    credentials: true,
-    });
-    setupSecurity(app)
+  app.enableCors()
+  // const whitelist = ['https://www.tempest.vn/', 'https://tempest.vn/','https://shopgenshin.online/'];
+  // const limiter = rateLimit({
+  //   // 15 minutes
+  //     windowMs: 15 * 60 * 1000,
+  //   // limit each IP to 100 requests per windowMs
+  //     max: 100
+  //   });
+  //   app.use(limiter);
+  // app.use(morgan('combined', { stream }))
+  // app.enableCors({
+  //   origin: function (origin, callback) {
+  //     if ( !origin || whitelist.indexOf(origin) !== -1 || origin.includes("localhost")  ) {
+  //       console.log("allowed cors for:", origin)
+  //       callback(null, true)
+  //     } else {
+  //       console.log("blocked cors for:", origin)
+  //       callback(new Error('Not allowed by CORS'))
+  //     }
+  //   },
+  //   allowedHeaders: 'X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept, Observe',
+  //   methods: "GET,PUT,POST,PATCH,DELETE,UPDATE,OPTIONS",
+  //   credentials: true,
+  //   });
+  //   setupSecurity(app)
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const config = new DocumentBuilder()
     .setTitle("Tempest Genshin ")
