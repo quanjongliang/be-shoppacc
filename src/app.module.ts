@@ -12,6 +12,8 @@ import { MulterModule } from "@nestjs/platform-express";
 import { CloudinaryModule } from "@/cloudinary";
 import { AuditModule } from "@/audit";
 import { HistoryModule } from "@/history";
+import { APP_INTERCEPTOR } from "@nestjs/core";
+import { LoggingInterceptor } from "./util";
 
 @Module({
   imports: [
@@ -28,6 +30,10 @@ import { HistoryModule } from "@/history";
     HistoryModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: LoggingInterceptor,
+    },],
 })
 export class AppModule {}

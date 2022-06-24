@@ -142,6 +142,7 @@ export class AccountAuditService {
       buyer.money = +buyer.money + +account.newPrice
       account.boughtBy = null
       account.soldAt = null
+      account.status = ACCOUNT_STATUS.AVAILABLE
       return Promise.all([
         this.accountRepository.save(account),
         this.userRepository.save(buyer),

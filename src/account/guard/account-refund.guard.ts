@@ -1,4 +1,5 @@
 import { ACCOUNT_MESSAGE } from "@/core";
+import { ACCOUNT_RELATION } from "@/entity";
 import { AccountRepository } from "@/repository";
 import {
     BadRequestException,
@@ -19,7 +20,7 @@ export class AccountRefundGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const { id } = request.params;
     if (id) {
-      const account = await this.accountRepository.findOne({id})
+      const account = await this.accountRepository.findOne({where:{id},relations:[ACCOUNT_RELATION.CLOUNDINARY,ACCOUNT_RELATION.TAG,ACCOUNT_RELATION.USER]})
       if(account.boughtBy || account.soldAt){
         request.account = account
         return true;
