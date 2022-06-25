@@ -9,6 +9,14 @@ import { rateLimit } from "express-rate-limit";
 import { NestExpressApplication } from "@nestjs/platform-express";
 
 
+process.on('unhandledRejection', function(reason) {
+  logger.error('Got Unhandled Rejection, throw:', reason)
+  throw reason
+})
+
+process.on('uncaughtException', function(err) {
+  logger.error('Got Uncaught Exception:', err)
+})
 
 
 async function bootstrap() {

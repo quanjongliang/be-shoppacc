@@ -20,6 +20,7 @@ import {
 import { JwtAuthGuard, LocalAuthGuard, RolesGuard } from "../guard";
 import { AuthService } from "../service";
 import { ApiTags, ApiBearerAuth, ApiParam, ApiBody } from "@nestjs/swagger";
+import { logger } from "@/util";
 
 @Controller("auth")
 @ApiTags("auth")
@@ -46,6 +47,7 @@ export class AuthController {
     try {
       return this.authService.createNewUser(newUserDto);
     } catch (error) {
+      logger.log(error.message)
       throw new BadRequestException(JSON.stringify(error))
     }
   }
@@ -70,6 +72,8 @@ export class AuthController {
         currentUser.username
       );
     } catch (error) {
+      logger.log(error.message)
+
       throw new BadRequestException(JSON.stringify(error))
     }
   }
@@ -79,6 +83,7 @@ export class AuthController {
    try {
     return this.authService.forgetPassword(forgetPasswordDto);
    } catch (error) {
+    logger.log(error.message)
     
 throw new BadRequestException(JSON.stringify(error))
    }
