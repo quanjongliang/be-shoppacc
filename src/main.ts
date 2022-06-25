@@ -46,7 +46,7 @@ async function bootstrap() {
     methods: "GET,PUT,POST,PATCH,DELETE,UPDATE,OPTIONS",
     credentials: true,
     });
-    setupSecurity(app)
+    // setupSecurity(app)
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
   const config = new DocumentBuilder()
     .setTitle("Tempest Genshin ")
