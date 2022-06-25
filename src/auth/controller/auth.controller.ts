@@ -6,7 +6,7 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,ParseIntPipe
+  UseGuards,ParseIntPipe, BadRequestException
 } from "@nestjs/common";
 
 import { CurrentUser, Roles } from "../decorator";
@@ -43,7 +43,11 @@ export class AuthController {
 
   @Post("sign-up")
   async signUpUser(@Body() newUserDto: CreateUserDto) {
-    return this.authService.createNewUser(newUserDto);
+    try {
+      return this.authService.createNewUser(newUserDto);
+    } catch (error) {
+      throw new BadRequestException(JSON.stringify(error))
+    }
   }
 
   @Post("sign-up/:token")
@@ -60,15 +64,24 @@ export class AuthController {
     @CurrentUser() currentUser: UserWithOutPassword,
     @Body() changePasswordDto: ChangePasswordDto
   ) {
-    return this.authService.changeUserPassword(
-      changePasswordDto,
-      currentUser.username
-    );
+    try {
+      return this.authService.changeUserPassword(
+        changePasswordDto,
+        currentUser.username
+      );
+    } catch (error) {
+      throw new BadRequestException(JSON.stringify(error))
+    }
   }
 
   @Post("forget-password")
   forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
+   try {
     return this.authService.forgetPassword(forgetPasswordDto);
+   } catch (error) {
+    
+throw new BadRequestException(JSON.stringify(error))
+   }
   }
 
   @Patch("forget-password/:token")
