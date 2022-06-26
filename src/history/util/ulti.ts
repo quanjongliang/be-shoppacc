@@ -67,5 +67,5 @@ export const getHistoryRefundAccountMessage= (historyRefundAccount: CreateRefund
 
 export const getHistoryConfirmBuyAccountMessage = (historyConfimBuyAccount: CreateConfirmAccountBuyedHistoryDto):string=>{
   const {admin,total,user} = historyConfimBuyAccount
-  return `Admin ${admin} xác nhận giao dịch tổng giá ${formatCurrencyVietNam(total)} của tài khoản ${user.username}`
+  return `Admin ${admin} xác nhận giao dịch tổng giá ${formatCurrencyVietNam(+total)} của tài khoản ${user.username}`
 }
