@@ -5,6 +5,7 @@ import {
   calculateTotalAudit,
   DEFAULT_CONFIG,
   HISTORY_MESSAGE,
+  returnCalculatedTotal,
   SHOP_EMAIL,
 } from "@/core";
 import {
@@ -216,12 +217,21 @@ export class AuditService {
             AUDIT_MESSAGE.STATUS_NOT_FOUND,
             HttpStatus.CONFLICT
           );
-          if(audit.type === AUDIT_TYPE.ACCOUNT){
-            return Promise.all([
-              this.historyService.createHistoryConfirmAccountBuyed({admin:user.username, total:audit.total, user:audit.user}),
-              this.auditRepository.update({id},{status:AUDIT_STATUS.COMPLETED})
-            ])
-          }
+
+        if (audit.type === AUDIT_TYPE.ACCOUNT) {
+          const total = returnCalculatedTotal(audit)
+          return Promise.all([
+            this.historyService.createHistoryConfirmAccountBuyed({
+              admin: user.username,
+              total,
+              user: audit.user,
+            }),
+            this.auditRepository.update(
+              { id },
+              { status: AUDIT_STATUS.COMPLETED }
+            ),
+          ]);
+        }
         return Promise.all([
           this.historyService.createHistoryChangeStatusAudit({
             UID: audit.UID,
