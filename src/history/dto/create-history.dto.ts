@@ -39,3 +39,9 @@ export interface CreateRefundAccountHistoryDto{
   user:User
   boughtBy: string
 }
+
+export interface CreateConfirmAccountBuyedHistoryDto{
+  total: number
+  user:User
+  admin:string
+}

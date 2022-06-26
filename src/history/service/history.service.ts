@@ -7,6 +7,7 @@ import {
   CreateBuyAccountHistoryDto,
   CreateBuyMultiAccountHistoryDto,
   CreateChangeRoleHistoryDto,
+  CreateConfirmAccountBuyedHistoryDto,
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   CreateRefundAccountHistoryDto,
@@ -17,6 +18,7 @@ import {
   getHistoryBuyAccountMessage,
   getHistoryBuyMultiAccountMessage,
   getHistoryChangeRoleMessage,
+  getHistoryConfirmBuyAccountMessage,
   getHistoryConfirmMessage,
   getHistoryCreateAuditMessage,
   getHistoryRefundAccountMessage,
@@ -105,6 +107,12 @@ export class HistoryService {
     const historyMessage = getHistoryRefundAccountMessage(createHistory)
     const information = JSON.stringify(createHistory)
     return this.historyRepository.saveNewHistory(historyMessage,HISTORY_TYPE.REFUND_ACCOUNT,information)
+  }
+
+  async createHistoryConfirmAccountBuyed(createHistory: CreateConfirmAccountBuyedHistoryDto){
+    const historyMessage = getHistoryConfirmBuyAccountMessage(createHistory)
+    const information = JSON.stringify(createHistory)
+    return this.historyRepository.saveNewHistory(historyMessage,HISTORY_TYPE.CONFIRM_BUY_ACCOUNT,information)
   }
 
   async queryHistory(

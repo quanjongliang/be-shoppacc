@@ -4,6 +4,7 @@ import {
   CreateBuyAccountHistoryDto,
   CreateBuyMultiAccountHistoryDto,
   CreateChangeRoleHistoryDto,
+  CreateConfirmAccountBuyedHistoryDto,
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   CreateRefundAccountHistoryDto,
@@ -62,4 +63,9 @@ export const getHistoryRefundAccountMessage= (historyRefundAccount: CreateRefund
   const {account,user,boughtBy} = historyRefundAccount
   const now = new Date()
   return `User ${user.username} đã đặt lại trạng thái của tài khoản ${account.name} thành còn hàng và hoàn lại ${formatCurrencyVietNam(account.newPrice)} cho User ${boughtBy} vào lúc ${now.toLocaleDateString("vi-VN")} ${now.toLocaleTimeString()}`
+}
+
+export const getHistoryConfirmBuyAccountMessage = (historyConfimBuyAccount: CreateConfirmAccountBuyedHistoryDto):string=>{
+  const {admin,total,user} = historyConfimBuyAccount
+  return `Admin ${admin} xác nhận giao dịch tổng giá ${formatCurrencyVietNam(total)} của tài khoản ${user.username}`
 }

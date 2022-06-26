@@ -216,13 +216,21 @@ export class AuditService {
             AUDIT_MESSAGE.STATUS_NOT_FOUND,
             HttpStatus.CONFLICT
           );
+        const history =
+          audit.type === AUDIT_TYPE.ACCOUNT
+            ? this.historyService.createHistoryConfirmAccountBuyed({
+                admin: user.username,
+                total: audit.total,
+                user: audit.user,
+              })
+            : this.historyService.createHistoryChangeStatusAudit({
+                UID: audit.UID,
+                admin: user.username,
+                username: audit.user.username,
+              });
 
         return Promise.all([
-          this.historyService.createHistoryChangeStatusAudit({
-            UID: audit.UID,
-            admin: user.username,
-            username: audit.user.username,
-          }),
+          history,
           this.auditRepository.update(
             { id },
             { status: AUDIT_STATUS.COMPLETED }
