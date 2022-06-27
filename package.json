@@ -6,6 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
+    "start:server": " concurrently \"pm2 delete main\"  \"npm i\" \"npm run build\" \" pm2 start dist/main.js\" \"pm2 startup systemd\" \"pm2 save \" ",
     "start:prod": "node dist/main.js",
     "prestart:prod": "npm run build",
     "postinstall": "npm run prestart:prod",
