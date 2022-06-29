@@ -18,6 +18,10 @@ export class QueryAccountDto extends BaseQuery {
   @IsOptional()
   @ApiPropertyOptional()
   queryString?: string;
+  @ApiPropertyOptional()
+  startPrice?:number
+  @ApiPropertyOptional()
+  endPrice?:number
 }
 
 export class QueryDetailsAccountDto {

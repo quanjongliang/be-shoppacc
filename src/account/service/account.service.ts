@@ -104,6 +104,8 @@ export class AccountService {
       character = "",
       sort = "null",
       queryString = "",
+      startPrice,
+      endPrice
     } = queryAccountDto;
     const sortValue = JSON.parse(sort.toString());
     const characterList = character.split(",") || [];
@@ -142,7 +144,9 @@ export class AccountService {
       default:
         findAccountQuery.addOrderBy("account.createdAt", "DESC");
     }
-
+    if(startPrice && endPrice){
+      findAccountQuery.andWhere(`account.newPrice >= ${+startPrice} and account.newPrice <= ${+endPrice}`)
+    }
     // const [total, data] = await Promise.all([
     //   findAccountQuery.getCount(),
     //   findAccountQuery.getMany(),
