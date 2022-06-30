@@ -91,7 +91,7 @@ export const DEFAULT_CONFIG = {
   OFFSET: 0,
 };
 
-export const TIM_DANG_EMAIL = "dft1711198@gmail.com";
+export const TIM_DANG_EMAIL = "hhuongtinlatao@gmail.com";
 
 export const QUILL_LIANG_EMAIL = "lhongquan.1998@gmail.com";
 
