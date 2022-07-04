@@ -9,16 +9,16 @@ export const SHOP_EMAIL = "customer.center@tempest.vn";
 export const NAME_APP_COMPANY = "Tempest Genshin";
 
 export const MAILER_CONFIG = {
-  // HOST: "smtp.gmail.com",
-  HOST: "smtp.zoho.com",
-  // PORT: 587,
-  PORT: 465,
-  // SECURE: false,
-  SECURE: true,
-  // USER: "shoppacc.9999@gmail.com",
-  USER: "customer.center@tempest.vn",
-  // PASS: "knmpnfkoitioimbs",
-  PASS: "Gunny2.0",
+  HOST: "smtp.gmail.com",
+  // HOST: "smtp.zoho.com",
+  PORT: 587,
+  // PORT: 465,
+  SECURE: false,
+  // SECURE: true,
+  USER: "shoppacc.9999@gmail.com",
+  // USER: "customer.center@tempest.vn",
+  PASS: "knmpnfkoitioimbs",
+  // PASS: "Gunny2.0",
   TEMPLATE_DIR: "./templates/",
   FROM: `"Tempest Genshin" <${SHOP_EMAIL}>`,
 };
