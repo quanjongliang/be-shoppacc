@@ -8,12 +8,12 @@ import { ManagementService } from "./management.service";
 @ApiTags("management")
 @ApiBearerAuth()
 @Controller("management")
-@UseGuards(JwtAuthGuard, RolesGuard)
+// @UseGuards(JwtAuthGuard, RolesGuard)
 export class ManagementController {
   constructor(private readonly managementService: ManagementService) {}
 
   @Get()
-  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
+  // @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   async getManagementAccount(@Query() queryManagement: QueryManagementDto) {
     return this.managementService.getManagementAccount(queryManagement);
   }
