@@ -22,6 +22,7 @@ export class ManagementService {
     }
     const data = [];
     let turnOver = 0;
+
     while (rangeDate.startDate.getTime() <= rangeDate.endDate.getTime()) {
       const { startDate, endDate } = getStartAndEndOfDate(rangeDate.startDate);
       const start = startDate.toISOString();
@@ -44,7 +45,24 @@ export class ManagementService {
       rangeDate.startDate = addDateToDate(rangeDate.startDate);
     }
 
-    return { data, turnOver: formatCurrencyVietNam(turnOver) };
+    const [remainingAccounts, soldAccounts] = await Promise.all([
+      this.accountRepository.count({
+        where: { isDeleted: false, status: ACCOUNT_STATUS.AVAILABLE },
+      }),
+      this.accountRepository.count({
+        where: {
+          isDeleted: false,
+          status: ACCOUNT_STATUS.SOLD,
+        },
+      }),
+    ]);
+
+    return {
+      data,
+      turnOver: formatCurrencyVietNam(turnOver),
+      remainingAccounts,
+      soldAccounts,
+    };
   }
 
   async getTurnOverByRange(startDate: string, endDate: string) {
