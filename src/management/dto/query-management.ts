@@ -1,5 +1,9 @@
-export interface QueryManagementDto {
+import { ApiPropertyOptional } from "@nestjs/swagger";
+
+export class QueryManagementDto {
+  @ApiPropertyOptional()
   startDate: Date | string | number;
+  @ApiPropertyOptional()
   endDate: Date | string | number;
 }
 
