@@ -10,7 +10,7 @@ export const calculateTotalAudit = (
   );
 };
 export const calculateTotalAccount = (accounts: Account[]): number => {
-  return accounts.reduce((total, account) => total + account.newPrice, 0);
+  return accounts.reduce((total, account) => total + +account.newPrice, 0);
 };
 
 export const returnCalculatedTotal = (audit: Audit): number => {

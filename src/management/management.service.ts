@@ -1,46 +1,94 @@
-import { ACCOUNT_STATUS, HISTORY_TYPE } from "@/entity";
+import { calculateTotalAccount, formatCurrencyVietNam } from "@/core";
+import { Account, ACCOUNT_STATUS } from "@/entity";
 import { AccountRepository, HistoryRepository } from "@/repository";
 import { Injectable } from "@nestjs/common";
-import { Connection } from "typeorm";
-import { getRangeDateDefault } from "./common";
-import { QueryManagementDto, QueryManagementResult } from "./dto";
-
+import * as moment from "moment";
+import {
+  addDateToDate,
+  getRangeDateDefault,
+  getStartAndEndOfDate,
+} from "./common";
+import { QueryManagementDto } from "./dto";
 @Injectable()
 export class ManagementService {
   constructor(
     private accountRepository: AccountRepository,
     private historyRepository: HistoryRepository
   ) {}
-  async getManagementAccount(
-    queryManagement: QueryManagementDto
-  ): Promise<QueryManagementResult> {
+  async getManagementAccount(queryManagement: QueryManagementDto) {
     let rangeDate = queryManagement;
     if (!queryManagement.startDate || !queryManagement.endDate) {
       rangeDate = getRangeDateDefault();
     }
-    const countSold = await this.accountRepository
+    const data = [];
+    let turnOver = 0;
+    while (rangeDate.startDate.getTime() <= rangeDate.endDate.getTime()) {
+      const { startDate, endDate } = getStartAndEndOfDate(rangeDate.startDate);
+      const start = startDate.toISOString();
+      const end = endDate.toISOString();
+      const [countCreated, accountsSold, countRefund] = await Promise.all([
+        this.getTotalCreatedByDate(start, end),
+        this.getAccountsSoldByDate(start, end),
+        this.getTotalRefundByDate(start, end),
+      ]);
+      const accountTotalPrice = calculateTotalAccount(accountsSold);
+      turnOver += +accountTotalPrice;
+      data.push({
+        label: moment(rangeDate.startDate).format("DD/MM/YYYY"),
+        data: {
+          countCreated,
+          countSold: accountsSold.length,
+          countRefund,
+        },
+      });
+      rangeDate.startDate = addDateToDate(rangeDate.startDate);
+    }
+
+    return { data, turnOver: formatCurrencyVietNam(turnOver) };
+  }
+
+  async getTurnOverByRange(startDate: string, endDate: string) {
+    const accountsSold = await this.accountRepository
       .createQueryBuilder("account")
       .where(
         `account.status = '${ACCOUNT_STATUS.SOLD}' and account.isDeleted = false`
       )
-      .andWhere(
-        `account.soldAt BETWEEN '${rangeDate.startDate}' AND '${rangeDate.endDate}'`
+      .andWhere(`account.soldAt BETWEEN '${startDate}' AND '${endDate}'`)
+      .getMany();
+    return calculateTotalAccount(accountsSold);
+  }
+
+  async getAccountsSoldByDate(
+    startDate: string,
+    endDate: string
+  ): Promise<Account[]> {
+    return this.accountRepository
+      .createQueryBuilder("account")
+      .where(
+        `account.status = '${ACCOUNT_STATUS.SOLD}' and account.isDeleted = false`
       )
-      .getCount();
-    const countCreated = await this.accountRepository
+      .andWhere(`account.soldAt BETWEEN '${startDate}' AND '${endDate}'`)
+      .getMany();
+  }
+
+  async getTotalCreatedByDate(
+    startDate: string,
+    endDate: string
+  ): Promise<number> {
+    return this.accountRepository
       .createQueryBuilder("account")
       .where(` account.isDeleted = false`)
-      .andWhere(
-        `account.createdAt BETWEEN '${rangeDate.startDate}' AND '${rangeDate.endDate}'`
-      )
+      .andWhere(`account.createdAt BETWEEN '${startDate}' AND '${endDate}'`)
       .getCount();
+  }
+
+  async getTotalRefundByDate(
+    startDate: string,
+    endDate: string
+  ): Promise<number> {
     const listRefund = await this.historyRepository.query(
-      `select "accountRefund" from history h where  h."createdAt" BETWEEN  '${rangeDate.startDate}' AND '${rangeDate.endDate}' and h."type"  ='REFUND_ACCOUNT' group by h."accountRefund"  `
+      `select "accountRefund" from history h where  h."createdAt" BETWEEN  '${startDate}' AND '${endDate}' and h."type"  ='REFUND_ACCOUNT' group by h."accountRefund"  `
     );
-    return {
-      countSold,
-      countCreated,
-      countRefund: listRefund.length,
-    };
+    return listRefund.length;
   }
 }
