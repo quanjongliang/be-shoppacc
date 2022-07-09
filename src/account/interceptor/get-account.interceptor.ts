@@ -1,6 +1,7 @@
 import { BaseQueryResponse } from "@/core";
 import { Account, TAG_TYPE } from "@/entity";
 import { convertToStringTagSlug } from "@/entity/util";
+import { RedisCacheService } from "@/redis/redis.service";
 import {
   Injectable,
   NestInterceptor,
@@ -9,10 +10,19 @@ import {
 } from "@nestjs/common";
 import { Observable } from "rxjs";
 import { map, tap } from "rxjs/operators";
-
+import { Request } from 'express';
+import { FastifyRequest } from 'fastify';
+import { PATH_METADATA } from '@nestjs/common/constants';
+import { Reflector } from "@nestjs/core";
+function isExpressRequest(request: Request | FastifyRequest): request is Request {
+  return (request as FastifyRequest).req === undefined;
+}
 @Injectable()
 export class GetAccountInterceptor implements NestInterceptor {
+  constructor(private redisCacheService: RedisCacheService,private readonly reflector: Reflector){}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const request: Request | FastifyRequest = context.switchToHttp().getRequest();
+    const url = request.url
     console.log("Before...");
     return next.handle().pipe(
       map((data: BaseQueryResponse<Account>) => {

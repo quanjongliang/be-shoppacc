@@ -14,6 +14,8 @@ import { AuditModule } from "@/audit";
 import { HistoryModule } from "@/history";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "./util";
+import { RedisModule } from './redis/redis.module';
+import { VnPayModule } from '@/vn-pay';
 
 @Module({
   imports: [
@@ -28,6 +30,8 @@ import { LoggingInterceptor } from "./util";
     CloudinaryModule,
     AuditModule,
     HistoryModule,
+    RedisModule,
+    VnPayModule,
   ],
   controllers: [AppController],
   providers: [AppService,

@@ -1,4 +1,4 @@
-import { Query, Controller, Get, UseInterceptors } from "@nestjs/common";
+import { Query, Controller, Get, UseInterceptors, Request, } from "@nestjs/common";
 import {
   QueryAccountDto,
   QueryDetailsAccountDto,
@@ -11,16 +11,22 @@ import {
   GetDetailsAccountInterceptor,
   WishListAccountInterceptor,
 } from "../interceptor";
-
+import { PATH_METADATA } from '@nestjs/common/constants';
+import { RedisCacheService } from "@/redis/redis.service";
 @Controller("account-get")
 @ApiTags("account-get")
 export class AccountGetController {
-  constructor(private accountService: AccountService) {}
+  constructor(private accountService: AccountService,private redisCacheSerivce: RedisCacheService) {}
 
   @Get()
   @UseInterceptors(GetAccountInterceptor)
-  queryAccount(@Query() queryAccountDto: QueryAccountDto) {
-    return this.accountService.queryAccount(queryAccountDto);
+  async queryAccount(@Query() queryAccountDto: QueryAccountDto , @Request() request:Request) {
+    console.log(request.url)
+    const data = await this.redisCacheSerivce.get(request.url)
+    if(data) return data
+    const freshData = await this.accountService.queryAccount(queryAccountDto);
+    await this.redisCacheSerivce.set(request.url,freshData)
+    return freshData
   }
 
   @Get("details")

@@ -24,13 +24,13 @@ async function bootstrap() {
   app.useGlobalPipes(new ValidationPipe());
   // app.enableCors()
   const whitelist = ['tempest.vn','shopgenshin.online','localhost'];
-  const limiter = rateLimit({
-    // 15 minutes
-      windowMs: 15 * 60 * 1000,
-    // limit each IP to 100 requests per windowMs
-      max: 100
-    });
-    app.use(limiter);
+  // const limiter = rateLimit({
+  //   // 15 minutes
+  //     windowMs: 15 * 60 * 1000,
+  //   // limit each IP to 100 requests per windowMs
+  //     max: 100
+  //   });
+  //   app.use(limiter);
   app.use(morgan('combined', { stream }))
   app.enableCors({
     origin: function (origin, callback) {
