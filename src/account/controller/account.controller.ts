@@ -4,11 +4,12 @@ import { Account, User, USER_ROLE } from "@/entity";
 import {
   Body,
   Controller,
-  Delete, Patch,
+  Delete,
+  Patch,
   Post,
   UploadedFiles,
   UseGuards,
-  UseInterceptors
+  UseInterceptors,
 } from "@nestjs/common";
 import { FilesInterceptor } from "@nestjs/platform-express";
 import { ApiBearerAuth, ApiParam, ApiTags } from "@nestjs/swagger";
@@ -20,12 +21,12 @@ import {
   BuyAccountDto,
   BuyMultiAccountDto,
   CreateAccountDto,
-  UpdateAccountDto
+  UpdateAccountDto,
 } from "../dto";
 import {
   AccountActionGuard,
   AccountBuyGuard,
-  AccountRefundGuard
+  AccountRefundGuard,
 } from "../guard";
 import { AccountBuyMultiGuard } from "../guard/account-buy-multi.guard";
 import { AccountAuditService, AccountService } from "../service";

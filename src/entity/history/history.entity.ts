@@ -8,8 +8,8 @@ export enum HISTORY_TYPE {
   CHANGE_STATUS_AUDIT = "CHANGE_STATUS_AUDIT",
   CHANGE_ROLE = "CHANGE_ROLE",
   BUY_ACCOUNT_BY_USER = "BUY_ACCOUNT_BY_USER",
-  REFUND_ACCOUNT="REFUND_ACCOUNT",
-  CONFIRM_BUY_ACCOUNT='CONFIRM_BUY_ACCOUNT'
+  REFUND_ACCOUNT = "REFUND_ACCOUNT",
+  CONFIRM_BUY_ACCOUNT = "CONFIRM_BUY_ACCOUNT",
 }
 
 @Entity(HISTORY_TABLE_NAME)
@@ -22,4 +22,7 @@ export class History extends BaseColumn {
 
   @Column({ type: "text", nullable: true })
   information: string;
+
+  @Column({ type: "text", nullable: true })
+  accountRefund: string;
 }

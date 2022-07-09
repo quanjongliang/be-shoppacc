@@ -14,7 +14,12 @@ import {
   AuditRepository,
   UserRepository,
 } from "@/repository";
-import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
+import {
+  HttpException,
+  HttpStatus,
+  Injectable,
+  NotFoundException,
+} from "@nestjs/common";
 import { Connection } from "typeorm";
 import { BuyAccountDto, BuyMultiAccountDto } from "../dto";
 
@@ -92,7 +97,7 @@ export class AccountAuditService {
       console.log(buyMutiAccountDto);
       const cost = calculateTotalAccount(accounts);
       const newMoney = +user.money - cost;
-      if(newMoney<=0){
+      if (newMoney <= 0) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,
           HttpStatus.BAD_GATEWAY
@@ -135,20 +140,25 @@ export class AccountAuditService {
     });
   }
 
-  async refundAccount(account:Account,user:User){
-    return this.connection.transaction(async()=>{
-      const buyer = await this.userRepository.findOne({username: account.boughtBy})
-      if(!buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER)
-      buyer.money = +buyer.money + +account.newPrice
-      account.boughtBy = null
-      account.soldAt = null
-      account.status = ACCOUNT_STATUS.AVAILABLE
+  async refundAccount(account: Account, user: User) {
+    return this.connection.transaction(async () => {
+      const buyer = await this.userRepository.findOne({
+        username: account.boughtBy,
+      });
+      if (!buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER);
+      buyer.money = +buyer.money + +account.newPrice;
+      account.boughtBy = null;
+      account.soldAt = null;
+      account.status = ACCOUNT_STATUS.AVAILABLE;
       return Promise.all([
         this.accountRepository.save(account),
         this.userRepository.save(buyer),
-        this.historyService.createHistoryRefundAccount({account,boughtBy:account.boughtBy,user})
-      ])
-      
-    })
+        this.historyService.createHistoryRefundAccount({
+          account,
+          boughtBy: account.boughtBy,
+          user,
+        }),
+      ]);
+    });
   }
 }

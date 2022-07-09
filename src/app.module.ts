@@ -14,6 +14,7 @@ import { AuditModule } from "@/audit";
 import { HistoryModule } from "@/history";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "./util";
+import { ManagementModule } from './management/management.module';
 
 @Module({
   imports: [
@@ -28,6 +29,7 @@ import { LoggingInterceptor } from "./util";
     CloudinaryModule,
     AuditModule,
     HistoryModule,
+    ManagementModule,
   ],
   controllers: [AppController],
   providers: [AppService,

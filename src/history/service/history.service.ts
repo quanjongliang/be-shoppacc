@@ -103,16 +103,29 @@ export class HistoryService {
     );
   }
 
-  async createHistoryRefundAccount(createHistory: CreateRefundAccountHistoryDto){
-    const historyMessage = getHistoryRefundAccountMessage(createHistory)
-    const information = JSON.stringify(createHistory)
-    return this.historyRepository.saveNewHistory(historyMessage,HISTORY_TYPE.REFUND_ACCOUNT,information)
+  async createHistoryRefundAccount(
+    createHistory: CreateRefundAccountHistoryDto
+  ) {
+    const historyMessage = getHistoryRefundAccountMessage(createHistory);
+    const information = JSON.stringify(createHistory);
+    return this.historyRepository.saveNewHistory(
+      historyMessage,
+      HISTORY_TYPE.REFUND_ACCOUNT,
+      information,
+      createHistory.account
+    );
   }
 
-  async createHistoryConfirmAccountBuyed(createHistory: CreateConfirmAccountBuyedHistoryDto){
-    const historyMessage = getHistoryConfirmBuyAccountMessage(createHistory)
-    const information = JSON.stringify(createHistory)
-    return this.historyRepository.saveNewHistory(historyMessage,HISTORY_TYPE.CONFIRM_BUY_ACCOUNT,information)
+  async createHistoryConfirmAccountBuyed(
+    createHistory: CreateConfirmAccountBuyedHistoryDto
+  ) {
+    const historyMessage = getHistoryConfirmBuyAccountMessage(createHistory);
+    const information = JSON.stringify(createHistory);
+    return this.historyRepository.saveNewHistory(
+      historyMessage,
+      HISTORY_TYPE.CONFIRM_BUY_ACCOUNT,
+      information
+    );
   }
 
   async queryHistory(
