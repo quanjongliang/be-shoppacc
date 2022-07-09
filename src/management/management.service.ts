@@ -19,6 +19,11 @@ export class ManagementService {
     let rangeDate = queryManagement;
     if (!queryManagement.startDate || !queryManagement.endDate) {
       rangeDate = getRangeDateDefault();
+    } else {
+      rangeDate.startDate = new Date(queryManagement.startDate);
+      rangeDate.endDate = new Date(queryManagement.endDate);
+      rangeDate.endDate.setHours(23, 59, 59, 999);
+      rangeDate.startDate.setHours(0, 0, 0, 0);
     }
     const data = [];
     let turnOver = 0;
