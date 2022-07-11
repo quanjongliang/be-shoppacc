@@ -14,8 +14,10 @@ import { AuditModule } from "@/audit";
 import { HistoryModule } from "@/history";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { LoggingInterceptor } from "./util";
-import { ManagementModule } from './management/management.module';
-
+import { ManagementModule } from "./management/management.module";
+import { BullModule } from "@nestjs/bull";
+import { MessageProducerService } from "./mesage-producer/mesage-producer.service";
+import { MessageConsumer } from "./mesage-producer/mesage-consumer";
 @Module({
   imports: [
     DatabaseModule,
@@ -27,15 +29,28 @@ import { ManagementModule } from './management/management.module';
     AccountModule,
     MulterModule,
     CloudinaryModule,
+    BullModule.forRoot({
+      redis: {
+        host: "localhost",
+        port: 6379,
+      },
+    }),
+    BullModule.registerQueue({
+      name: "message-queue",
+    }),
     AuditModule,
     HistoryModule,
     ManagementModule,
   ],
   controllers: [AppController],
-  providers: [AppService,
+  providers: [
+    MessageProducerService,
+    MessageConsumer,
+    AppService,
     {
       provide: APP_INTERCEPTOR,
       useClass: LoggingInterceptor,
-    },],
+    },
+  ],
 })
 export class AppModule {}

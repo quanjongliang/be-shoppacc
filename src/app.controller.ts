@@ -7,6 +7,8 @@ import {
   UploadedFile,
   UseInterceptors,
   Param,
+  Patch,
+  Query,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -14,14 +16,18 @@ import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CloundinaryService } from "@/cloudinary";
-import { Patch } from "@nestjs/common";
+import { MessageProducerService } from "./mesage-producer/mesage-producer.service";
+import { UserRepository } from "./repository";
+import { Not } from "typeorm";
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private mailerService: MailerService,
-    private cloundinaryService: CloundinaryService
+    private cloundinaryService: CloundinaryService,
+    readonly messageProducerService: MessageProducerService,
+    private userRepository: UserRepository
   ) {}
 
   @Get()
@@ -74,7 +80,16 @@ export class AppController {
   }
 
   @Post("json-weapon")
-  async getWeaponFromJson(){
-    return this.appService.getWeaponJsonFile()
+  async getWeaponFromJson() {
+    return this.appService.getWeaponJsonFile();
+  }
+
+  @Post("send-mails")
+  async sendMailToUser(@Query("msg") msg: string) {
+    const users = await this.userRepository.find({
+      where: { isDeleted: false },
+    });
+    this.messageProducerService.sendMessage(users);
+    console.log("asdasdas");
   }
 }
