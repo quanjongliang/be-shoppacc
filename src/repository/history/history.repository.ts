@@ -14,7 +14,7 @@ export class HistoryRepository extends Repository<History> {
         historyMessage,
         type,
         information,
-        accountRefund: account.id || "",
+        accountRefund: account?.id || "",
       })
     );
   }
