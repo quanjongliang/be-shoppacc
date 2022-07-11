@@ -45,6 +45,10 @@ export class VnPayService {
     const signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
     vnp_Params["vnp_SecureHash"] = signed;
     vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
-    return vnpUrl;
+    res.writeHead(302, {
+      Location: vnpUrl,
+    });
+    res.end();
+    // return { vnpUrl };
   }
 }
