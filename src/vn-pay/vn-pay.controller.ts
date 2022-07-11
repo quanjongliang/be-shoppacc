@@ -12,6 +12,6 @@ export class VnPayController {
   @Post()
   async createVnPay(@Body() vnpDto: CreateVnPayDto, @Res() res: Response) {
     const redirectUrl = this.vnPayService.createVnPay(vnpDto);
-    res.redirect(redirectUrl);
+    res.send(redirectUrl);
   }
 }
