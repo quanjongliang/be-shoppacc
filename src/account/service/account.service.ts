@@ -186,7 +186,7 @@ export class AccountService {
     queryDetails: QueryDetailsAccountDto
   ): Promise<Account> {
     const { id, slug } = queryDetails;
-    return this.accountRepository.findOne({
+    const value = await this.accountRepository.findOne({
       where: [{ id }, { slug }],
       relations: [
         ACCOUNT_RELATION.TAG,
@@ -194,6 +194,7 @@ export class AccountService {
         ACCOUNT_RELATION.USER,
       ],
     });
+    return value
   }
 
   async updateAccount(

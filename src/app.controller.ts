@@ -5,6 +5,7 @@ import {
   Get,
   Post,
   UploadedFile,
+  Patch,
   UseInterceptors,
   Param,
 } from "@nestjs/common";
@@ -14,7 +15,6 @@ import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CloundinaryService } from "@/cloudinary";
-import { Patch } from "@nestjs/common";
 
 @Controller()
 export class AppController {
@@ -74,7 +74,7 @@ export class AppController {
   }
 
   @Post("json-weapon")
-  async getWeaponFromJson(){
-    return this.appService.getWeaponJsonFile()
+  async getWeaponFromJson() {
+    return this.appService.getWeaponJsonFile();
   }
 }

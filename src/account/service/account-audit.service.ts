@@ -137,7 +137,7 @@ export class AccountAuditService {
           MAILER_TEMPLATE_ENUM.BUY_ACCOUNTS_TO_USER
         ),
       ]);
-    });
+    }).catch();
   }
 
   async refundAccount(account: Account, user: User) {
