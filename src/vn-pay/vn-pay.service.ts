@@ -7,7 +7,7 @@ import * as querystring from "qs";
 import * as crypto from "crypto";
 @Injectable()
 export class VnPayService {
-  async createVnPay(vnpayDto: CreateVnPayDto, res: Response) {
+  createVnPay(vnpayDto: CreateVnPayDto) {
     let vnpUrl = "https://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
     const date = new Date();
     const createdDate = moment(date).format("yyyyMMDDHHmmss");
@@ -45,10 +45,10 @@ export class VnPayService {
     const signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
     vnp_Params["vnp_SecureHash"] = signed;
     vnpUrl += "?" + querystring.stringify(vnp_Params, { encode: false });
-    res.writeHead(302, {
-      Location: vnpUrl,
-    });
-    res.end();
-    // return { vnpUrl };
+    // res.writeHead(302, {
+    //   Location: vnpUrl,
+    // });
+    // res.end();
+    return vnpUrl;
   }
 }
