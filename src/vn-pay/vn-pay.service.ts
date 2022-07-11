@@ -26,7 +26,7 @@ export class VnPayService {
       vnp_Command: "pay",
       vnp_TmnCode: "89P58K7G",
       vnp_Locale: language,
-      vnp_CurrCode: "currcode",
+      vnp_CurrCode: "VND",
       vnp_TxnRef: orderId,
       vnp_OrderInfo: orderInfo,
       vnp_OrderType: orderType,
@@ -34,7 +34,7 @@ export class VnPayService {
       vnp_IpAddr: ipAddress,
       vnp_CreateDate: createdDate,
       vnp_BankCode: bankCode,
-      vnp_ReturnUrl: "http://localhost:3000/order/vnpay_return",
+      vnp_ReturnUrl: "tempest.vn",
     };
     const vnp_Params = sortObject(unformatedVnp_Params);
     const signData = querystring.stringify(vnp_Params, { encode: false });
