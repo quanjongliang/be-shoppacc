@@ -34,7 +34,7 @@ export class VnPayService {
       vnp_IpAddr: ipAddress,
       vnp_CreateDate: createdDate,
       vnp_BankCode: bankCode,
-      vnp_ReturnUrl: "tempest.vn",
+      vnp_ReturnUrl: "https://www.tempest.vn/",
     };
     const vnp_Params = sortObject(unformatedVnp_Params);
     const signData = querystring.stringify(vnp_Params, { encode: false });
