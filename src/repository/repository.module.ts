@@ -1,4 +1,4 @@
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { TypeOrmModule } from "@nestjs/typeorm";
 import {
   Account,
   Audit,
@@ -6,20 +6,24 @@ import {
   Cloundinary,
   Driver,
   History,
+  Logging,
   Post,
   Tag,
   User,
-} from '@/entity';
-import { Module } from '@nestjs/common';
-import { DriverRepository } from './driver';
-import { UserRepository } from './user';
-import { PostRepository } from './post';
-import { TagRepository } from './tag';
-import { AccountRepository } from './account';
-import { CloundinaryReposiotry } from './cloudinary';
-import { AuditRepository } from './audit';
-import { AuditInformationRepository } from './audit-information';
-import { HistoryRepository } from './history';
+  VnPay,
+} from "@/entity";
+import { Module } from "@nestjs/common";
+import { DriverRepository } from "./driver";
+import { UserRepository } from "./user";
+import { PostRepository } from "./post";
+import { TagRepository } from "./tag";
+import { AccountRepository } from "./account";
+import { CloundinaryReposiotry } from "./cloudinary";
+import { AuditRepository } from "./audit";
+import { AuditInformationRepository } from "./audit-information";
+import { HistoryRepository } from "./history";
+import { VnPayRepository } from "./vn-pay";
+import { LoggingRepository } from "./logging";
 
 const ENTITY_LIST = [
   User,
@@ -31,6 +35,8 @@ const ENTITY_LIST = [
   Audit,
   AuditInformation,
   History,
+  VnPay,
+  Logging,
 ];
 const REPOSITORY_LIST = [
   UserRepository,
@@ -42,6 +48,8 @@ const REPOSITORY_LIST = [
   AuditRepository,
   AuditInformationRepository,
   HistoryRepository,
+  VnPayRepository,
+  LoggingRepository,
 ];
 
 @Module({

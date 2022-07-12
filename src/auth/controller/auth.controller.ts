@@ -6,7 +6,9 @@ import {
   Param,
   Patch,
   Post,
-  UseGuards,ParseIntPipe, BadRequestException
+  UseGuards,
+  ParseIntPipe,
+  BadRequestException,
 } from "@nestjs/common";
 
 import { CurrentUser, Roles } from "../decorator";
@@ -21,6 +23,7 @@ import { JwtAuthGuard, LocalAuthGuard, RolesGuard } from "../guard";
 import { AuthService } from "../service";
 import { ApiTags, ApiBearerAuth, ApiParam, ApiBody } from "@nestjs/swagger";
 import { logger } from "@/util";
+import { RedisCacheService } from "@/redis/redis.service";
 
 @Controller("auth")
 @ApiTags("auth")
@@ -47,8 +50,8 @@ export class AuthController {
     try {
       return this.authService.createNewUser(newUserDto);
     } catch (error) {
-      logger.log(error.message)
-      throw new BadRequestException(JSON.stringify(error))
+      logger.log(error.message);
+      throw new BadRequestException(JSON.stringify(error));
     }
   }
 
@@ -72,21 +75,21 @@ export class AuthController {
         currentUser.username
       );
     } catch (error) {
-      logger.log(error.message)
+      logger.log(error.message);
 
-      throw new BadRequestException(JSON.stringify(error))
+      throw new BadRequestException(JSON.stringify(error));
     }
   }
 
   @Post("forget-password")
   forgetPassword(@Body() forgetPasswordDto: ForgetPasswordDto) {
-   try {
-    return this.authService.forgetPassword(forgetPasswordDto);
-   } catch (error) {
-    logger.log(error.message)
-    
-throw new BadRequestException(JSON.stringify(error))
-   }
+    try {
+      return this.authService.forgetPassword(forgetPasswordDto);
+    } catch (error) {
+      logger.log(error.message);
+
+      throw new BadRequestException(JSON.stringify(error));
+    }
   }
 
   @Patch("forget-password/:token")

@@ -1,4 +1,5 @@
-import { ApiProperty } from "@nestjs/swagger";
+import { BANK_CODE } from "@/entity";
+import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 
 export class CreateVnPayDto {
   @ApiProperty()
@@ -13,4 +14,15 @@ export class CreateVnPayDto {
   language: string;
   @ApiProperty()
   ipAddress: string;
+}
+
+export class VnpQueryDto {
+  @ApiProperty()
+  @ApiPropertyOptional()
+  amount: number;
+  bankCode: BANK_CODE;
+  id: number;
+  ipAddress: string;
+  responseCode: string;
+  vnp_SecureHash: string;
 }
