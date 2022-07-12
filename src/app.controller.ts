@@ -15,13 +15,15 @@ import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CloundinaryService } from "@/cloudinary";
+import { RedisCacheService } from "./redis/redis.service";
 
 @Controller()
 export class AppController {
   constructor(
     private readonly appService: AppService,
     private mailerService: MailerService,
-    private cloundinaryService: CloundinaryService
+    private cloundinaryService: CloundinaryService,
+    private redisService: RedisCacheService
   ) {}
 
   @Get()
@@ -76,5 +78,15 @@ export class AppController {
   @Post("json-weapon")
   async getWeaponFromJson() {
     return this.appService.getWeaponJsonFile();
+  }
+
+  @Get("test-redis")
+  async testGetRedis() {
+    const result = this.redisService.get("hello");
+    if (!result) {
+      this.redisService.set("hello", "Quan dep trai");
+      return "Quan dep trai k co redis";
+    }
+    return result;
   }
 }
