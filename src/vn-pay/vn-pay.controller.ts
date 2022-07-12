@@ -1,17 +1,33 @@
-import { Body, Controller, Get, Post, Query, Res } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
+import { CurrentUser, JwtAuthGuard } from "@/auth";
+import { User } from "@/entity";
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Query,
+  Res,
+  UseGuards,
+} from "@nestjs/common";
+import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
 import { Response } from "express";
 import { CreateVnPayDto, VnpQueryDto } from "./dto";
 import { VnPayService } from "./vn-pay.service";
 
 @ApiTags("vn-pay")
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Controller("vn-pay")
 export class VnPayController {
   constructor(private vnPayService: VnPayService) {}
 
   @Post()
-  async createVnPay(@Body() vnpDto: CreateVnPayDto, @Res() res: Response) {
-    const redirectUrl = await this.vnPayService.createVnPay(vnpDto);
+  async createVnPay(
+    @Body() vnpDto: CreateVnPayDto,
+    @Res() res: Response,
+    @CurrentUser() user: User
+  ) {
+    const redirectUrl = await this.vnPayService.createVnPay(vnpDto, user);
     res.send(redirectUrl);
   }
 

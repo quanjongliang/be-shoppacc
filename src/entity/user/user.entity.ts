@@ -4,6 +4,7 @@ import { Account } from "../account";
 import { Audit } from "../audit";
 import { BaseColumn } from "../base";
 import { Post } from "../post";
+import { VnPay } from "../vn-pay";
 
 export enum USER_ROLE {
   ADMIN = "ADMIN",
@@ -68,6 +69,9 @@ export class User extends BaseColumn {
 
   @Column({ nullable: true })
   phone: string;
+
+  @OneToMany(() => VnPay, (vnpay) => vnpay.user, { nullable: true })
+  vnPays: VnPay[];
 
   @BeforeInsert()
   setMoneyAndAvatar() {

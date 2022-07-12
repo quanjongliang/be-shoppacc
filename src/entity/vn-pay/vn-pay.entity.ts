@@ -4,7 +4,11 @@ import {
   OneToMany,
   BeforeInsert,
   PrimaryColumn,
+  ManyToOne,
+  CreateDateColumn,
+  UpdateDateColumn,
 } from "typeorm";
+import { User } from "../user";
 
 export enum BANK_CODE {
   VNPAYQR = "VNPAYQR",
@@ -53,7 +57,9 @@ export enum VN_PAY_STATUS {
 export const VN_PAY_SUCCESS_RESPONSE = "00";
 
 export const VN_PAY_TABLE_NAME = "vn-pay";
-
+export enum VN_PAY_RELATION {
+  USER = "user",
+}
 @Entity(VN_PAY_TABLE_NAME)
 export class VnPay {
   @PrimaryColumn()
@@ -84,4 +90,10 @@ export class VnPay {
   vnp_TransactionStatus: string;
   @Column({ enum: VN_PAY_STATUS, default: VN_PAY_STATUS.PENDING })
   status: VN_PAY_STATUS;
+  @ManyToOne(() => User, (user) => user.vnPays, { nullable: true })
+  user: User;
+  @CreateDateColumn({ nullable: true })
+  createdAt: Date;
+  @UpdateDateColumn({ nullable: true })
+  updatedAt: Date;
 }
