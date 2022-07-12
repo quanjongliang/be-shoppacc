@@ -27,10 +27,10 @@ export class HideAuthController {
     @Query() queryUserDto: QueryUserDto,
     @Request() req: Request
   ) {
-    const data = await this.redisService.get(req.url);
-    if (data) return data;
+    // const data = await this.redisService.get(req.url);
+    // if (data) return data;
     const listUser = await this.authService.getAllUserList(queryUserDto);
-    await this.redisService.set(req.url, listUser);
+    // await this.redisService.set(req.url, listUser);
     return listUser;
   }
 }
