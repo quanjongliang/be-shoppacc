@@ -44,10 +44,44 @@ export enum ORDER_LANGUAGE {
   EN = "en",
 }
 
+export enum VN_PAY_STATUS {
+  PENDING = "PENDING",
+  SUCCESS = "SUCCESS",
+  FAILED = "FAILED",
+}
+
+export const VN_PAY_SUCCESS_RESPONSE = "00";
+
 export const VN_PAY_TABLE_NAME = "vn-pay";
 
 @Entity(VN_PAY_TABLE_NAME)
 export class VnPay {
   @PrimaryColumn()
-  id: number;
+  vnp_TxnRef: number;
+  @Column({ type: "text", nullable: true })
+  vnp_OrderInfo: string;
+  @Column({ enum: ORDER_TYPE, nullable: true })
+  vnp_OrderType: ORDER_TYPE;
+  @Column({ nullable: true })
+  vnp_Amount: number;
+  @Column({ nullable: true })
+  vnp_IpAddr: string;
+  @Column({ nullable: true })
+  vnp_CreateDate: string;
+  @Column({ nullable: true, enum: BANK_CODE })
+  vnp_BankCode: BANK_CODE;
+  @Column({ nullable: true })
+  vnp_BankTranNo: string;
+  @Column({ nullable: true })
+  vnp_CardType: string;
+  @Column({ nullable: true })
+  vnp_PayDate: number;
+  @Column({ nullable: true })
+  vnp_ResponseCode: string;
+  @Column({ nullable: true })
+  vnp_TransactionNo: number;
+  @Column({ nullable: true })
+  vnp_TransactionStatus: string;
+  @Column({ enum: VN_PAY_STATUS, default: VN_PAY_STATUS.PENDING })
+  status: VN_PAY_STATUS;
 }
