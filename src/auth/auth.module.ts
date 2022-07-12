@@ -7,6 +7,7 @@ import { JwtModule } from "@nestjs/jwt";
 import { JWT_CONFIG } from "@/core";
 import { MailerModule } from "@/mailer";
 import { HistoryModule } from "@/history";
+import { RedisModule } from "@/redis/redis.module";
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { HistoryModule } from "@/history";
     }),
     MailerModule,
     HistoryModule,
+    RedisModule,
   ],
   controllers: [AuthController, HideAuthController],
   providers: [AuthService, LocalStrategy, JwtStrategy],
