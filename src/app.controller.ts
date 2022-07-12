@@ -82,9 +82,9 @@ export class AppController {
 
   @Get("test-redis")
   async testGetRedis() {
-    const result = this.redisService.get("hello");
+    const result = await this.redisService.get("hello");
     if (!result) {
-      this.redisService.set("hello", "Quan dep trai");
+      await this.redisService.set("hello", "Quan dep trai");
       return "Quan dep trai k co redis";
     }
     return result;
