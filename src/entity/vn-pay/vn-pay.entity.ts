@@ -62,7 +62,7 @@ export class VnPay {
   vnp_OrderInfo: string;
   @Column({ enum: ORDER_TYPE, nullable: true })
   vnp_OrderType: ORDER_TYPE;
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   vnp_Amount: number;
   @Column({ nullable: true })
   vnp_IpAddr: string;
@@ -74,11 +74,11 @@ export class VnPay {
   vnp_BankTranNo: string;
   @Column({ nullable: true })
   vnp_CardType: string;
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   vnp_PayDate: number;
   @Column({ nullable: true })
   vnp_ResponseCode: string;
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: "bigint" })
   vnp_TransactionNo: number;
   @Column({ nullable: true })
   vnp_TransactionStatus: string;

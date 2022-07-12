@@ -68,21 +68,20 @@ export class VnPayService {
     const signed = hmac.update(new Buffer(signData, "utf-8")).digest("hex");
     if (vnp_SecureHash === signed && vnp_TmnCode === serverVnpTmnCode) {
       const { vnp_ResponseCode, vnp_TxnRef } = vnPayParams;
+      delete vnPayParams["vnp_TxnRef"];
       const vnPay = await this.vnPayRepository.findOne({ vnp_TxnRef });
       if (!vnPay) throw new NotFoundException(VN_PAY_MESSAGE.NOT_FOUND);
       if (vnPay.status !== VN_PAY_STATUS.PENDING)
         throw new BadRequestException(VN_PAY_MESSAGE.NOT_PENDING);
-      await this.vnPayRepository.update(
-        { vnp_TxnRef },
-        {
-          ...vnPayParams,
-          status:
-            +vnp_ResponseCode === +VN_PAY_SUCCESS_RESPONSE
-              ? VN_PAY_STATUS.SUCCESS
-              : VN_PAY_STATUS.FAILED,
-        }
-      );
-      return +vnp_ResponseCode === +VN_PAY_SUCCESS_RESPONSE
+      await this.vnPayRepository.save({
+        ...vnPay,
+        ...vnPayParams,
+        status:
+          vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE
+            ? VN_PAY_STATUS.SUCCESS
+            : VN_PAY_STATUS.FAILED,
+      });
+      return vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE
         ? VN_PAY_STATUS.SUCCESS
         : VN_PAY_STATUS.FAILED;
     }
