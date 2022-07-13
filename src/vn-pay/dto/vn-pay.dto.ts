@@ -25,6 +25,9 @@ export class VnpQueryDto {
   vnp_BankCode: BANK_CODE;
   @ApiProperty()
   @ApiPropertyOptional()
+  vnp_BankTranNo: string;
+  @ApiProperty()
+  @ApiPropertyOptional()
   vnp_CardType: string;
   @ApiProperty()
   @ApiPropertyOptional()

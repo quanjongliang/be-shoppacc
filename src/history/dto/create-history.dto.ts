@@ -34,14 +34,20 @@ export abstract class CreateBuyMultiAccountHistoryDto {
   cost: number;
 }
 
-export interface CreateRefundAccountHistoryDto{
-  account:Account
-  user:User
-  boughtBy: string
+export interface CreateRefundAccountHistoryDto {
+  account: Account;
+  user: User;
+  boughtBy: string;
 }
 
-export interface CreateConfirmAccountBuyedHistoryDto{
-  total: number
-  user:User
-  admin:string
+export interface CreateConfirmAccountBuyedHistoryDto {
+  total: number;
+  user: User;
+  admin: string;
+}
+
+export interface CreateVnPayHistoryDto {
+  user: User;
+  vnp_Amount: number;
+  vnp_BankTranNo: string;
 }

@@ -3,14 +3,18 @@ import {
   Injectable,
   NotFoundException,
 } from "@nestjs/common";
-import { Response } from "express";
 import { CreateVnPayDto, VnpQueryDto } from "./dto";
 import * as moment from "moment";
 import { sortObject, VN_PAY_MESSAGE } from "./common";
 import * as querystring from "qs";
 import * as crypto from "crypto";
-import { UserRepository, VnPayRepository } from "@/repository";
 import {
+  HistoryRepository,
+  UserRepository,
+  VnPayRepository,
+} from "@/repository";
+import {
+  HISTORY_TYPE,
   User,
   VN_PAY_RELATION,
   VN_PAY_STATUS,
@@ -18,12 +22,14 @@ import {
 } from "@/entity";
 import { Connection } from "typeorm";
 import { AUTH_MESSAGE } from "@/core";
+import { getHistoryVnPayMessage } from "@/history";
 @Injectable()
 export class VnPayService {
   constructor(
     private vnPayRepository: VnPayRepository,
     private connection: Connection,
-    private userRepository: UserRepository
+    private userRepository: UserRepository,
+    private historyRepository: HistoryRepository
   ) {}
   async createVnPay(vnpayDto: CreateVnPayDto, user: User) {
     let vnpUrl = process.env.VNP_URL;
@@ -68,7 +74,8 @@ export class VnPayService {
 
   async returnVnPay(vnPayParams: VnpQueryDto) {
     const unformattedVnpParams = vnPayParams;
-    const { vnp_SecureHash, vnp_TmnCode, vnp_Amount } = unformattedVnpParams;
+    const { vnp_SecureHash, vnp_TmnCode, vnp_Amount, vnp_BankTranNo } =
+      unformattedVnpParams;
     delete unformattedVnpParams["vnp_SecureHash"];
     delete unformattedVnpParams["vnp_SecureHashType"];
     const vnp_Params = sortObject(unformattedVnpParams);
@@ -89,10 +96,11 @@ export class VnPayService {
         if (!vnPay) throw new NotFoundException(VN_PAY_MESSAGE.NOT_FOUND);
         if (vnPay.status !== VN_PAY_STATUS.PENDING)
           throw new BadRequestException(VN_PAY_MESSAGE.NOT_PENDING);
+        const extractlyVnpAmount = +vnp_Amount / 100;
         await this.vnPayRepository.save({
           ...vnPay,
           ...vnPayParams,
-          vnp_Amount: vnp_Amount / 100,
+          vnp_Amount: +extractlyVnpAmount,
           status:
             vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE
               ? VN_PAY_STATUS.SUCCESS
@@ -100,10 +108,23 @@ export class VnPayService {
         });
         const { user } = vnPay;
         if (!user) throw new NotFoundException(AUTH_MESSAGE.USER.NOT_FOUND);
+        const history = getHistoryVnPayMessage(
+          {
+            user,
+            vnp_Amount: +extractlyVnpAmount,
+            vnp_BankTranNo,
+          },
+          vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE
+        );
         if (vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE) {
-          user.money = +user.money + vnp_Amount / 100;
+          user.money = +user.money + extractlyVnpAmount;
           await this.userRepository.save(user);
         }
+        await this.historyRepository.saveNewHistory(
+          history,
+          HISTORY_TYPE.VN_PAY,
+          JSON.stringify(vnPayParams)
+        );
         return vnp_ResponseCode === VN_PAY_SUCCESS_RESPONSE
           ? VN_PAY_STATUS.SUCCESS
           : VN_PAY_STATUS.FAILED;

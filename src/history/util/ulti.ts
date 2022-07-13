@@ -8,6 +8,7 @@ import {
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   CreateRefundAccountHistoryDto,
+  CreateVnPayHistoryDto,
 } from "../dto";
 
 export const getHistoryChangeRoleMessage = (
@@ -59,13 +60,37 @@ export const getHistoryBuyMultiAccountMessage = (
   )}`;
 };
 
-export const getHistoryRefundAccountMessage= (historyRefundAccount: CreateRefundAccountHistoryDto) : string=>{
-  const {account,user,boughtBy} = historyRefundAccount
-  const now = new Date()
-  return `User ${user.username} đã đặt lại trạng thái của tài khoản ${account.name} thành còn hàng và hoàn lại ${formatCurrencyVietNam(account.newPrice)} cho User ${boughtBy} vào lúc ${now.toLocaleDateString("vi-VN")} ${now.toLocaleTimeString()}`
-}
+export const getHistoryRefundAccountMessage = (
+  historyRefundAccount: CreateRefundAccountHistoryDto
+): string => {
+  const { account, user, boughtBy } = historyRefundAccount;
+  const now = new Date();
+  return `User ${user.username} đã đặt lại trạng thái của tài khoản ${
+    account.name
+  } thành còn hàng và hoàn lại ${formatCurrencyVietNam(
+    account.newPrice
+  )} cho User ${boughtBy} vào lúc ${now.toLocaleDateString(
+    "vi-VN"
+  )} ${now.toLocaleTimeString()}`;
+};
 
-export const getHistoryConfirmBuyAccountMessage = (historyConfimBuyAccount: CreateConfirmAccountBuyedHistoryDto):string=>{
-  const {admin,total,user} = historyConfimBuyAccount
-  return `Admin ${admin} xác nhận giao dịch tổng giá ${formatCurrencyVietNam(+total)} của tài khoản ${user.username}`
-}
+export const getHistoryConfirmBuyAccountMessage = (
+  historyConfimBuyAccount: CreateConfirmAccountBuyedHistoryDto
+): string => {
+  const { admin, total, user } = historyConfimBuyAccount;
+  return `Admin ${admin} xác nhận giao dịch tổng giá ${formatCurrencyVietNam(
+    +total
+  )} của tài khoản ${user.username}`;
+};
+
+export const getHistoryVnPayMessage = (
+  historyVnpay: CreateVnPayHistoryDto,
+  isSuccess: boolean
+): string => {
+  const { user, vnp_Amount, vnp_BankTranNo } = historyVnpay;
+  return `Người dùng ${user.username} nạp ${
+    isSuccess ? "" : " không "
+  } thành công ${formatCurrencyVietNam(
+    vnp_Amount
+  )} bằng VnPay với mã giao dịch: ${vnp_BankTranNo}`;
+};
