@@ -120,7 +120,7 @@ export class AppController {
         const expired = new Date(start.getTime() + 10 * 60 * 1000);
         this.cronjobService.addCronJob(
           description,
-          CronExpression.EVERY_5_SECONDS,
+          CronExpression.EVERY_30_SECONDS,
           start,
           expired,
           transaction.id
