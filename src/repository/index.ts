@@ -10,3 +10,4 @@ export * from "./audit-information";
 export * from "./history";
 export * from "./vn-pay";
 export * from "./logging";
+export * from './transaction'

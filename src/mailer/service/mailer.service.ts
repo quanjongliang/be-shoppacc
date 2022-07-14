@@ -3,8 +3,9 @@ import {
   formatCurrencyVietNam,
   MAILER_CONFIG,
   NAME_APP_COMPANY,
+  TIM_DANG_EMAIL,
 } from "@/core";
-import { Account, AuditInformation, TAG_TYPE } from "@/entity";
+import { Account, AuditInformation, TAG_TYPE, User } from "@/entity";
 import { Injectable } from "@nestjs/common";
 import { createTransport, Transporter } from "nodemailer";
 import * as hbs from "nodemailer-express-handlebars";
@@ -139,5 +140,13 @@ export class MailerService {
       cost,
     });
     return this.transporter.sendMail(mailOptions);
+  }
+
+  async sendNotifyPayment(user:User,isSuccess= false){
+    const message = isSuccess ? "Payment successfull" : "Expired time"
+    const mailOptions = getMailOptions(user?.email || TIM_DANG_EMAIL,
+      MAILER_TEMPLATE_ENUM.PAYMENT_NOTIFY,{user,message}
+      )
+      return this.transporter.sendMail(mailOptions)
   }
 }

@@ -9,6 +9,7 @@ import {
   Logging,
   Post,
   Tag,
+  Transaction,
   User,
   VnPay,
 } from "@/entity";
@@ -24,6 +25,7 @@ import { AuditInformationRepository } from "./audit-information";
 import { HistoryRepository } from "./history";
 import { VnPayRepository } from "./vn-pay";
 import { LoggingRepository } from "./logging";
+import { TransactionRepository } from "./transaction";
 
 const ENTITY_LIST = [
   User,
@@ -37,6 +39,7 @@ const ENTITY_LIST = [
   History,
   VnPay,
   Logging,
+  Transaction
 ];
 const REPOSITORY_LIST = [
   UserRepository,
@@ -50,6 +53,7 @@ const REPOSITORY_LIST = [
   HistoryRepository,
   VnPayRepository,
   LoggingRepository,
+  TransactionRepository
 ];
 
 @Module({

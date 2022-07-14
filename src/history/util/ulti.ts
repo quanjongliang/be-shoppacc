@@ -8,6 +8,7 @@ import {
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   CreateRefundAccountHistoryDto,
+  CreateTransactionHistoryDto,
   CreateVnPayHistoryDto,
 } from "../dto";
 
@@ -94,3 +95,12 @@ export const getHistoryVnPayMessage = (
     vnp_Amount
   )} bằng VnPay với mã giao dịch: ${vnp_BankTranNo}`;
 };
+
+export const getHistoryTransactionMessage= (historyTransaction: CreateTransactionHistoryDto):string=>{
+  const {user,amount,description,transactionID } = historyTransaction
+  return `User ${user.username} nap tien thanh cong: \n
+  so tien: ${amount} VND, \n
+  noi dung: ${description}, \n
+  ma giao dich: ${transactionID}
+  `
+}

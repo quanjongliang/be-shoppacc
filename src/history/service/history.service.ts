@@ -1,5 +1,5 @@
 import { BaseQueryResponse, DEFAULT_CONFIG } from "@/core";
-import { History, HISTORY_TYPE } from "@/entity";
+import { History, HISTORY_TYPE, User } from "@/entity";
 import { HistoryRepository } from "@/repository";
 import { Injectable } from "@nestjs/common";
 import {
@@ -11,6 +11,7 @@ import {
   CreateConfirmHistoryDto,
   CreateCreateAuditHistoryDto,
   CreateRefundAccountHistoryDto,
+  CreateTransactionHistoryDto,
   QueryHistoryDto,
 } from "../dto";
 import {
@@ -22,6 +23,7 @@ import {
   getHistoryConfirmMessage,
   getHistoryCreateAuditMessage,
   getHistoryRefundAccountMessage,
+  getHistoryTransactionMessage,
 } from "../util";
 
 @Injectable()
@@ -114,6 +116,16 @@ export class HistoryService {
       information,
       createHistory.account
     );
+  }
+
+  async createHistoryTransactionPayment(createHistory:CreateTransactionHistoryDto){
+    const historyMessage = getHistoryTransactionMessage(createHistory)
+    const information = JSON.stringify(createHistory)
+    return this.historyRepository.saveNewHistory(
+      historyMessage,
+      HISTORY_TYPE.TRANSACTION,
+      information
+    )
   }
 
   async createHistoryConfirmAccountBuyed(

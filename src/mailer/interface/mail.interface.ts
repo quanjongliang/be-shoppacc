@@ -1,4 +1,4 @@
-import { Account, AuditInformation } from "@/entity";
+import { Account, AuditInformation, User } from "@/entity";
 import { TemplateOptions } from "nodemailer-express-handlebars";
 
 export enum MAILER_TEMPLATE_ENUM {
@@ -11,6 +11,7 @@ export enum MAILER_TEMPLATE_ENUM {
   BUY_ACCOUNT_TO_USER = "BUY_ACCOUNT_TO_USER",
   BUY_ACCOUNTS_TO_USER = "BUY_ACCOUNTS_TO_USER",
   BUY_ACCOUNTS_BY_USER = "BUY_ACCOUNTS_BY_USER",
+  PAYMENT_NOTIFY='PAYMENT_NOTIFY'
 }
 
 export const MAILER_TEMPLATE: MailerTemplateInterface = {
@@ -50,6 +51,11 @@ export const MAILER_TEMPLATE: MailerTemplateInterface = {
     TEMPLATE: "buy-accounts-by-user",
     SUBJECT: "Buy accounts by user",
   },
+  PAYMENT_NOTIFY:{
+    TEMPLATE:'payment-notify',
+    SUBJECT:'Payment notify'
+  }
+
 };
 
 export interface MultiAccountForMail {
@@ -106,13 +112,19 @@ export interface BuyAccountsContext {
   cost: number;
 }
 
+export interface PaymentNotifyContext{
+  user:User
+  message:string
+}
+
 export type MailContext =
   | WelcomeMailContext
   | ResetPasswordMailContext
   | SubmitUserMailContext
   | RequestStoneMailContext
   | BuyAccountByUserContext
-  | BuyAccountsContext;
+  | BuyAccountsContext
+  |PaymentNotifyContext
 
 export interface MailerOptions extends TemplateOptions {
   from: string;

@@ -51,3 +51,10 @@ export interface CreateVnPayHistoryDto {
   vnp_Amount: number;
   vnp_BankTranNo: string;
 }
+
+export interface CreateTransactionHistoryDto{
+  user:User,
+  amount:string,
+  transactionID:string,
+  description:string
+}

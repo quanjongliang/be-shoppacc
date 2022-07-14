@@ -8,6 +8,11 @@ import {
   Patch,
   UseInterceptors,
   Param,
+  Res,
+  Req,
+  NotFoundException,
+  BadRequestException,
+  UseGuards,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { diskStorage } from "multer";
@@ -16,6 +21,13 @@ import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CloundinaryService } from "@/cloudinary";
 import { RedisCacheService } from "./redis/redis.service";
+import { Request } from "express";
+import { CronjobService } from "./cronjob/cronjob.service";
+import { CronExpression } from "@nestjs/schedule";
+import { randomUUID } from "crypto";
+import { CurrentUser, JwtAuthGuard } from "./auth";
+import { User } from "./entity";
+import { TransactionRepository } from "./repository";
 
 @Controller()
 export class AppController {
@@ -23,7 +35,9 @@ export class AppController {
     private readonly appService: AppService,
     private mailerService: MailerService,
     private cloundinaryService: CloundinaryService,
-    private redisService: RedisCacheService
+    private redisService: RedisCacheService,
+    private cronjobService: CronjobService,
+    private transactionRepository: TransactionRepository
   ) {}
 
   @Get()
@@ -88,5 +102,25 @@ export class AppController {
       return "Quan dep trai k co redis";
     }
     return result;
+  }
+  @UseGuards(JwtAuthGuard)
+  @Post("action-cron")
+  async actionCron(@Req() req: Request, @CurrentUser() user:User){
+    try {
+      console.log(user)
+      const transaction = await this.transactionRepository.save(this.transactionRepository.create({user}))
+      const description = `NAP Genshin ${transaction.id}`
+      const {isStop}=req.body
+    if(isStop){
+      this.cronjobService.deleteCron(description)
+    } else {
+      const start = new Date()
+      const expired = new Date(start.getTime() + 20*1000)
+      this.cronjobService.addCronJob(description,CronExpression.EVERY_5_SECONDS,start,expired,transaction.id)
+    }
+    return description
+    } catch (error) {
+     console.log(`error : ${error.message}`) 
+    }
   }
 }
