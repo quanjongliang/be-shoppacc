@@ -111,7 +111,7 @@ export class AppController {
     try {
       console.log(user)
       const transaction = await this.transactionRepository.save(this.transactionRepository.create({user}))
-      const description = `NAP Genshin ${transaction.id}`
+      const description = `NAP-${transaction.id}`
       const {isStop=false}=req.body
     if(isStop){
       this.cronjobService.deleteCron(description)
