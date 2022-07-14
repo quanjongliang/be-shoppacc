@@ -57,7 +57,7 @@ async addCronJob(name: string, expression: CronExpression,start:Date,expired:Dat
 //  check condition transaction and user
           transaction.status= TRANSACTION_STATUS.SUCCESS
           const user = transaction.user
-          user.money = user.money + +transactionById?.amount
+          user.money = +user.money + +transactionById?.amount
           await Promise.all([
       this.transactionRepository.save({...transaction,...transactionById,tempestDescription:name}) ,
             this.userRepository.save({...user}),
