@@ -12,7 +12,7 @@ export const TRANSACTION_TABLE_NAME = "transaction";
 
 export enum TRANSACTION_STATUS {
   PENDING = "PENDING",
-  SUCCESS = "SUCESS",
+  SUCCESS = "SUCCESS",
   EXPIRED = "EXPIRED",
   ERROR = "ERROR",
 }
