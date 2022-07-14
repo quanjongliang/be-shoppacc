@@ -41,7 +41,7 @@ async addCronJob(name: string, expression: CronExpression,start:Date,expired:Dat
           // checkcondition
           transaction.status = TRANSACTION_STATUS.EXPIRED
           await Promise.all([
-            this.transactionRepository.save({...transaction}),
+            this.transactionRepository.save({...transaction,tempestDescription:name}),
           ])
           this.logger.debug('Expired')
       this.deleteCron(name)
@@ -59,7 +59,7 @@ async addCronJob(name: string, expression: CronExpression,start:Date,expired:Dat
           const user = transaction.user
           user.money = user.money + +transactionById?.amount
           await Promise.all([
-      this.transactionRepository.save({...transaction,...transactionById}) ,
+      this.transactionRepository.save({...transaction,...transactionById,tempestDescription:name}) ,
             this.userRepository.save({...user}),
             this.mailerService.sendNotifyPayment(user,true),
             this.historySerice.createHistoryTransactionPayment({user,...transactionById})

@@ -30,6 +30,8 @@ export class Transaction{
     amount:string
     @Column({nullable:true,type:'text'})
     description:string
+    @Column({nullable:true,type:'text'})
+    tempestDescription:string
     @Column({nullable:true})
     transactionDate:string
     @Column({default:false})
