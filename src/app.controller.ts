@@ -120,7 +120,7 @@ export class AppController {
         const expired = new Date(start.getTime() + 10 * 60 * 1000);
         this.cronjobService.addInterval(
           description,
-          30 * 1000,
+          2 * 60 * 1000,
           start,
           expired,
           transaction.id
