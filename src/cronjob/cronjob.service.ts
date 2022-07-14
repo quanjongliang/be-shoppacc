@@ -49,7 +49,7 @@ async addCronJob(name: string, expression: CronExpression,start:Date,expired:Dat
       this.httpService.get('https://api.web2m.com/historyapimbv3/Tempestgenshinvu812/78989899992/E397C0CB-80E8-9E26-6A53-A5397E9B9903').subscribe( async res=>{
         console.log(res.data?.transactions)
         const {transactions=[]} = res.data
-        const transactionById = [...transactions].find(transaction=>transaction.description.includes(name))
+        const transactionById = [...transactions].find(transaction=>transaction.description.toLowerCase().includes(name.toLowerCase()))
         if(transactionById){
           console.log('Success')
           console.log(transactionById)
