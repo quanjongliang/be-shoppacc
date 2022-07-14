@@ -118,14 +118,16 @@ export class HistoryService {
     );
   }
 
-  async createHistoryTransactionPayment(createHistory:CreateTransactionHistoryDto){
-    const historyMessage = getHistoryTransactionMessage(createHistory)
-    const information = JSON.stringify(createHistory)
+  async createHistoryTransactionPayment(
+    createHistory: CreateTransactionHistoryDto
+  ) {
+    const historyMessage = getHistoryTransactionMessage(createHistory);
+    const information = JSON.stringify(createHistory);
     return this.historyRepository.saveNewHistory(
       historyMessage,
       HISTORY_TYPE.TRANSACTION,
       information
-    )
+    );
   }
 
   async createHistoryConfirmAccountBuyed(

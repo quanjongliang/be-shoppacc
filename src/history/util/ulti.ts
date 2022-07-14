@@ -96,11 +96,13 @@ export const getHistoryVnPayMessage = (
   )} bằng VnPay với mã giao dịch: ${vnp_BankTranNo}`;
 };
 
-export const getHistoryTransactionMessage= (historyTransaction: CreateTransactionHistoryDto):string=>{
-  const {user,amount,description,transactionID } = historyTransaction
-  return `User ${user.username} nap tien thanh cong: \n
-  so tien: ${amount} VND, \n
-  noi dung: ${description}, \n
-  ma giao dich: ${transactionID}
-  `
-}
+export const getHistoryTransactionMessage = (
+  historyTransaction: CreateTransactionHistoryDto
+): string => {
+  const { user, amount, description, transactionID } = historyTransaction;
+  return `Nguời dùng ${user.username} nạp tiền thành công: \n
+  Số tiền: ${amount} VND, \n
+  Nội dung: ${description}, \n
+  Mã giao dịch: ${transactionID}
+  `;
+};

@@ -5,6 +5,7 @@ import {
   NAME_APP_COMPANY,
   TIM_DANG_EMAIL,
 } from "@/core";
+import { BankTransaction } from "@/cronjob/interface";
 import { Account, AuditInformation, TAG_TYPE, User } from "@/entity";
 import { Injectable } from "@nestjs/common";
 import { createTransport, Transporter } from "nodemailer";
@@ -131,7 +132,7 @@ export class MailerService {
         server,
         image,
         price: formatCurrencyVietNam(+account.newPrice),
-        code: account.code
+        code: account.code,
       };
     });
     const mailOptions = getMailOptions(to, template, {
@@ -142,11 +143,12 @@ export class MailerService {
     return this.transporter.sendMail(mailOptions);
   }
 
-  async sendNotifyPayment(user:User,isSuccess= false){
-    const message = isSuccess ? "Payment successfull" : "Expired time"
-    const mailOptions = getMailOptions(user?.email || TIM_DANG_EMAIL,
-      MAILER_TEMPLATE_ENUM.PAYMENT_NOTIFY,{user,message}
-      )
-      return this.transporter.sendMail(mailOptions)
+  async sendNotifyPayment(user: User, bankTransaction: BankTransaction) {
+    const mailOptions = getMailOptions(
+      user?.email || TIM_DANG_EMAIL,
+      MAILER_TEMPLATE_ENUM.PAYMENT_NOTIFY,
+      { user, ...bankTransaction }
+    );
+    return this.transporter.sendMail(mailOptions);
   }
 }
