@@ -117,7 +117,7 @@ export class AppController {
       this.cronjobService.deleteCron(description)
     } else {
       const start = new Date()
-      const expired = new Date(start.getTime() + 20*1000)
+      const expired = new Date(start.getTime() + 60*1000)
       this.cronjobService.addCronJob(description,CronExpression.EVERY_5_SECONDS,start,expired,transaction.id)
     }
     return description
