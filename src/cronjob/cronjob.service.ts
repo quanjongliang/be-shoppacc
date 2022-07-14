@@ -42,7 +42,6 @@ async addCronJob(name: string, expression: CronExpression,start:Date,expired:Dat
           transaction.status = TRANSACTION_STATUS.EXPIRED
           await Promise.all([
             this.transactionRepository.save({...transaction}),
-            this.mailerService.sendNotifyPayment(transaction.user)
           ])
           this.logger.debug('Expired')
       this.deleteCron(name)
