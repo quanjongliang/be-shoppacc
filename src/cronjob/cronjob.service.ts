@@ -12,7 +12,9 @@ import { Injectable, Logger } from "@nestjs/common";
 import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
 import { Connection } from "typeorm";
+import * as crypto from "crypto";
 import { BankTransaction } from "./interface";
+import { getApiBank } from "@/util/crypto-hash";
 @Injectable()
 export class CronjobService {
   constructor(
@@ -65,12 +67,10 @@ export class CronjobService {
         this.logger.debug("Expired");
         this.deleteCron(name);
       } else {
-        this.httpService
-          .get(
-            "https://api.web2m.com/historyapimbv3/Tempestgenshinvu812/78989899992/E397C0CB-80E8-9E26-6A53-A5397E9B9903"
-          )
-          .subscribe(async (res) => {
-            const { transactions = [] } = res.data;
+        const api = getApiBank();
+        this.httpService.get(api).subscribe(
+          async (res) => {
+            const { transactions = [], status = false } = res.data;
             const transactionById: BankTransaction | undefined = [
               ...transactions,
             ].find((transaction) =>
@@ -84,7 +84,8 @@ export class CronjobService {
               //  check condition transaction and user
               transaction.status = TRANSACTION_STATUS.SUCCESS;
               const user = transaction.user;
-              user.money = +user.money + +transactionById?.amount;
+              user.money =
+                Number(user.money) + Number(transactionById?.amount || 0);
               await this.connection.transaction(async () => {
                 await Promise.all([
                   this.transactionRepository.save({
@@ -108,7 +109,20 @@ export class CronjobService {
               this.logger.warn(`time (${expression}) for job ${name} to run!`);
               this.logger.warn(`start (${start}) to ${expired} to run!`);
             }
-          });
+          },
+          async (err) => {
+            console.log(err.message);
+            this.deleteCron(name);
+            const transaction = await this.transactionRepository.findOne({
+              where: { id, isDeleted: false },
+              relations: [TRANSACTION_RELATIONS.USER],
+            });
+            await this.transactionRepository.save({
+              ...transaction,
+              status: TRANSACTION_STATUS.ERROR,
+            });
+          }
+        );
       }
     });
 

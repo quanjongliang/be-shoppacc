@@ -1,2 +1,2 @@
-export * from './log.interceptor'
-export * from './winston'
+export * from "./log.interceptor";
+export * from "./winston";

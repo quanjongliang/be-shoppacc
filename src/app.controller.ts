@@ -1,34 +1,32 @@
+import { CloundinaryService } from "@/cloudinary";
 import { MailerService } from "@/mailer";
 import {
   Controller,
   Delete,
   Get,
-  Post,
-  UploadedFile,
-  Patch,
-  UseInterceptors,
   Param,
-  Res,
+  Patch,
+  Post,
   Req,
-  NotFoundException,
-  BadRequestException,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { CronExpression } from "@nestjs/schedule";
+import { ApiBearerAuth } from "@nestjs/swagger";
+import { Request } from "express";
 import { diskStorage } from "multer";
 import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
-import { CloundinaryService } from "@/cloudinary";
-import { RedisCacheService } from "./redis/redis.service";
-import { Request } from "express";
-import { CronjobService } from "./cronjob/cronjob.service";
-import { CronExpression } from "@nestjs/schedule";
-import { randomUUID } from "crypto";
 import { CurrentUser, JwtAuthGuard } from "./auth";
+import { CronjobService } from "./cronjob/cronjob.service";
 import { User } from "./entity";
+import { RedisCacheService } from "./redis/redis.service";
 import { TransactionRepository } from "./repository";
-import { ApiBearerAuth } from "@nestjs/swagger";
+import * as crypto from "crypto";
+import { decryptValue, encryptText } from "./util/crypto-hash";
 
 @Controller()
 export class AppController {
@@ -105,24 +103,32 @@ export class AppController {
     return result;
   }
   @UseGuards(JwtAuthGuard)
-@ApiBearerAuth()
-@Post("action-cron")
-  async actionCron(@Req() req: Request, @CurrentUser() user:User){
+  @ApiBearerAuth()
+  @Post("action-cron")
+  async actionCron(@Req() req: Request, @CurrentUser() user: User) {
     try {
-      console.log(user)
-      const transaction = await this.transactionRepository.save(this.transactionRepository.create({user}))
-      const description = `NAP${transaction.id}`
-      const {isStop=false}=req.body
-    if(isStop){
-      this.cronjobService.deleteCron(description)
-    } else {
-      const start = new Date()
-      const expired = new Date(start.getTime() + 10*60*1000)
-      this.cronjobService.addCronJob(description,CronExpression.EVERY_5_SECONDS,start,expired,transaction.id)
-    }
-    return description
+      console.log(user);
+      const transaction = await this.transactionRepository.save(
+        this.transactionRepository.create({ user })
+      );
+      const description = `NAP${transaction.id}`;
+      const { isStop = false } = req.body;
+      if (isStop) {
+        this.cronjobService.deleteCron(description);
+      } else {
+        const start = new Date();
+        const expired = new Date(start.getTime() + 10 * 60 * 1000);
+        this.cronjobService.addCronJob(
+          description,
+          CronExpression.EVERY_5_SECONDS,
+          start,
+          expired,
+          transaction.id
+        );
+      }
+      return description;
     } catch (error) {
-     console.log(`error : ${error.message}`) 
+      console.log(`error : ${error.message}`);
     }
   }
 }
