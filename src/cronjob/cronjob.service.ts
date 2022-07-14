@@ -156,12 +156,106 @@ export class CronjobService {
     const job = this.schedulerRegistry.getCronJob(name);
     return job ? true : false;
   }
-  addInterval(name: string, milliseconds: number) {
-    const callback = () => {
-      this.logger.warn(`Interval ${name} executing at time (${milliseconds})!`);
+  addInterval(
+    name: string,
+    milliseconds: number,
+    start: Date,
+    expired: Date,
+    id: number
+  ) {
+    const callback = async () => {
+      console.log("compare: ", start.getTime() >= expired.getTime());
+      if (start.getTime() >= expired.getTime()) {
+        const transaction = await this.transactionRepository.findOne({
+          where: { id, isDeleted: false },
+          relations: [TRANSACTION_RELATIONS.USER],
+        });
+        // checkcondition
+        transaction.status = TRANSACTION_STATUS.EXPIRED;
+        await Promise.all([
+          this.transactionRepository.save({
+            ...transaction,
+            tempestDescription: name,
+          }),
+        ]);
+        this.logger.debug("Expired");
+        this.deleteInterval(name);
+      } else {
+        const api = getApiBank();
+        this.httpService.get(api).subscribe(
+          async (res) => {
+            const { transactions = [], status = false } = res.data;
+            const transactionById: BankTransaction | undefined = [
+              ...transactions,
+            ].find((transaction) =>
+              transaction.description.toLowerCase().includes(name.toLowerCase())
+            );
+            if (transactionById) {
+              const transaction = await this.transactionRepository.findOne({
+                where: { id, isDeleted: false },
+                relations: [TRANSACTION_RELATIONS.USER],
+              });
+              //  check condition transaction and user
+              transaction.status = TRANSACTION_STATUS.SUCCESS;
+              const user = transaction.user;
+              user.money =
+                Number(user.money) + Number(transactionById?.amount || 0);
+              await this.connection.transaction(async () => {
+                await Promise.all([
+                  this.transactionRepository.save({
+                    ...transaction,
+                    ...transactionById,
+                    tempestDescription: name,
+                  }),
+                  this.userRepository.save({ ...user }),
+                  this.mailerService.sendNotifyPayment(user, {
+                    ...transactionById,
+                    amount: transactionById?.amount,
+                  }),
+                  this.historySerice.createHistoryTransactionPayment({
+                    user,
+                    ...transactionById,
+                  }),
+                ]);
+              });
+              this.deleteCron(name);
+            } else {
+              this.logger.warn(
+                `Interval ${name} executing at time (${milliseconds})!`
+              );
+              this.logger.warn(`start (${start}) to ${expired} to run!`);
+            }
+          },
+          async (err) => {
+            console.log(err.message);
+            const transaction = await this.transactionRepository.findOne({
+              where: { id, isDeleted: false },
+              relations: [TRANSACTION_RELATIONS.USER],
+            });
+            await this.transactionRepository.save({
+              ...transaction,
+              status: TRANSACTION_STATUS.ERROR,
+              tempestDescription: name,
+            });
+            this.deleteCron(name);
+          }
+        );
+      }
+      // if (date.getTime() >= expiredIn.getTime()) {
+      //   this.deleteInterval(name);
+      // } else {
+      //   this.logger.warn(
+      //     `Interval ${name} executing at time (${milliseconds})!`
+      //   );
+      // }
     };
 
     const interval = setInterval(callback, milliseconds);
     this.schedulerRegistry.addInterval(name, interval);
+  }
+
+  deleteInterval(name: string) {
+    this.schedulerRegistry.deleteInterval(name);
+    this.logger.warn(`Interval ${name} deleted!`);
   }
 }

@@ -118,13 +118,20 @@ export class AppController {
       } else {
         const start = new Date();
         const expired = new Date(start.getTime() + 10 * 60 * 1000);
-        this.cronjobService.addCronJob(
+        this.cronjobService.addInterval(
           description,
-          CronExpression.EVERY_30_SECONDS,
+          30 * 1000,
           start,
           expired,
           transaction.id
         );
+        // this.cronjobService.addCronJob(
+        //   description,
+        //   CronExpression.EVERY_30_SECONDS,
+        //   start,
+        //   expired,
+        //   transaction.id
+        // );
       }
       return description;
     } catch (error) {
