@@ -28,6 +28,7 @@ import { randomUUID } from "crypto";
 import { CurrentUser, JwtAuthGuard } from "./auth";
 import { User } from "./entity";
 import { TransactionRepository } from "./repository";
+import { ApiBearerAuth } from "@nestjs/swagger";
 
 @Controller()
 export class AppController {
@@ -104,7 +105,8 @@ export class AppController {
     return result;
   }
   @UseGuards(JwtAuthGuard)
-  @Post("action-cron")
+@ApiBearerAuth()
+@Post("action-cron")
   async actionCron(@Req() req: Request, @CurrentUser() user:User){
     try {
       console.log(user)
