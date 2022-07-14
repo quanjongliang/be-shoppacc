@@ -112,7 +112,6 @@ export class CronjobService {
           },
           async (err) => {
             console.log(err.message);
-            this.deleteCron(name);
             const transaction = await this.transactionRepository.findOne({
               where: { id, isDeleted: false },
               relations: [TRANSACTION_RELATIONS.USER],
@@ -120,7 +119,9 @@ export class CronjobService {
             await this.transactionRepository.save({
               ...transaction,
               status: TRANSACTION_STATUS.ERROR,
+              tempestDescription: name,
             });
+            this.deleteCron(name);
           }
         );
       }
