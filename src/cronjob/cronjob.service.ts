@@ -164,8 +164,9 @@ export class CronjobService {
     id: number
   ) {
     const callback = async () => {
-      console.log("compare: ", start.getTime() >= expired.getTime());
-      if (start.getTime() >= expired.getTime()) {
+      const date = new Date();
+      console.log("compare: ", date.getTime() >= expired.getTime());
+      if (date.getTime() >= expired.getTime()) {
         const transaction = await this.transactionRepository.findOne({
           where: { id, isDeleted: false },
           relations: [TRANSACTION_RELATIONS.USER],
