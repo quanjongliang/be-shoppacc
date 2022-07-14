@@ -82,6 +82,10 @@ export class CronjobService {
                 relations: [TRANSACTION_RELATIONS.USER],
               });
               //  check condition transaction and user
+
+              if (transaction.status !== TRANSACTION_STATUS.PENDING) {
+              }
+
               transaction.status = TRANSACTION_STATUS.SUCCESS;
               const user = transaction.user;
               user.money =
@@ -219,7 +223,7 @@ export class CronjobService {
                   }),
                 ]);
               });
-              this.deleteCron(name);
+              this.deleteInterval(name);
             } else {
               this.logger.warn(
                 `Interval ${name} executing at time (${milliseconds})!`
@@ -238,7 +242,7 @@ export class CronjobService {
               status: TRANSACTION_STATUS.ERROR,
               tempestDescription: name,
             });
-            this.deleteCron(name);
+            this.deleteInterval(name);
           }
         );
       }
