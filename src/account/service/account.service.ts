@@ -5,7 +5,13 @@ import {
   NETWORK_MESSAGE,
   POST_CONFIG,
 } from "@/core";
-import { Account, ACCOUNT_RELATION, TAG_TYPE, User } from "@/entity";
+import {
+  Account,
+  ACCOUNT_RELATION,
+  ACCOUNT_STATUS,
+  TAG_TYPE,
+  User,
+} from "@/entity";
 import { changeToSlug } from "@/post";
 import { AccountRepository, TagRepository } from "@/repository";
 import {
@@ -105,8 +111,10 @@ export class AccountService {
       sort = "null",
       queryString = "",
       startPrice = 0,
-      endPrice
+      endPrice,
+      isSold = false,
     } = queryAccountDto;
+    const isSoldValue = JSON.parse(isSold.toString());
     const sortValue = JSON.parse(sort.toString());
     const characterList = character.split(",") || [];
     const weaponList = weapon.split(",") || [];
@@ -144,9 +152,12 @@ export class AccountService {
       default:
         findAccountQuery.addOrderBy("account.createdAt", "DESC");
     }
-    findAccountQuery.andWhere(`account.newPrice >= ${+startPrice} `)
-    if(endPrice){
-      findAccountQuery.andWhere(` account.newPrice <= ${+endPrice}`)
+    findAccountQuery.andWhere(`account.newPrice >= ${+startPrice} `);
+    if (endPrice) {
+      findAccountQuery.andWhere(` account.newPrice <= ${+endPrice}`);
+    }
+    if (isSoldValue) {
+      findAccountQuery.orderBy("account.status", "DESC");
     }
     // const [total, data] = await Promise.all([
     //   findAccountQuery.getCount(),
@@ -194,7 +205,7 @@ export class AccountService {
         ACCOUNT_RELATION.USER,
       ],
     });
-    return value
+    return value;
   }
 
   async updateAccount(
@@ -290,6 +301,4 @@ export class AccountService {
       ],
     });
   }
-
-  
 }

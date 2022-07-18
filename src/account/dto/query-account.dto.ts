@@ -1,4 +1,5 @@
 import { BaseQuery } from "@/core";
+import { ACCOUNT_STATUS } from "@/entity";
 import { ApiPropertyOptional } from "@nestjs/swagger";
 import { IsOptional } from "class-validator";
 
@@ -19,9 +20,11 @@ export class QueryAccountDto extends BaseQuery {
   @ApiPropertyOptional()
   queryString?: string;
   @ApiPropertyOptional()
-  startPrice?:number
+  startPrice?: number;
   @ApiPropertyOptional()
-  endPrice?:number
+  endPrice?: number;
+  @ApiPropertyOptional()
+  isSold?: boolean;
 }
 
 export class QueryDetailsAccountDto {

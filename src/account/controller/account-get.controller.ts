@@ -36,9 +36,10 @@ export class AccountGetController {
     // console.log(request.url)
     // const data = await this.redisCacheSerivce.get(request.url)
     // if(data) return data
-    const freshData = await this.accountService.queryAccount(queryAccountDto);
+    // const freshData = await this.accountService.queryAccount(queryAccountDto);
     // await this.redisCacheSerivce.set(request.url,freshData)
-    return freshData;
+    // return freshData;
+    return this.accountService.queryAccount(queryAccountDto);
   }
 
   @Get("details")
