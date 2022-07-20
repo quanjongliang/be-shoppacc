@@ -97,7 +97,7 @@ export class AccountAuditService {
       console.log(buyMutiAccountDto);
       const cost = calculateTotalAccount(accounts);
       const newMoney = +user.money - cost;
-      if (newMoney <= 0) {
+      if (newMoney < 0) {
         throw new HttpException(
           AUDIT_MESSAGE.NOT_ENOUGH,
           HttpStatus.BAD_GATEWAY
