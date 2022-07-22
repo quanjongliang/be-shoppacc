@@ -47,7 +47,7 @@ export class AuthService {
   ) {}
 
   async validateUser(username: string, password: string): Promise<User | null> {
-  const user = await this.userRepository.findOne({ username });
+  const user = await this.userRepository.findOne({ username,isDeleted:false });
     if (!user) throw new NotFoundException(AUTH_MESSAGE.USER.NOT_FOUND);
     const isMatch = await checkIsMatchPassword(password, user.password);
     if (isMatch) return user;
@@ -206,7 +206,9 @@ export class AuthService {
   }
 
   async getAllUser(): Promise<User[]> {
-    return this.userRepository.find();
+    return this.userRepository.find({
+      where:{isDeleted:false}
+    });
   }
 
   async getAllUserList(
@@ -218,7 +220,9 @@ export class AuthService {
       role = "",
       username = "",
     } = queryUserDto;
-    const where = {};
+    const where = {
+      isDeleted: false
+    };
     if (role) {
       where["role"] = role;
     }

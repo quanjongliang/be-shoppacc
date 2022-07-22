@@ -184,6 +184,7 @@ export class AuditService {
       .take(limit)
       .skip(offset)
       .where("audit.type = :type", { type })
+      .andWhere("user.isDeleted = false")
       .andWhere("audit.isDeleted = false")
       .orderBy("audit.createdAt", "DESC");
 
