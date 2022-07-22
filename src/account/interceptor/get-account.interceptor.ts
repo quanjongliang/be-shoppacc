@@ -24,7 +24,7 @@ function isExpressRequest(
 @Injectable()
 export class GetAccountInterceptor implements NestInterceptor {
   constructor(
-    private redisCacheService: RedisCacheService,
+    // private redisCacheService: RedisCacheService,
     private readonly reflector: Reflector
   ) {}
   intercept(context: ExecutionContext, next: CallHandler): Observable<any> {

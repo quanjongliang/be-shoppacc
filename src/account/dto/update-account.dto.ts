@@ -19,5 +19,7 @@ export class BuyAccountDto {
 }
 
 export class BuyMultiAccountDto extends BuyAccountDto {
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
   ids: string[];
 }

@@ -34,7 +34,7 @@ export class AppController {
     private readonly appService: AppService,
     private mailerService: MailerService,
     private cloundinaryService: CloundinaryService,
-    private redisService: RedisCacheService,
+    // private redisService: RedisCacheService,
     private cronjobService: CronjobService,
     private transactionRepository: TransactionRepository
   ) {}
@@ -95,12 +95,13 @@ export class AppController {
 
   @Get("test-redis")
   async testGetRedis() {
-    const result = await this.redisService.get("hello");
-    if (!result) {
-      await this.redisService.set("hello", "Quan dep trai");
-      return "Quan dep trai k co redis";
-    }
-    return result;
+    // const result = await this.redisService.get("hello");
+    // if (!result) {
+    //   await this.redisService.set("hello", "Quan dep trai");
+    //   return "Quan dep trai k co redis";
+    // }
+    // return result;
+    return 'quan'
   }
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

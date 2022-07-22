@@ -24,7 +24,7 @@ import { RedisCacheService } from "@/redis/redis.service";
 export class AccountGetController {
   constructor(
     private accountService: AccountService,
-    private redisCacheSerivce: RedisCacheService
+    // private redisCacheSerivce: RedisCacheService
   ) {}
 
   @Get()

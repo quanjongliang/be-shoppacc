@@ -13,6 +13,7 @@ export enum MAILER_TEMPLATE_ENUM {
   BUY_ACCOUNTS_TO_USER = "BUY_ACCOUNTS_TO_USER",
   BUY_ACCOUNTS_BY_USER = "BUY_ACCOUNTS_BY_USER",
   PAYMENT_NOTIFY = "PAYMENT_NOTIFY",
+  THANKS = "THANKS",
 }
 
 export const MAILER_TEMPLATE: MailerTemplateInterface = {
@@ -55,6 +56,10 @@ export const MAILER_TEMPLATE: MailerTemplateInterface = {
   PAYMENT_NOTIFY: {
     TEMPLATE: "payment-notify",
     SUBJECT: "Payment notify",
+  },
+  THANKS: {
+    TEMPLATE: "thanks",
+    SUBJECT: "Thanks",
   },
 };
 
@@ -116,6 +121,8 @@ export interface PaymentNotifyContext extends BankTransaction {
   user: User;
 }
 
+export interface EmptyMailContext {}
+
 export type MailContext =
   | WelcomeMailContext
   | ResetPasswordMailContext
@@ -123,7 +130,8 @@ export type MailContext =
   | RequestStoneMailContext
   | BuyAccountByUserContext
   | BuyAccountsContext
-  | PaymentNotifyContext;
+  | PaymentNotifyContext
+  | EmptyMailContext;
 
 export interface MailerOptions extends TemplateOptions {
   from: string;

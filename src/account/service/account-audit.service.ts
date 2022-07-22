@@ -96,10 +96,10 @@ export class AccountAuditService {
       console.log(accounts);
       console.log(buyMutiAccountDto);
       const cost = calculateTotalAccount(accounts);
-      const newMoney = +user.money - cost;
+      const newMoney = Number(user.money) - Number(cost);
       if (newMoney < 0) {
         throw new HttpException(
-          AUDIT_MESSAGE.NOT_ENOUGH,
+          `${AUDIT_MESSAGE.NOT_ENOUGH} Vui lòng kiểm tra lại.`,
           HttpStatus.BAD_GATEWAY
         );
       }

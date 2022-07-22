@@ -9,7 +9,7 @@ import { AuthService } from "../service";
 export class HideAuthController {
   constructor(
     private authService: AuthService,
-    private redisService: RedisCacheService
+    // private redisService: RedisCacheService
   ) {}
 
   // @Post()

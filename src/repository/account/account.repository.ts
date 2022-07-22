@@ -64,8 +64,8 @@ export class AccountRepository extends Repository<Account> {
       throw new BadRequestException(ACCOUNT_MESSAGE.CAN_NOT_BEHAVIOR);
     }
     const total = calculateTotalAccount(accounts)
-    if (isBuy && total > money) {
-      throw new BadRequestException(AUDIT_MESSAGE.NOT_ENOUGH);
+    if (isBuy && Number(total) > Number(money)) {
+      throw new BadRequestException(`${AUDIT_MESSAGE.NOT_ENOUGH} Kiểm tra Smile Coin của bạn nhé.`);
     }
     return accounts;
   }
