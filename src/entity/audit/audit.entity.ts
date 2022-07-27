@@ -57,7 +57,7 @@ export class Audit extends BaseColumn {
   @Column({ enum: AUDIT_TYPE, default: AUDIT_TYPE.STONE })
   type: AUDIT_TYPE;
 
-  @Column({ type: "json", nullable: true })
+  @Column({ type: "jsonb", nullable: true })
   information: Record<any, any>;
 
   @OneToMany(() => AuditInformation, (aInf) => aInf.audit, {

@@ -60,7 +60,7 @@ export class TagService {
   async getAll(query: QueryTagDto): Promise<Tag[]> {
     const { type ,game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG} = query;
     if(type === TAG_TYPE.GAME) return this.tagRepository.find({where:{type,isDeleted:false},order:{type:'DESC'}})
-    const queryTag = this.tagRepository.createQueryBuilder('tag').orderBy("tag.type",'DESC').where("tag.isDeleted = false").leftJoinAndSelect("tag.parent","parent").andWhere("parent.slug =:slug",{slug:game})
+    const queryTag = this.tagRepository.createQueryBuilder('tag').orderBy("tag.type",'DESC').where("tag.isDeleted = false").leftJoin("tag.parent","parent").andWhere("parent.slug =:slug",{slug:game})
     if(type){
       queryTag.andWhere("tag.type =:type",{type})
     }
