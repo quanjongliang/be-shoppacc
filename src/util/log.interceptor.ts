@@ -28,28 +28,9 @@ export class LoggingInterceptor implements NestInterceptor {
     Object.keys(args).forEach((k) =>
       Logger.log(`info ${timestamp} ${k}: ${JSON.stringify(args[k])}`)
     );
-    const information = `info ${timestamp} ip: ${ip} method: ${method} url: ${url} information : ${JSON.stringify(
-      args
-    )}`;
-    this.loggingRepository
-      .save(
-        this.loggingRepository.create({
-          information,
-        })
-      )
-      .then((res) => console.log(res))
-      .catch((err) => console.log(err));
 
     return next.handle().pipe(
       tap((value) => {
-        this.loggingRepository
-          .save(
-            this.loggingRepository.create({
-              information: JSON.stringify(value),
-            })
-          )
-          .then((res) => console.log(res))
-          .catch((err) => console.log(err));
         Logger.log(`Response:', ${JSON.stringify(value)}`);
       }),
       finalize(() => {

@@ -6,4 +6,6 @@ export class UpdateTagDto {
   title?: string;
   @ApiPropertyOptional()
   type?: TAG_TYPE;
+  @ApiPropertyOptional()
+  description?:string
 }

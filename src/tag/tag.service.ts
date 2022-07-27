@@ -3,7 +3,7 @@ import { Tag, TAG_RELATION, TAG_TYPE } from "@/entity";
 import { changeToSlug } from "@/post";
 import { TagRepository } from "@/repository";
 import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
-import { Connection, UpdateResult } from "typeorm";
+import { Connection, Not, UpdateResult } from "typeorm";
 import { CreateTagDto, QueryTagDto, UpdateTagDto } from "./dto";
 import { DEFAULT_GENSHIN_IMPACT_TAG_SLUG } from "./util";
 
@@ -43,11 +43,13 @@ export class TagService {
 
   async updateTag(
     id: string,
-    updateTagDto: UpdateTagDto
+    updateTagDto: UpdateTagDto,
+    isDeleted=false
   ): Promise<UpdateResult> {
+    if(isDeleted) return this.tagRepository.update({id},{isDeleted:true})
     const { title } = updateTagDto;
     if (title) {
-      const checkTag = await this.tagRepository.findOne({ title });
+      const checkTag = await this.tagRepository.findOne({ title,id: Not(id),isDeleted:false });
       if (checkTag)
         throw new HttpException(TAG_MESSAGE.CONFLICT, HttpStatus.CONFLICT);
     }
@@ -57,8 +59,8 @@ export class TagService {
 
   async getAll(query: QueryTagDto): Promise<Tag[]> {
     const { type ,game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG} = query;
-    if(type === TAG_TYPE.GAME) return this.tagRepository.find({where:{type,isDeleted:false}})
-    const queryTag = this.tagRepository.createQueryBuilder('tag').leftJoinAndSelect("tag.parent","parent").where("parent.slug =:slug",{slug:game})
+    if(type === TAG_TYPE.GAME) return this.tagRepository.find({where:{type,isDeleted:false},order:{type:'DESC'}})
+    const queryTag = this.tagRepository.createQueryBuilder('tag').orderBy("tag.type",'DESC').where("tag.isDeleted = false").leftJoinAndSelect("tag.parent","parent").andWhere("parent.slug =:slug",{slug:game})
     if(type){
       queryTag.andWhere("tag.type =:type",{type})
     }

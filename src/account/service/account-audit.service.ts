@@ -104,6 +104,14 @@ export class AccountAuditService {
           HttpStatus.BAD_GATEWAY
         );
       }
+      const accountsAudit = [...accounts].map(account=>{
+        const game = account.tags.find(tag=>tag.type === TAG_TYPE.GAME)
+        ?.title || ''
+        return {
+          ...account,
+          game
+        }
+      })
       return Promise.all([
         this.accountRepository.update(ids, {
           boughtBy: user.username,
@@ -113,7 +121,8 @@ export class AccountAuditService {
         this.userRepository.save({ ...user, money: newMoney }),
         this.auditRepository.save({
           type: AUDIT_TYPE.ACCOUNT,
-          information: { ...buyAccountDto, accounts,game: accounts.map(acc=>acc.game) },
+          information: { ...buyAccountDto, accounts
+            :accountsAudit,game: accounts.map(acc=>acc.game) },
           user,
           total: cost,
         }),
@@ -148,6 +157,7 @@ export class AccountAuditService {
       });
       if (!buyer) throw new NotFoundException(ACCOUNT_MESSAGE.NOT_FOUND_BUYER);
       buyer.money = +buyer.money + +account.newPrice;
+      const boughtBy = account.boughtBy
       account.boughtBy = null;
       account.soldAt = null;
       account.status = ACCOUNT_STATUS.AVAILABLE;
@@ -156,7 +166,7 @@ export class AccountAuditService {
         this.userRepository.save(buyer),
         this.historyService.createHistoryRefundAccount({
           account,
-          boughtBy: account.boughtBy,
+          boughtBy,
           user,
         }),
       ]);

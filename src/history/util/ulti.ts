@@ -69,7 +69,7 @@ export const getHistoryRefundAccountMessage = (
   const now = new Date();
   return `User ${user.username} đã đặt lại trạng thái của tài khoản ${
     account.name
-  } thành còn hàng và hoàn lại ${formatCurrencyVietNam(
+  } (game: ${account.tags.find(tag=>tag.type === TAG_TYPE.GAME).title} )thành còn hàng và hoàn lại ${formatCurrencyVietNam(
     account.newPrice
   )} cho User ${boughtBy} vào lúc ${now.toLocaleDateString(
     "vi-VN"

@@ -35,6 +35,14 @@ export class TagController {
     return this.tagService.updateTag(id, updateTagDto);
   }
 
+  @ApiParam({ name: "id" })
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(USER_ROLE.ADMIN,USER_ROLE.MOD)
+  @Patch("delete/:id")
+  async deleteTag(@Param("id") id: string) {
+    return this.tagService.updateTag(id,{},true);
+  }
+
   @Get()
   async getAllTag(@Query() queryTag: QueryTagDto) {
     return this.tagService.getAll(queryTag);
