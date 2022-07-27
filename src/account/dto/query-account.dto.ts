@@ -25,6 +25,8 @@ export class QueryAccountDto extends BaseQuery {
   endPrice?: number;
   @ApiPropertyOptional()
   isSold?: boolean;
+  @ApiPropertyOptional()
+  game?:string;
 }
 
 export class QueryDetailsAccountDto {

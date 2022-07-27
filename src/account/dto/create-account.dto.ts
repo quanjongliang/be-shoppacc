@@ -1,6 +1,6 @@
 import { AUDIT_MESSAGE } from "@/core";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsNotEmpty } from "class-validator";
+import { IsNotEmpty, IsOptional } from "class-validator";
 export class CreateAccountDto {
   @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
@@ -38,4 +38,7 @@ export class CreateAccountDto {
   @ApiPropertyOptional()
   @IsNotEmpty({ message: AUDIT_MESSAGE.NOT_EMPTY })
   description: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  game?:string
 }

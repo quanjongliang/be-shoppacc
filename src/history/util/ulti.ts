@@ -1,4 +1,5 @@
 import { formatCurrencyVietNam } from "@/core";
+import { TAG_TYPE } from "@/entity";
 import {
   CreateAmountTransferredHistoryDto,
   CreateBuyAccountHistoryDto,
@@ -55,7 +56,7 @@ export const getHistoryBuyMultiAccountMessage = (
   historyBuyAccount: CreateBuyMultiAccountHistoryDto
 ): string => {
   const { accounts, username, cost } = historyBuyAccount;
-  const listCode = accounts.map(({ code }) => code).join(",");
+  const listCode = accounts.map(({ code,tags }) => `${code} ( game: ${tags.find(tag=>tag.type===TAG_TYPE.GAME).title})`).join(",");
   return `Tài khoản code ${listCode} đã được mua bởi người dùng ${username} với giá ${formatCurrencyVietNam(
     cost
   )}`;

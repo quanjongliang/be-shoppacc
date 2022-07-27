@@ -6,7 +6,7 @@ import {
   QUILL_LIANG_EMAIL,
   TIM_DANG_EMAIL,
 } from "@/core";
-import { User, ACCOUNT_STATUS, AUDIT_TYPE, Account } from "@/entity";
+import { User, ACCOUNT_STATUS, AUDIT_TYPE, Account, TAG_TYPE } from "@/entity";
 import { HistoryService } from "@/history";
 import { MailerService, MAILER_TEMPLATE_ENUM } from "@/mailer";
 import {
@@ -49,6 +49,7 @@ export class AccountAuditService {
           HttpStatus.BAD_GATEWAY
         );
       }
+      const game = account.tags.find(tag=>tag.type===TAG_TYPE.GAME)
       user.money = user.money - account.newPrice;
       const listImage = account.cloundinary.map(
         (cl) => cl.secure_url || cl.url
@@ -56,7 +57,7 @@ export class AccountAuditService {
       return Promise.all([
         this.auditRepository.save({
           type: AUDIT_TYPE.ACCOUNT,
-          information: { ...buyAccountDto, id: account.id },
+          information: { ...buyAccountDto, id: account.id ,game: game.title},
           user,
           total: account.newPrice,
         }),
@@ -112,7 +113,7 @@ export class AccountAuditService {
         this.userRepository.save({ ...user, money: newMoney }),
         this.auditRepository.save({
           type: AUDIT_TYPE.ACCOUNT,
-          information: { ...buyAccountDto, accounts },
+          information: { ...buyAccountDto, accounts,game: accounts.map(acc=>acc.game) },
           user,
           total: cost,
         }),

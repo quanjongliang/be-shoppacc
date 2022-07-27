@@ -22,9 +22,9 @@ import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CurrentUser, JwtAuthGuard } from "./auth";
 import { CronjobService } from "./cronjob/cronjob.service";
-import { User } from "./entity";
+import { ACCOUNT_RELATION, User } from "./entity";
 import { RedisCacheService } from "./redis/redis.service";
-import { TransactionRepository } from "./repository";
+import { AccountRepository, TagRepository, TransactionRepository } from "./repository";
 import * as crypto from "crypto";
 import { decryptValue, encryptText } from "./util/crypto-hash";
 
@@ -36,7 +36,9 @@ export class AppController {
     private cloundinaryService: CloundinaryService,
     // private redisService: RedisCacheService,
     private cronjobService: CronjobService,
-    private transactionRepository: TransactionRepository
+    private transactionRepository: TransactionRepository,
+    private accountRepository: AccountRepository,
+    private tagRepostiory: TagRepository
   ) {}
 
   @Get()
@@ -102,6 +104,12 @@ export class AppController {
     // }
     // return result;
     return 'quan'
+    // const tag = await this.tagRepostiory.findOne({id:'4f23c5bf-1383-4c70-a0d4-d118950a2ac7'})
+    // const accounts = await this.accountRepository.find({relations:[ACCOUNT_RELATION.TAG]})
+    // const promises = accounts.map(account=>{
+    //   this.accountRepository.save({...account,tags:[...account.tags,tag],game:tag.slug})
+    // })
+    // await Promise.all(promises)
   }
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

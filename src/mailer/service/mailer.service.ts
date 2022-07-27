@@ -126,6 +126,9 @@ export class MailerService {
       const image =
         [...account.cloundinary].sort((a, b) => a.order - b.order)[0]?.url ||
         DEFAULT_ACCOUNT_IMAGE;
+      const game = account.tags.find(
+        (tag) => tag.type === TAG_TYPE.GAME
+      ).title;
       return {
         name: account.name,
         ar: account.ar,
@@ -133,6 +136,7 @@ export class MailerService {
         image,
         price: formatCurrencyVietNam(+account.newPrice),
         code: account.code,
+        game
       };
     });
     const mailOptions = getMailOptions(to, template, {

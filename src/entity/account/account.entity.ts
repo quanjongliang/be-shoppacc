@@ -96,6 +96,9 @@ export class Account extends BaseColumn {
   @Column({ type: "text", nullable: true })
   weapon: string;
 
+  @Column({ type: "text", nullable: true })
+  game: string;
+
   @BeforeInsert()
   @BeforeUpdate()
   updateTagString() {

@@ -27,6 +27,7 @@ export const POST_MESSAGE = {
 
 export const TAG_MESSAGE = {
   CONFLICT: "Tag đã tồn tại!",
+  NOT_FOUND_GAME:'Game không tồn tại!'
 };
 
 export const ACCOUNT_MESSAGE = {
