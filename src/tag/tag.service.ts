@@ -5,6 +5,7 @@ import { TagRepository } from "@/repository";
 import { HttpException, HttpStatus, Injectable, NotFoundException } from "@nestjs/common";
 import { Connection, UpdateResult } from "typeorm";
 import { CreateTagDto, QueryTagDto, UpdateTagDto } from "./dto";
+import { DEFAULT_GENSHIN_IMPACT_TAG_SLUG } from "./util";
 
 @Injectable()
 export class TagService {
@@ -55,12 +56,13 @@ export class TagService {
   }
 
   async getAll(query: QueryTagDto): Promise<Tag[]> {
-    const { type } = query;
-    const where = type ? { type } : {};
-    return this.tagRepository.find({
-      where,
-      relations:[TAG_RELATION.PARENT,]
-    });
+    const { type ,game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG} = query;
+    if(type === TAG_TYPE.GAME) return this.tagRepository.find({where:{type,isDeleted:false}})
+    const queryTag = this.tagRepository.createQueryBuilder('tag').leftJoinAndSelect("tag.parent","parent").where("parent.slug =:slug",{slug:game})
+    if(type){
+      queryTag.andWhere("tag.type =:type",{type})
+    }
+    return queryTag.getMany()
   }
 
   async getTagById(id:string):Promise<Tag>{

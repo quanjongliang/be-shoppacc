@@ -5,4 +5,8 @@ export class QueryTagDto {
   @ApiPropertyOptional()
   @IsOptional()
   type?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  game?: string;
 }
+
