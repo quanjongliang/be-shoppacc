@@ -237,7 +237,7 @@ export class AccountService {
         }
         const gameTag = await this.tagRepository.findOne({
           where:{
-            title:game,
+            slug:game,
             type:TAG_TYPE.GAME
           }
         })
