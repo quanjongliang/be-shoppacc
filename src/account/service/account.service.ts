@@ -45,7 +45,13 @@ export class AccountService {
   ): Promise<Account> {
     return this.connection
       .transaction(async () => {
-        const { code, char, weapon, server ,game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG} = createAccountDto;
+        const {
+          code,
+          char,
+          weapon,
+          server,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+        } = createAccountDto;
         const checkCodeAccount = await this.accountRepository.findOne({ code });
         if (checkCodeAccount) {
           throw new ConflictException(ACCOUNT_MESSAGE.CODE);
@@ -53,7 +59,7 @@ export class AccountService {
         const cloundinary = files
           ? await this.cloundinaryService.uploadMultiFilesAccount(files)
           : null;
-        const [charTag, weaponTag, serverTag,gameTag] = await Promise.all([
+        const [charTag, weaponTag, serverTag, gameTag] = await Promise.all([
           this.tagRepository.find({
             where: {
               title: In(char.split(",")),
@@ -73,11 +79,11 @@ export class AccountService {
             },
           }),
           this.tagRepository.findOne({
-            where:{
-              title:game,
-              type:TAG_TYPE.GAME
-            }
-          })
+            where: {
+              slug: game,
+              type: TAG_TYPE.GAME,
+            },
+          }),
         ]);
         const imageUrl = cloundinary
           ? JSON.stringify(cloundinary.find((cl) => cl.isAvatar))
@@ -89,10 +95,10 @@ export class AccountService {
           imageUrl,
           code,
           server: serverTag.slug,
-          game:gameTag.slug,
+          game: gameTag.slug,
           character: charTag.map(({ slug }) => slug).join(","),
           weapon: weaponTag.map(({ slug }) => slug).join(","),
-          tags: [...charTag, ...weaponTag, serverTag,gameTag],
+          tags: [...charTag, ...weaponTag, serverTag, gameTag],
           slug: changeToSlug(createAccountDto.name, new Date()),
         });
         return this.accountRepository.save(newAccount);
@@ -118,7 +124,7 @@ export class AccountService {
       character = "",
       sort = "null",
       queryString = "",
-      game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+      game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
       startPrice = 0,
       endPrice,
       isSold = false,
@@ -133,7 +139,7 @@ export class AccountService {
       .leftJoinAndSelect("account.user", "user")
       .leftJoinAndSelect("account.tags", "tag")
       .andWhere("account.isDeleted = false")
-      .andWhere("account.game =:game",{game})
+      .andWhere("account.game =:game", { game })
       .take(limit)
       .skip(offset)
       .andWhere(`account.code ILIKE '%${queryString}%'`);
@@ -224,8 +230,14 @@ export class AccountService {
   ) {
     return this.connection
       .transaction(async () => {
-        const { code, char, weapon, server, game=DEFAULT_GENSHIN_IMPACT_TAG_SLUG, ...updateAccount } =
-          updateAccountDto;
+        const {
+          code,
+          char,
+          weapon,
+          server,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+          ...updateAccount
+        } = updateAccountDto;
         if (code !== account.code) {
           const checkCodeAccount = await this.accountRepository.findOne({
             code,
@@ -236,11 +248,11 @@ export class AccountService {
           account.code = code;
         }
         const gameTag = await this.tagRepository.findOne({
-          where:{
-            slug:game,
-            type:TAG_TYPE.GAME
-          }
-        })
+          where: {
+            slug: game,
+            type: TAG_TYPE.GAME,
+          },
+        });
         const tags = [gameTag];
         if (char) {
           const charTag = await this.tagRepository.find({
