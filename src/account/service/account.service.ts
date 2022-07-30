@@ -14,13 +14,16 @@ import {
 } from "@/entity";
 import { changeToSlug } from "@/post";
 import { AccountRepository, TagRepository } from "@/repository";
-import { DEFAULT_GENSHIN_IMPACT_TAG_SLUG } from "@/tag";
+import {
+  DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+  DEFAULT_GENSHIN_IMPACT_TAG_TITLE,
+} from "@/tag";
 import {
   BadRequestException,
   ConflictException,
   Injectable,
 } from "@nestjs/common";
-import { Connection, In, IsNull } from "typeorm";
+import { Connection, ILike, In, IsNull } from "typeorm";
 import {
   CreateAccountDto,
   QueryAccountDto,
@@ -50,7 +53,7 @@ export class AccountService {
           char,
           weapon,
           server,
-          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_TITLE,
         } = createAccountDto;
         const checkCodeAccount = await this.accountRepository.findOne({ code });
         if (checkCodeAccount) {
@@ -74,13 +77,13 @@ export class AccountService {
           }),
           this.tagRepository.findOne({
             where: {
-              title: server,
+              title: ILike(server),
               type: TAG_TYPE.SERVER,
             },
           }),
           this.tagRepository.findOne({
             where: {
-              slug: game,
+              title: ILike(game),
               type: TAG_TYPE.GAME,
             },
           }),
@@ -235,7 +238,7 @@ export class AccountService {
           char,
           weapon,
           server,
-          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_TITLE,
           ...updateAccount
         } = updateAccountDto;
         if (code !== account.code) {
@@ -249,7 +252,7 @@ export class AccountService {
         }
         const gameTag = await this.tagRepository.findOne({
           where: {
-            slug: game,
+            title: ILike(game),
             type: TAG_TYPE.GAME,
           },
         });
