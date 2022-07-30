@@ -21,12 +21,16 @@ import { extname } from "path";
 import { v4 as uuid } from "uuid";
 import { AppService } from "./app.service";
 import { CurrentUser, JwtAuthGuard } from "./auth";
-import { CronjobService } from "./cronjob/cronjob.service";
 import { ACCOUNT_RELATION, User } from "./entity";
 import { RedisCacheService } from "./redis/redis.service";
-import { AccountRepository, TagRepository, TransactionRepository } from "./repository";
+import {
+  AccountRepository,
+  TagRepository,
+  TransactionRepository,
+} from "./repository";
 import * as crypto from "crypto";
 import { decryptValue, encryptText } from "./util/crypto-hash";
+import { CronjobService } from "./cronjob";
 
 @Controller()
 export class AppController {
@@ -103,7 +107,7 @@ export class AppController {
     //   return "Quan dep trai k co redis";
     // }
     // return result;
-    return 'quan'
+    return "quan";
     // const tag = await this.tagRepostiory.findOne({id:'4f23c5bf-1383-4c70-a0d4-d118950a2ac7'})
     // const accounts = await this.accountRepository.find({relations:[ACCOUNT_RELATION.TAG]})
     // const promises = accounts.map(account=>{

@@ -13,8 +13,8 @@ import { Cron, CronExpression, SchedulerRegistry } from "@nestjs/schedule";
 import { CronJob } from "cron";
 import { Connection } from "typeorm";
 import * as crypto from "crypto";
-import { BankTransaction } from "./interface";
 import { getApiBank } from "@/util/crypto-hash";
+import { BankTransaction } from "../interface";
 @Injectable()
 export class CronjobService {
   constructor(
@@ -33,13 +33,6 @@ export class CronjobService {
   async handleCron() {
     await this.loggingRepository.clear();
   }
-
-  // @Cron(CronExpression.EVERY_5_SECONDS, {
-  //   name: 'notifications',
-  // })
-  // triggerNotifications(text:string) {
-  //   console.log(`hello + ${text}`)
-  // }
 
   async addCronJob(
     name: string,

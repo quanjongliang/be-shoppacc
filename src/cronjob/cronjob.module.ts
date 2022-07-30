@@ -3,12 +3,19 @@ import { MailerModule } from "@/mailer";
 import { RepositoryModule } from "@/repository";
 import { HttpModule } from "@nestjs/axios";
 import { Module } from "@nestjs/common";
-import { CronjobService } from "./cronjob.service";
+import { ScheduleModule } from "@nestjs/schedule";
+import { CronjobService, ServiceVpsService } from "./services";
 
-const providers = [CronjobService];
+const providers = [CronjobService, ServiceVpsService];
 
 @Module({
-  imports: [RepositoryModule,HttpModule,MailerModule,HistoryModule],
+  imports: [
+    RepositoryModule,
+    HttpModule,
+    MailerModule,
+    HistoryModule,
+    ScheduleModule.forRoot(),
+  ],
   providers,
   exports: [...providers],
 })
