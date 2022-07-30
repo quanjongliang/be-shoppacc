@@ -256,6 +256,7 @@ export class AccountService {
             type: TAG_TYPE.GAME,
           },
         });
+        account.game = gameTag.slug;
         const tags = [gameTag];
         if (char) {
           const charTag = await this.tagRepository.find({
