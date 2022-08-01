@@ -8,7 +8,7 @@ import { UserRepository } from "@/repository";
 export class ServiceVpsService {
   private readonly logger = new Logger(ServiceVpsService.name);
 constructor(private driveService: DriveService,private userRepository: UserRepository){}
-  @Cron("*/5 * * * * *")
+  // @Cron("*/5 * * * * *")
   @Cron("*/5 * * * *")
   restartPostgres() {
     this.logger.debug("Check postgres exist every 5 minutes");
