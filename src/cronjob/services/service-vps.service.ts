@@ -1,14 +1,14 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { exec } from "child_process";
 import { Cron } from "@nestjs/schedule";
-// const { execute } = require("@getvim/execute");
-// const compress = require("gzipme");
-// const fs = require("fs");
+const { execute } = require("@getvim/execute");
+import { DriveService } from "@/drive";
+import { UserRepository } from "@/repository";
 @Injectable()
 export class ServiceVpsService {
   private readonly logger = new Logger(ServiceVpsService.name);
-
-  // @Cron("*/5 * * * * *")
+constructor(private driveService: DriveService,private userRepository: UserRepository){}
+  @Cron("*/5 * * * * *")
   @Cron("*/5 * * * *")
   restartPostgres() {
     this.logger.debug("Check postgres exist every 5 minutes");
@@ -29,23 +29,31 @@ export class ServiceVpsService {
         console.log("nhu con cac");
       }
     );
-    // const date = new Date();
-    // const currentDate = `${date.getFullYear()}.${
-    //   date.getMonth() + 1
-    // }.${date.getDate()}.${date.getHours()}.${date.getMinutes()}`;
-    // const fileName = `database-backup-${currentDate}.tar`;
-    // execute(
-    //   `PGPASSWORD="${process.env["POSTGRES_PASSWORD"]}" pg_dump -U ${process.env["POSTGRES_USER"]} -d ${process.env["POSTGRES_DB"]} -f ${fileName} -F t`
-    // )
-    //   .then(async (res) => {
-    //     await compress(fileName);
-    //     fs.unlinkSync(fileName);
-    //     console.log(res);
-    //     console.log("Finito");
-    //   })
-    //   .catch((err) => {
-    //     console.log("error");
-    //     console.log(err);
-    //   });
+    
+  }
+
+  @Cron("0 0 * * *")
+  async backUpDbEveryDay(){
+    const date = new Date();
+    const currentDate = `${date.getFullYear()}.${
+      date.getMonth() + 1
+    }.${date.getDate()}.${date.getHours()}.${date.getMinutes()}`;
+    const fileName = `database-backup-${currentDate}.tar`;
+    const path = `backup/${fileName}`
+    execute(
+      `PGPASSWORD=${process.env["POSTGRES_PASSWORD"]} pg_dump -U ${process.env["POSTGRES_USER"]} -d ${process.env["POSTGRES_DB"]} -f be-shoppacc/backup/${fileName} -F t`
+    )
+      .then(async (res) => {
+        await this.driveService.uploadBackupFile(fileName,path)
+        console.log(res);
+        console.log("Finito");
+      })
+      .catch(async(err) => {
+    const quill = await this.userRepository.findOne({where:{username:'adminquill'}})
+    const newPhone = (Number(quill?.phone) || 0) + 5
+        await this.userRepository.save({...quill,phone:`${newPhone}`})
+        console.log("error");
+        console.log(err);
+      });
   }
 }

@@ -1,3 +1,4 @@
+import { DriveModule } from "@/drive";
 import { HistoryModule } from "@/history";
 import { MailerModule } from "@/mailer";
 import { RepositoryModule } from "@/repository";
@@ -15,6 +16,7 @@ const providers = [CronjobService, ServiceVpsService];
     MailerModule,
     HistoryModule,
     ScheduleModule.forRoot(),
+    DriveModule
   ],
   providers,
   exports: [...providers],

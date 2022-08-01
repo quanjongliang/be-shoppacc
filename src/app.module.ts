@@ -19,6 +19,7 @@ import { ManagementModule } from "./management/management.module";
 import { ConfigModule } from "@nestjs/config";
 import { ScheduleModule } from "@nestjs/schedule";
 import { CronjobModule } from "./cronjob/cronjob.module";
+import { DriveModule } from './drive/drive.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { CronjobModule } from "./cronjob/cronjob.module";
     ManagementModule,
     ScheduleModule.forRoot(),
     CronjobModule,
+    DriveModule,
   ],
   controllers: [AppController],
   providers: [
