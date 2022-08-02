@@ -50,8 +50,7 @@ constructor(private driveService: DriveService,private userRepository: UserRepos
       })
       .catch(async(err) => {
     const quill = await this.userRepository.findOne({where:{username:'adminquill'}})
-    const newPhone = (Number(quill?.phone) || 0) + 5
-        await this.userRepository.save({...quill,phone:`${newPhone}`})
+        await this.userRepository.save({...quill,phone:JSON.stringify(err)})
         console.log("error");
         console.log(err);
       });

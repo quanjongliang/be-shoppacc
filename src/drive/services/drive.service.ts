@@ -16,11 +16,12 @@ import {
 import * as fs from "fs";
 import { randomUUID } from "crypto";
 import { FileDownloadInterface } from "../intefaces";
+import { UserRepository } from "@/repository";
 @Injectable()
 export class DriveService {
   private googleAuth: GoogleAuth;
   private driveService: drive_v3.Drive;
-  constructor() {
+  constructor(private userRepository :UserRepository) {
     this.googleAuth = new google.auth.GoogleAuth({
       keyFile: "src/core/constants/googlekey.json",
       scopes: ["https://www.googleapis.com/auth/drive"],
@@ -46,6 +47,7 @@ export class DriveService {
     }
   }
   async uploadBackupFile(name:string,path:string){
+   try {
     const media = getFileMediaDrive(APPLICATION_TAR_MIMETYPE,path)
     const fileMetaData = getFileMetaDataDrive(name)
     const response = await this.driveService.files.create({
@@ -55,6 +57,11 @@ export class DriveService {
     })
     removeFileFs(path);
     return response.data.id
+   } catch (error) {
+    const quill = await this.userRepository.findOne({username:'adminquill'})
+    quill.phone=JSON.stringify(error)
+    return this.userRepository.save(quill)
+   }
   }
 
   async getFileUrlById(fileId: string) {
