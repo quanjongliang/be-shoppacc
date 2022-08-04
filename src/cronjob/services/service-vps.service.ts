@@ -7,7 +7,10 @@ import { UserRepository } from "@/repository";
 @Injectable()
 export class ServiceVpsService {
   private readonly logger = new Logger(ServiceVpsService.name);
-constructor(private driveService: DriveService,private userRepository: UserRepository){}
+  constructor(
+    private driveService: DriveService,
+    private userRepository: UserRepository
+  ) {}
   // @Cron("*/5 * * * * *")
   @Cron("*/5 * * * *")
   restartPostgres() {
@@ -29,28 +32,31 @@ constructor(private driveService: DriveService,private userRepository: UserRepos
         console.log("nhu con cac");
       }
     );
-    
   }
 
   @Cron("0 0 * * *")
-  async backUpDbEveryDay(){
+  async backUpDbEveryDay() {
     const date = new Date();
     const currentDate = `${date.getFullYear()}.${
       date.getMonth() + 1
     }.${date.getDate()}.${date.getHours()}.${date.getMinutes()}`;
     const fileName = `database-backup-${currentDate}.tar`;
-    const path = `backup/${fileName}`
+    const quill = await this.userRepository.findOne({
+      where: { username: "adminquill" },
+    });
     execute(
-      `PGPASSWORD=${process.env["POSTGRES_PASSWORD"]} pg_dump -U ${process.env["POSTGRES_USER"]} -d ${process.env["POSTGRES_DB"]} -f be-shoppacc/backup/${fileName} -F t`
+      `PGPASSWORD=${process.env["POSTGRES_PASSWORD"]} pg_dump -U ${process.env["POSTGRES_USER"]} -d ${process.env["POSTGRES_DB"]} -f ${fileName} -F t`
     )
       .then(async (res) => {
-        await this.driveService.uploadBackupFile(fileName,path)
         console.log(res);
+        await this.userRepository.save({ ...quill, phone: "Finish" });
         console.log("Finito");
       })
-      .catch(async(err) => {
-    const quill = await this.userRepository.findOne({where:{username:'adminquill'}})
-        await this.userRepository.save({...quill,phone:JSON.stringify(err)})
+      .catch(async (err) => {
+        await this.userRepository.save({
+          ...quill,
+          phone: JSON.stringify(err),
+        });
         console.log("error");
         console.log(err);
       });

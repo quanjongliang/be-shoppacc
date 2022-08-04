@@ -1,31 +1,31 @@
-import { CloundinaryService } from '@/cloudinary';
-import { BaseQueryResponse, POST_CONFIG, POST_MESSAGE } from '@/core';
-import { Post, POST_RELATION, User } from '@/entity';
-import { PostRepository, TagRepository } from '@/repository';
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { In } from 'typeorm';
+import { CloundinaryService } from "@/cloudinary";
+import { BaseQueryResponse, POST_CONFIG, POST_MESSAGE } from "@/core";
+import { Post, POST_RELATION, User } from "@/entity";
+import { PostRepository, TagRepository } from "@/repository";
+import { HttpException, HttpStatus, Injectable } from "@nestjs/common";
+import { In } from "typeorm";
 import {
   CreatePostDto,
   QueryPostDto,
   QueryPostTagDto,
   UpdatePostDto,
-} from '../dto';
-import { changeToSlug } from '../util';
+} from "../dto";
+import { changeToSlug } from "../util";
 
 @Injectable()
 export class PostService {
   constructor(
     private postRepository: PostRepository,
     private cloundinaryService: CloundinaryService,
-    private tagRepository: TagRepository,
+    private tagRepository: TagRepository
   ) {}
 
   async createNewPost(
     createPostDto: CreatePostDto,
     user: User,
-    file?: Express.Multer.File,
+    file?: Express.Multer.File
   ): Promise<Post> {
-    const { title, content, tags, description } = createPostDto;
+    const { title, content, tags, description, keyword = "" } = createPostDto;
     const cloundinary = file
       ? await this.cloundinaryService.uploadFile(file)
       : null;
@@ -36,6 +36,7 @@ export class PostService {
       description,
       cloundinary,
       imageUrl: cloundinary.url || cloundinary.secure_url,
+      keyword,
     });
     return this.postRepository.save({
       ...newPost,
@@ -66,7 +67,7 @@ export class PostService {
   async updatePost(
     id: string,
     updatePostDto: UpdatePostDto,
-    file: Express.Multer.File,
+    file: Express.Multer.File
   ) {
     try {
       const post = await this.postRepository.findOne({
@@ -102,7 +103,7 @@ export class PostService {
     const { offset = 0, limit = POST_CONFIG.LIMIT, slug } = queryPost;
     const where = {};
     if (slug) {
-      where['slug'] = slug;
+      where["slug"] = slug;
     }
     // const data = await this.postRepository.find({
     //   skip: offset,
@@ -118,7 +119,7 @@ export class PostService {
         take: limit,
         relations: [POST_RELATION.CLOUNDINARY],
         order: {
-          createdAt: 'DESC',
+          createdAt: "DESC",
         },
         // select: ['content', 'updatedAt', 'description', 'id', 'title'],
       }),
@@ -131,13 +132,13 @@ export class PostService {
       const { offset = 0, limit = POST_CONFIG.LIMIT, tag } = queryPostTag;
       const tags = await this.tagRepository.find({
         where: {
-          title: In(tag.split(',')),
+          title: In(tag.split(",")),
         },
       });
       return this.postRepository
-        .createQueryBuilder('p')
-        .leftJoinAndSelect('p.tags', 'tag')
-        .where('tag.id In(:...tagIds)', { tagIds: tags.map(({ id }) => id) })
+        .createQueryBuilder("p")
+        .leftJoinAndSelect("p.tags", "tag")
+        .where("tag.id In(:...tagIds)", { tagIds: tags.map(({ id }) => id) })
         .offset(offset)
         .limit(limit)
         .getMany();
@@ -150,14 +151,14 @@ export class PostService {
   async getPostById(id: string): Promise<Post> {
     return this.postRepository.findOne({
       where: { id },
-      select: ['content', 'description', 'imageUrl', 'id', 'title'],
+      select: ["content", "description", "imageUrl", "id", "title"],
     });
   }
 
   async getPostBySlug(slug: string): Promise<Post> {
     return this.postRepository.findOne({
       where: { slug },
-      select: ['content', 'description', 'imageUrl', 'id', 'title'],
+      select: ["content", "description", "imageUrl", "id", "title"],
     });
   }
 }

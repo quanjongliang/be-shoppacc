@@ -1,4 +1,5 @@
 import { ApiPropertyOptional } from "@nestjs/swagger";
+import { IsOptional } from "class-validator";
 
 export class UpdatePostDto {
   @ApiPropertyOptional()
@@ -7,4 +8,7 @@ export class UpdatePostDto {
   content?: string;
   @ApiPropertyOptional()
   description?: string;
+  @ApiPropertyOptional()
+  @IsOptional()
+  keyword?: string;
 }

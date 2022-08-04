@@ -1,4 +1,4 @@
-import { changeToSlug } from '@/post';
+import { changeToSlug } from "@/post";
 import {
   BeforeInsert,
   Column,
@@ -8,22 +8,22 @@ import {
   ManyToMany,
   ManyToOne,
   OneToOne,
-} from 'typeorm';
-import { BaseColumn } from '../base';
-import { Cloundinary } from '../cloudinary';
-import { Tag } from '../tag';
-import { User } from '../user';
+} from "typeorm";
+import { BaseColumn } from "../base";
+import { Cloundinary } from "../cloudinary";
+import { Tag } from "../tag";
+import { User } from "../user";
 
 export enum POST_RELATION {
-  CLOUNDINARY = 'cloundinary',
-  USER = 'user',
-  TAG = 'tags',
-  POST_TAGS_TAG = 'post_tags_tag',
+  CLOUNDINARY = "cloundinary",
+  USER = "user",
+  TAG = "tags",
+  POST_TAGS_TAG = "post_tags_tag",
 }
 
-export const POST_TABLE_NAME = 'post';
+export const POST_TABLE_NAME = "post";
 
-@Entity('post')
+@Entity("post")
 export class Post extends BaseColumn {
   @Column()
   title: string;
@@ -31,10 +31,13 @@ export class Post extends BaseColumn {
   @Column({ nullable: true })
   slug: string;
 
-  @Column({ type: 'text' })
+  @Column({ type: "text" })
   content: string;
 
-  @Column({ type: 'text', nullable: true })
+  @Column({ type: "text", nullable: true })
+  keyword: string;
+
+  @Column({ type: "text", nullable: true })
   description: string;
   @Column({ nullable: true })
   imageUrl: string;
