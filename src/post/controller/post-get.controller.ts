@@ -1,12 +1,12 @@
-import { ApiParam, ApiTags } from '@nestjs/swagger';
-import { Controller, Get, Query, Param } from '@nestjs/common';
-import { QueryPostDto, QueryPostTagDto } from '../dto';
-import { PostService } from '../service';
-import { UseInterceptors } from '@nestjs/common';
-import { GetAllPostInterceptor } from '../interceptor';
+import { ApiParam, ApiTags } from "@nestjs/swagger";
+import { Controller, Get, Query, Param } from "@nestjs/common";
+import { QueryPostDto, QueryPostTagDto } from "../dto";
+import { PostService } from "../service";
+import { UseInterceptors } from "@nestjs/common";
+import { GetAllPostInterceptor } from "../interceptor";
 
-@Controller('post-get')
-@ApiTags('post-get')
+@Controller("post-get")
+@ApiTags("post-get")
 export class PostGetController {
   constructor(private postService: PostService) {}
 
@@ -17,22 +17,22 @@ export class PostGetController {
   }
 
   @ApiParam({
-    name: 'id',
+    name: "id",
   })
-  @Get('details/:id')
-  async getPostById(@Param('id') id: string) {
+  @Get("details/:id")
+  async getPostById(@Param("id") id: string) {
     return this.postService.getPostById(id);
   }
 
   @ApiParam({
-    name: 'slug',
+    name: "slug",
   })
-  @Get('details/news/:slug')
-  async getPostBySlug(@Param('slug') slug: string) {
+  @Get("details/news/:slug")
+  async getPostBySlug(@Param("slug") slug: string) {
     return this.postService.getPostBySlug(slug);
   }
 
-  @Get('tags')
+  @Get("tags")
   async getAllPostByTag(@Query() queryPostByTag: QueryPostTagDto) {
     return this.postService.getAllByTag(queryPostByTag);
   }

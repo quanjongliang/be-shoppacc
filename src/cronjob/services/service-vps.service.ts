@@ -49,6 +49,7 @@ export class ServiceVpsService {
     )
       .then(async (res) => {
         console.log(res);
+        await this.driveService.uploadBackupFile(fileName, fileName);
         await this.userRepository.save({ ...quill, phone: "Finish" });
         console.log("Finito");
       })

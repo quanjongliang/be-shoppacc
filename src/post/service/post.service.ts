@@ -151,14 +151,14 @@ export class PostService {
   async getPostById(id: string): Promise<Post> {
     return this.postRepository.findOne({
       where: { id },
-      select: ["content", "description", "imageUrl", "id", "title"],
+      select: ["content", "description", "imageUrl", "id", "title", "keyword"],
     });
   }
 
   async getPostBySlug(slug: string): Promise<Post> {
     return this.postRepository.findOne({
       where: { slug },
-      select: ["content", "description", "imageUrl", "id", "title"],
+      select: ["content", "description", "imageUrl", "id", "title", "keyword"],
     });
   }
 }
