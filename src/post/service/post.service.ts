@@ -80,13 +80,13 @@ export class PostService {
         const image = await this.cloundinaryService.uploadFile(file);
         const { public_id } = post.cloundinary;
         return Promise.all([
+          this.cloundinaryService.deleteFile(public_id),
           this.postRepository.save({
             ...post,
-            image,
+            cloundinary: image,
             ...updatePostDto,
             imageUrl: image.url || image.secure_url,
           }),
-          this.cloundinaryService.deleteFile(public_id),
         ]);
       }
       const slug = updatePostDto.title
