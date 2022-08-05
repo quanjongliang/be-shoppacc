@@ -37,16 +37,16 @@ export class AppService {
   }
 
   async updateSlugPost() {
-    const listPostNoSlug = await this.postRepository.find({
-      where: [{ slug: "" }, { slug: null }],
-    });
-    const promiseUpdateSlug = listPostNoSlug.map((post) =>
-      this.postRepository.save({
-        ...post,
-        slug: changeToSlug(post.title, post.createdAt),
-      })
-    );
-    await Promise.all([...promiseUpdateSlug]);
+    // const listPostNoSlug = await this.postRepository.find({
+    //   where: [{ slug: "" }, { slug: null }],
+    // });
+    // const promiseUpdateSlug = listPostNoSlug.map((post) =>
+    //   this.postRepository.save({
+    //     ...post,
+    //     slug: changeToSlug(post.title, post.createdAt),
+    //   })
+    // );
+    // await Promise.all([...promiseUpdateSlug]);
   }
 
   async getWeaponJsonFile() {

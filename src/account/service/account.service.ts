@@ -306,7 +306,6 @@ export class AccountService {
         return this.accountRepository.save({
           ...account,
           ...updateAccount,
-          slug: changeToSlug(updateAccount.name, new Date()),
         });
       })
       .catch((err) => {

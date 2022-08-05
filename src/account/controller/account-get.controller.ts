@@ -23,8 +23,7 @@ import { RedisCacheService } from "@/redis/redis.service";
 @ApiTags("account-get")
 export class AccountGetController {
   constructor(
-    private accountService: AccountService,
-    // private redisCacheSerivce: RedisCacheService
+    private accountService: AccountService // private redisCacheSerivce: RedisCacheService
   ) {}
 
   @Get()

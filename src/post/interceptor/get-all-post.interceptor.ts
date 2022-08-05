@@ -19,7 +19,6 @@ export class GetAllPostInterceptor implements NestInterceptor {
         const formattedData = data.data.map((post) => ({
           ...post,
           cloundinary: post?.cloundinary?.url || post?.cloundinary?.secure_url,
-          slug: post?.slug || changeToSlug(post.title, post?.createdAt),
         }));
         return { ...data, data: formattedData };
       })

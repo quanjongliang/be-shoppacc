@@ -89,10 +89,8 @@ export class PostService {
           }),
         ]);
       }
-      const slug = updatePostDto.title
-        ? changeToSlug(updatePostDto.title, post.createdAt)
-        : post.slug;
-      return this.postRepository.update({ id }, { ...updatePostDto, slug });
+
+      return this.postRepository.update({ id }, { ...updatePostDto });
     } catch (error) {
       console.log(error);
       throw error;
