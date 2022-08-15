@@ -51,6 +51,8 @@ export class GetAccountInterceptor implements NestInterceptor {
               isAvatarCloudinary?.url || isAvatarCloudinary?.secure_url || "",
             character: character,
             weapon: weapon,
+            tofPassword:null,
+            tofUsername:null
           };
         });
         return {

@@ -28,6 +28,8 @@ export class WishListAccountInterceptor implements NestInterceptor {
           imageUrl: isAvatarCloudinary?.url || isAvatarCloudinary?.secure_url || "",
           character: character,
           weapon: weapon,
+          tofPassword:null,
+          tofUsername:null
         };
       })
       })
