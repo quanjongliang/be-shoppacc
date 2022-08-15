@@ -41,4 +41,14 @@ export class CreateAccountDto {
   @ApiPropertyOptional()
   @IsOptional()
   game?:string
+  @ApiPropertyOptional()
+  @IsOptional()
+  ortherParamTof?:number
+  @ApiPropertyOptional()
+  @IsOptional()
+  tofUsername?:string
+  @ApiPropertyOptional()
+  @IsOptional()
+  tofPassword?:string
+
 }

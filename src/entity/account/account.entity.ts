@@ -99,6 +99,15 @@ export class Account extends BaseColumn {
   @Column({ type: "text", nullable: true })
   game: string;
 
+  @Column({ type: "bigint", nullable: true })
+  ortherParamTof: number;
+
+  @Column({type:'text',nullable:true})
+  tofUsername:string
+  
+  @Column({type:'text',nullable:true})
+  tofPassword:string
+
   @BeforeInsert()
   @BeforeUpdate()
   updateTagString() {

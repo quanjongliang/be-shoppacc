@@ -53,7 +53,8 @@ export class AccountService {
           char,
           weapon,
           server,
-          game = DEFAULT_GENSHIN_IMPACT_TAG_TITLE,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
+          
         } = createAccountDto;
         const checkCodeAccount = await this.accountRepository.findOne({ code });
         if (checkCodeAccount) {
@@ -83,7 +84,7 @@ export class AccountService {
           }),
           this.tagRepository.findOne({
             where: {
-              title: ILike(game),
+              slug: game,
               type: TAG_TYPE.GAME,
             },
           }),
@@ -238,7 +239,7 @@ export class AccountService {
           char,
           weapon,
           server,
-          game = DEFAULT_GENSHIN_IMPACT_TAG_TITLE,
+          game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
           ...updateAccount
         } = updateAccountDto;
         if (code !== account.code) {
@@ -252,7 +253,7 @@ export class AccountService {
         }
         const gameTag = await this.tagRepository.findOne({
           where: {
-            title: ILike(game),
+            slug: game,
             type: TAG_TYPE.GAME,
           },
         });
