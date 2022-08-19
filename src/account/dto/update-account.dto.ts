@@ -1,5 +1,6 @@
+import { ACCOUNT_MESSAGE } from "@/core";
 import { ApiPropertyOptional } from "@nestjs/swagger";
-import { IsOptional } from "class-validator";
+import { ArrayNotEmpty, IsArray, IsOptional } from "class-validator";
 import { CreateAccountDto } from "./create-account.dto";
 
 export class UpdateAccountDto extends CreateAccountDto {}
@@ -19,6 +20,11 @@ export class BuyAccountDto {
 }
 
 export class BuyMultiAccountDto extends BuyAccountDto {
+  @ApiPropertyOptional({ nullable: true })
+  @IsOptional()
+  ids: string[];
+}
+export class DeleteMultiAccountDto {
   @ApiPropertyOptional({ nullable: true })
   @IsOptional()
   ids: string[];

@@ -22,10 +22,12 @@ import {
   BadRequestException,
   ConflictException,
   Injectable,
+  NotFoundException,
 } from "@nestjs/common";
 import { Connection, ILike, In, IsNull } from "typeorm";
 import {
   CreateAccountDto,
+  DeleteMultiAccountDto,
   QueryAccountDto,
   QueryDetailsAccountDto,
   QueryWishListAccountDto,
@@ -54,7 +56,6 @@ export class AccountService {
           weapon,
           server,
           game = DEFAULT_GENSHIN_IMPACT_TAG_SLUG,
-          
         } = createAccountDto;
         const checkCodeAccount = await this.accountRepository.findOne({ code });
         if (checkCodeAccount) {
@@ -176,9 +177,9 @@ export class AccountService {
     if (endPrice) {
       findAccountQuery.andWhere(` account.newPrice <= ${+endPrice}`);
     }
-    if (isSoldValue) {
-      findAccountQuery.orderBy("account.status", "DESC");
-    }
+    // if (isSoldValue) {
+    findAccountQuery.orderBy("account.status", isSoldValue ? "DESC" : "ASC");
+    // } else
     // const [total, data] = await Promise.all([
     //   findAccountQuery.getCount(),
     //   findAccountQuery.getMany(),
@@ -193,11 +194,13 @@ export class AccountService {
   async removeAccount(account: Account) {
     return this.connection
       .transaction(async () => {
-        const deleteMultiFile = account.cloundinary.map((cloud) => {
-          return this.cloundinaryService.deleteFile(cloud.public_id);
-        });
+        if (account.cloundinary && account.cloundinary.length > 0) {
+          const deleteMultiFile = account.cloundinary.map((cloud) => {
+            return this.cloundinaryService.deleteFile(cloud.public_id);
+          });
+          await Promise.all(deleteMultiFile);
+        }
         return Promise.all([
-          ...deleteMultiFile,
           this.accountRepository.save({
             ...account,
             tags: [],
@@ -211,6 +214,25 @@ export class AccountService {
         console.log(err);
         throw new BadRequestException(NETWORK_MESSAGE.ERROR);
       });
+  }
+
+  async removeAccounts(deleteMultiAccountDto: DeleteMultiAccountDto) {
+    const { ids } = deleteMultiAccountDto;
+    const accounts = await this.accountRepository.find({
+      where: {
+        id: In(ids),
+        isDeleted: false,
+      },
+      relations: [ACCOUNT_RELATION.CLOUNDINARY],
+    });
+    const accountsLenght = accounts.length;
+    if (accountsLenght <= 0) {
+      throw new NotFoundException(ACCOUNT_MESSAGE.NOT_EMPTY_ARRAY);
+    }
+    const deleteMultiAccountPromises = [...accounts].map((account) =>
+      this.removeAccount(account)
+    );
+    return Promise.all([...deleteMultiAccountPromises]);
   }
 
   async queryDetailsAccount(

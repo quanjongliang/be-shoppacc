@@ -27,7 +27,7 @@ export const POST_MESSAGE = {
 
 export const TAG_MESSAGE = {
   CONFLICT: "Tag đã tồn tại!",
-  NOT_FOUND_GAME:'Game không tồn tại!'
+  NOT_FOUND_GAME: "Game không tồn tại!",
 };
 
 export const ACCOUNT_MESSAGE = {
@@ -35,8 +35,9 @@ export const ACCOUNT_MESSAGE = {
   SOLD: "Tài khoản đã bán!",
   CODE: "Mã tài khoản đã tồn tại!",
   CAN_NOT_BEHAVIOR: "Tài khoản đã bán, không thể sửa hoặc xoá!",
-  AVAILABLE : "Tài khoản đang còn, không thể xử lý",
-  NOT_FOUND_BUYER:"Người mua không tìm thấy"
+  AVAILABLE: "Tài khoản đang còn, không thể xử lý",
+  NOT_FOUND_BUYER: "Người mua không tìm thấy",
+  NOT_EMPTY_ARRAY: "Bạn hãy chọn ít nhất 1 account để xoá",
 };
 
 export const AUDIT_MESSAGE = {

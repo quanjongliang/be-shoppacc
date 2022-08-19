@@ -20,16 +20,19 @@ export class ServiceVpsService {
       (error, stdout, stderr) => {
         if (error) console.log(`error: ${error}`);
         if (stderr) console.log(`stderr: ${stderr}`);
-        if (Number(stdout) > 0) console.log("Nice running postgres");
-        exec(
-          "service postgresql restart",
-          (errorRestart, stdoutRestart, stderrRestart) => {
-            if (errorRestart) console.log(`errorRestart: ${errorRestart}`);
-            if (stdoutRestart) console.log(`stdoutRestart: ${stdoutRestart}`);
-            console.log(`stderrRestart: ${stderrRestart}`);
-          }
-        );
-        console.log("nhu con cac");
+        if (Number(stdout) > 0) {
+          console.log("Nice running postgres");
+        } else {
+          exec(
+            "service postgresql restart",
+            (errorRestart, stdoutRestart, stderrRestart) => {
+              if (errorRestart) console.log(`errorRestart: ${errorRestart}`);
+              if (stdoutRestart) console.log(`stdoutRestart: ${stdoutRestart}`);
+              console.log(`stderrRestart: ${stderrRestart}`);
+            }
+          );
+          console.log("nhu con cac");
+        }
       }
     );
   }
@@ -45,18 +48,22 @@ export class ServiceVpsService {
       where: { username: "adminquill" },
     });
     execute(
-      `PGPASSWORD=${process.env["POSTGRES_PASSWORD"]} pg_dump -U ${process.env["POSTGRES_USER"]} -d ${process.env["POSTGRES_DB"]} -f ${fileName} -F t`
+      `PGPASSWORD=admin pg_dump -U admin -d tempest
+ -f ${fileName} -F t`
     )
       .then(async (res) => {
         console.log(res);
         await this.driveService.uploadBackupFile(fileName, fileName);
-        await this.userRepository.save({ ...quill, phone: "Finish" });
+        await this.userRepository.save({
+          ...quill,
+          phone: "Finish" + fileName,
+        });
         console.log("Finito");
       })
       .catch(async (err) => {
         await this.userRepository.save({
           ...quill,
-          phone: JSON.stringify(err),
+          phone: JSON.stringify({ ...err, fileName }),
         });
         console.log("error");
         console.log(err);

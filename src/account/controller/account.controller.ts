@@ -2,6 +2,7 @@ import { CurrentUser, JwtAuthGuard, Roles, RolesGuard } from "@/auth";
 import { LIMIT_FILE_ACCOUNT } from "@/core";
 import { Account, User, USER_ROLE } from "@/entity";
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -21,6 +22,7 @@ import {
   BuyAccountDto,
   BuyMultiAccountDto,
   CreateAccountDto,
+  DeleteMultiAccountDto,
   UpdateAccountDto,
 } from "../dto";
 import {
@@ -96,6 +98,18 @@ export class AccountController {
   @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
   async deleteAccount(@CurrentAccount() account: Account) {
     return this.accountService.removeAccount(account);
+  }
+
+  @Patch("delete-multi-account")
+  @Roles(USER_ROLE.ADMIN, USER_ROLE.MOD)
+  async deleteMultiAccount(
+    @Body() deleteMultiAccountDto: DeleteMultiAccountDto
+  ) {
+    try {
+      return this.accountService.removeAccounts(deleteMultiAccountDto);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
   @Patch(":id")
