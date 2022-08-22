@@ -147,7 +147,8 @@ export class AccountService {
       .andWhere("account.game =:game", { game })
       .take(limit)
       .skip(offset)
-      .andWhere(`account.code ILIKE '%${queryString}%'`);
+      .andWhere(`account.code ILIKE '%${queryString}%'`)
+      .addOrderBy("account.soldAt", isSoldValue ? "DESC" : "ASC");
     weaponList.forEach((w) => {
       findAccountQuery.andWhere(`account.weapon ILIKE '%${w}%'`);
     });
