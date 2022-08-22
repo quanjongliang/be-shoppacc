@@ -178,7 +178,7 @@ export class AccountService {
       findAccountQuery.andWhere(` account.newPrice <= ${+endPrice}`);
     }
     // if (isSoldValue) {
-    findAccountQuery.orderBy("account.status", isSoldValue ? "DESC" : "ASC");
+    // findAccountQuery.orderBy("account.status", isSoldValue ? "DESC" : "ASC");
     // } else
     // const [total, data] = await Promise.all([
     //   findAccountQuery.getCount(),
